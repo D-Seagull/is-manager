@@ -1,0 +1,324 @@
+{
+  "common": {
+    "cancel": "Скасувати",
+    "delete": "Видалити",
+    "save": "Зберегти",
+    "reply": "Відповісти",
+    "copy": "Копіювати",
+    "edit": "Редагувати",
+    "search": "Пошук",
+    "upload": "Завантажити",
+    "noMatches": "Нічого не знайдено.",
+    "loading": "Завантаження…",
+    "messageDeleted": "Повідомлення видалено",
+    "fileDeleted": "Файл видалено",
+    "file": "Файл",
+    "error": "Помилка"
+  },
+  "chatDir": {
+    "searchPlaceholder": "Пошук за іменем, телефоном чи авто…",
+    "otherContacts": "Інші контакти",
+    "noConversations": "Розмов ще немає.",
+    "teamlead": "Тімлід"
+  },
+  "groups": {
+    "empty": {
+      "title": "Груп ще немає",
+      "subtitle": "Група водіїв вашої компанії з'явиться тут."
+    },
+    "memberCount_one": "{{count}} водій",
+    "memberCount_few": "{{count}} водії",
+    "memberCount_many": "{{count}} водіїв",
+    "placeholderSubtitle": "Групи лише для водіїв. Можна додавати інших водіїв як учасників."
+  },
+  "settings": {
+    "title": "Налаштування",
+    "driverFallback": "Водій",
+    "avatar": {
+      "title": "Фото профілю",
+      "change": "Змінити",
+      "remove": "Прибрати"
+    },
+    "status": { "title": "Статус" },
+    "name": {
+      "title": "Імʼя та прізвище",
+      "first": "Імʼя",
+      "firstPlaceholder": "Іван",
+      "last": "Прізвище (необовʼязково)",
+      "lastPlaceholder": "Петренко"
+    },
+    "language": {
+      "title": "Мова",
+      "pick": "Виберіть мову"
+    },
+    "saveChanges": "Зберегти зміни",
+    "saved": "Зміни збережено ✓",
+    "logout": "Вийти з акаунту",
+    "logoutConfirm": {
+      "title": "Вихід з акаунту",
+      "body": "Точно вийти?",
+      "confirm": "Вийти"
+    },
+    "errors": {
+      "saveProfile": "Не вдалось зберегти зміни.",
+      "photoPermTitle": "Доступ до фото",
+      "photoPermBody": "Дозволь доступ до галереї щоб обрати фото профілю.",
+      "uploadAvatar": "Не вдалось завантажити фото.",
+      "deleteAvatar": "Не вдалось видалити фото."
+    }
+  },
+  "auth": {
+    "phone": {
+      "title": "Вхід",
+      "subtitle": "Введіть номер телефону — ми надішлемо одноразовий код у SMS.",
+      "sendCode": "Надіслати код"
+    },
+    "otp": {
+      "title": "Введіть код",
+      "subtitle": "Ми надіслали 6-значний код на {{phone}}.",
+      "subtitleFallback": "ваш телефон",
+      "mockHint": "Тестовий режим — підійдуть будь-які 6 цифр (напр. 123456).",
+      "verify": "Підтвердити",
+      "changePhone": "Змінити номер телефону"
+    },
+    "errors": {
+      "server": "Помилка сервера ({{status}})",
+      "cannotReach": "Немає зʼєднання з сервером. Перевірте, що бекенд запущено і EXPO_PUBLIC_API_URL правильний.",
+      "sendFailed": "Не вдалось надіслати код.",
+      "invalidCode": "Невірний код."
+    }
+  },
+  "alarm": {
+    "myAlarms": "Мої будильники ({{count}})",
+    "new": "+ Новий",
+    "reuseTitle": "Перезапустити через…",
+    "from": "від {{name}}",
+    "recurrence": {
+      "NONE": "Один раз",
+      "DAILY": "Щодня",
+      "WEEKLY": "Щотижня"
+    },
+    "quickOffsets": {
+      "min5": "+5 хв",
+      "min15": "+15 хв",
+      "min30": "+30 хв",
+      "hour1": "+1 год",
+      "hour2": "+2 год"
+    },
+    "form": {
+      "title": "Тема *",
+      "titlePlaceholder": "напр. Зателефонувати клієнту",
+      "note": "Коментар",
+      "notePlaceholder": "Деталі (необов'язково)",
+      "when": "Коли",
+      "recurrence": "Повтор",
+      "submit": "Створити"
+    },
+    "picker": {
+      "pickDate": "Оберіть дату",
+      "pickTime": "Оберіть час",
+      "done": "Готово"
+    },
+    "deleteConfirm": {
+      "title": "Видалити будильник?"
+    },
+    "empty": {
+      "title": "Немає будильників",
+      "subtitle": "Натисни «+ Новий», щоб встановити нагадування."
+    },
+    "errors": {
+      "titleRequired": "Тема обов'язкова",
+      "createFailed": "Не вдалось створити будильник"
+    }
+  },
+  "sys": {
+    "driverAssigned": "До вантажівки {{plate}} призначений водій {{name}}",
+    "managerAssigned": "До вантажівки {{plate}} призначений менеджер {{name}}"
+  },
+  "chat": {
+    "typingOne": "набирає",
+    "typingMany": "набирають",
+    "editingMessage": "Редагування повідомлення",
+    "replyTo": "Відповідь: {{name}}",
+    "unknownSender": "Невідомо",
+    "deleted": "Видалено",
+    "editedShort": "(ред.)",
+    "messagePlaceholder": "Повідомлення…",
+    "editPlaceholder": "Редагуйте повідомлення…",
+    "emptyChat": "Повідомлень ще немає. Почніть розмову.",
+    "groupFallback": "Група",
+    "groupChat": "Груповий чат",
+    "groupDocsTitle": "Документи групи"
+  },
+  "trip": {
+    "noActiveTrip": {
+      "title": "Немає активного рейсу",
+      "subtitle": "Коли менеджер призначить рейс, він з'явиться тут. Потягни вниз, щоб оновити."
+    },
+    "chatLabel": "Чат рейсу",
+    "nextTripLabel": "Наступний: {{title}}",
+    "nextTripHint": "Стане активним після завершення поточного",
+    "nextAssigned": {
+      "title": "Вам призначено наступне замовлення",
+      "loadingAt": "Завантаження: {{address}}"
+    },
+    "online": "онлайн",
+    "connecting": "під'єднання…",
+    "newCount_one": "{{count}} нове",
+    "newCount_few": "{{count}} нові",
+    "newCount_many": "{{count}} нових",
+    "readOnlyNotice": "Ви більше не учасник цього чату — перегляд тільки для читання.",
+    "docsTitle": "Документи рейсу",
+    "attachSheet": { "title": "Прикріпити" },
+    "stops": {
+      "loading": "Завантаження",
+      "unloading": "Розвантаження"
+    }
+  },
+  "tripStatus": {
+    "ASSIGNED": "Призначено",
+    "ACCEPTED": "Прийнято",
+    "ON_WAY": "В дорозі",
+    "ON_SITE": "На місці",
+    "LOADED": "Завантажено",
+    "DELIVERED": "Доставлено"
+  },
+  "trips": {
+    "searchPlaceholder": "Пошук за маршрутом, № замовлення, адресою…",
+    "active": "Активний",
+    "next": "Наступні",
+    "nextTag": "Наступний",
+    "done": "Завершені",
+    "empty": {
+      "title": "Рейсів ще немає",
+      "subtitle": "Призначені тобі рейси з'являться тут."
+    },
+    "noMatches": {
+      "title": "Нічого не знайдено",
+      "subtitle": "Спробуй інший запит."
+    }
+  },
+  "documents": {
+    "active": "Активний",
+    "searchPlaceholder": "№ рейсу, дата або індекс…",
+    "noTruck": {
+      "subtitle": "Документи прив'язані до вантажівки. Щойно менеджер її призначить, вони з'являться тут."
+    },
+    "empty": {
+      "title": "Документів ще немає",
+      "subtitleActive": "Натисни «Завантажити», щоб додати фото чи файли для поточного рейсу.",
+      "subtitleInactive": "Коли з'явиться рейс із завантаженими файлами, вони будуть тут."
+    },
+    "nothingHere": "Тут поки порожньо.",
+    "uploadSheet": {
+      "title": "Завантаження",
+      "subtitle": "Оберіть джерело",
+      "camera": "Камера",
+      "gallery": "Галерея",
+      "file": "Файл"
+    },
+    "uploadFailed": "Не вдалось завантажити",
+    "cannotOpen": "Не вдалось відкрити",
+    "deleteConfirm": {
+      "title": "Видалити?",
+      "body": "{{name}} буде видалено назавжди."
+    },
+    "tabs": {
+      "all": "Усі",
+      "photos": "Фото",
+      "documents": "Документи"
+    }
+  },
+  "truck": {
+    "status": {
+      "AVAILABLE": "Вільна",
+      "ON_TRIP": "В рейсі",
+      "REPAIR": "Ремонт"
+    },
+    "noTruck": {
+      "title": "Вантажівку не призначено",
+      "subtitle": "Коли менеджер призначить тобі вантажівку, вона з'явиться тут."
+    },
+    "dispatcher": "Менеджер",
+    "unknownUser": "Невідомо",
+    "notes": {
+      "title": "Нотатки ({{count}})",
+      "placeholder": "Додати нотатку (видно менеджеру)…",
+      "empty": "Нотаток ще немає. Додай вище.",
+      "saveError": "Не вдалось зберегти нотатку. Спробуй ще раз.",
+      "deleteTitle": "Видалити нотатку",
+      "deleteBody": "Видалити цю нотатку?"
+    }
+  },
+  "manager": {
+    "noManager": "Менеджера ще не призначено.",
+    "noRatings": "Ще немає оцінок",
+    "ratingCount_one": "({{count}} оцінка)",
+    "ratingCount_few": "({{count}} оцінки)",
+    "ratingCount_many": "({{count}} оцінок)",
+    "rate": "Оцінити менеджера",
+    "updateRating": "Змінити мою оцінку",
+    "yourRating": "Ваша поточна оцінка",
+    "reviews": "Відгуки ({{count}})",
+    "info": {
+      "email": "Email",
+      "phone": "Телефон"
+    },
+    "modal": {
+      "title": "Оцініть менеджера",
+      "commentPlaceholder": "Коментар (необов'язково)",
+      "anonymous": "Залишити анонімно",
+      "submit": "Надіслати"
+    }
+  },
+  "nav": {
+    "items": {
+      "trip": "Рейс",
+      "trips": "Мої рейси",
+      "truck": "Моя вантажівка",
+      "documents": "Документи",
+      "chat": "Чат",
+      "alarm": "Будильник"
+    },
+    "manager": "Менеджер",
+    "groups": "Групи",
+    "noUnread": "Немає непрочитаних",
+    "chatFallback": "Чат",
+    "driverFallback": "Водій",
+    "openSettings": "Відкрити налаштування",
+    "toggleTheme": "Змінити тему",
+    "messageManager": "Написати менеджеру",
+    "fileAttachment": "📎 Файл"
+  },
+  "push": {
+    "noticeTitle": "Сповіщення"
+  },
+  "status": {
+    "ONLINE": "Online",
+    "BUSY": "Не турбувати",
+    "AWAY": "Не на місці",
+    "SLEEP": "Сплю",
+    "VACATION": "Відпочиваю",
+    "OFFLINE": "Не в додатку"
+  },
+  "presence": {
+    "pickStatus": "Виберіть статус",
+    "sleepEllipsis": "Сплю…",
+    "vacationEllipsis": "Відпочиваю…",
+    "howLong": "На скільки?",
+    "noLimit": "Без обмеження",
+    "updateError": "Не вдалось оновити статус.",
+    "sleepPresets": {
+      "min30": "30 хв",
+      "hours2": "2 години",
+      "shortRest": "9 годин (короткий відпочинок)",
+      "regularRest": "11 годин (регулярний відпочинок)"
+    },
+    "vacationPresets": {
+      "day1": "1 день",
+      "days3": "3 дні",
+      "week1": "Тиждень",
+      "weeks2": "2 тижні"
+    }
+  }
+}
