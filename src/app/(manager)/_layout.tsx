@@ -31,7 +31,9 @@ export default function ManagerLayout() {
       <Stack.Screen name="my-trucks" />
       <Stack.Screen name="drivers" />
       <Stack.Screen name="managers" />
+      <Stack.Screen name="settings" />
       <Stack.Screen name="account" />
+      <Stack.Screen name="person/[id]" />
       <Stack.Screen name="dm/[userId]" />
       <Stack.Screen name="group/[groupId]" />
       <Stack.Screen name="truck/[truckId]" />

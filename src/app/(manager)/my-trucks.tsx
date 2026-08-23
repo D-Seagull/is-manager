@@ -141,6 +141,12 @@ function TruckCard({ truck }: { truck: MyTruck }) {
           </>
         )}
       </View>
+
+      {truck.truckNotes && truck.truckNotes.length > 0 ? (
+        <Text style={[styles.note, { color: c.destructive }]} numberOfLines={1}>
+          {truck.truckNotes[0].content}
+        </Text>
+      ) : null}
     </Pressable>
   );
 }
@@ -195,4 +201,5 @@ const styles = StyleSheet.create({
   },
   driverName: { fontSize: 14, fontWeight: '600' },
   driverSub: { fontSize: 12, marginTop: 1 },
+  note: { fontSize: 12, fontStyle: 'italic' },
 });

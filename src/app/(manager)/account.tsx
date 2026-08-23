@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -322,9 +323,7 @@ export default function AccountScreen() {
         {elevated && (
           <SectionCard colors={c} title={t('settings.company.title', 'Компанія')}>
             <Pressable
-              onPress={() =>
-                Alert.alert(t('settings.company.title', 'Компанія'), t('common.soon', 'Скоро'))
-              }
+              onPress={() => router.navigate('/(manager)/settings' as never)}
               style={({ pressed }) => [
                 styles.row,
                 { backgroundColor: c.card, borderColor: c.border, opacity: pressed ? 0.85 : 1 },
@@ -334,9 +333,7 @@ export default function AccountScreen() {
               <Text style={[styles.rowText, { color: c.foreground }]}>
                 {t('settings.company.settings', 'Налаштування компанії')}
               </Text>
-              <Text style={{ color: c.mutedForeground, fontSize: 12 }}>
-                {t('common.soon', 'Скоро')}
-              </Text>
+              <Ionicons name="chevron-forward" size={18} color={c.mutedForeground} />
             </Pressable>
           </SectionCard>
         )}
