@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -87,7 +88,18 @@ function TruckCard({ truck }: { truck: MyTruck }) {
   }
 
   return (
-    <View style={[styles.card, { backgroundColor: c.card, borderColor: c.border }]}>
+    <Pressable
+      onPress={() =>
+        router.push({
+          pathname: '/(manager)/truck/[truckId]',
+          params: { truckId: truck.id, plate: truck.plate },
+        } as never)
+      }
+      style={({ pressed }) => [
+        styles.card,
+        { backgroundColor: pressed ? c.muted : c.card, borderColor: c.border },
+      ]}
+    >
       <View style={styles.cardTop}>
         <View style={[styles.plate, { backgroundColor: c.muted }]}>
           <Text style={[styles.plateText, { color: c.foreground }]}>{truck.plate}</Text>
@@ -95,6 +107,7 @@ function TruckCard({ truck }: { truck: MyTruck }) {
         <View style={[styles.badge, { backgroundColor: badge.bg }]}>
           <Text style={[styles.badgeText, { color: badge.fg }]}>{badge.label}</Text>
         </View>
+        <Ionicons name="chevron-forward" size={16} color={c.mutedForeground} />
       </View>
 
       <View style={styles.driverRow}>
@@ -128,7 +141,7 @@ function TruckCard({ truck }: { truck: MyTruck }) {
           </>
         )}
       </View>
-    </View>
+    </Pressable>
   );
 }
 

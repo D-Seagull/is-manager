@@ -9,6 +9,7 @@ import { ChatAvatar } from '@/components/chat-avatar';
 import { PresenceStatusSheet } from '@/components/presence-status-sheet';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useThemeMode } from '@/hooks/use-theme';
 import { useConversations } from '@/hooks/use-direct-messages';
 import { useGroupUnread } from '@/hooks/use-groups';
 import { useMyTrucks } from '@/hooks/use-my-trucks';
@@ -38,6 +39,7 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
+  const { resolved: themeResolved, toggle: toggleTheme } = useThemeMode();
   const user = useUser();
   const role = user?.role;
 
@@ -104,8 +106,11 @@ export default function HomeScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: c.background, paddingTop: insets.top }]}>
-      {/* Slim top bar — no profile, just notifications. */}
+      {/* Slim top bar — theme toggle + notifications (right). */}
       <View style={styles.topbar}>
+        <Pressable onPress={toggleTheme} hitSlop={10} style={styles.bell} accessibilityLabel={t('settings.theme.title', 'Тема')}>
+          <Ionicons name={themeResolved === 'dark' ? 'sunny-outline' : 'moon-outline'} size={23} color={c.mutedForeground} />
+        </Pressable>
         <Pressable
           onPress={() => Alert.alert(t('nav.notifications', 'Сповіщення'), t('common.soon', 'Скоро'))}
           hitSlop={10}
@@ -233,6 +238,8 @@ const styles = StyleSheet.create({
   topbar: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: Spacing.md,
     paddingHorizontal: Spacing.md,
     paddingTop: Spacing.xs,
     paddingBottom: Spacing.xs,

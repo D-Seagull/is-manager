@@ -22,6 +22,7 @@ import { SectionHeader } from '@/components/section-header';
 import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing, ThemeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useThemeMode, type ThemeMode } from '@/hooks/use-theme';
 import {
   AppLanguage,
   UserStatus,
@@ -62,6 +63,13 @@ export default function AccountScreen() {
   const currentStatus = (user?.status as UserStatus | undefined) ?? 'ONLINE';
   // Teamleads/admins also get company-level settings here (managers: profile only).
   const elevated = user?.role === 'TEAMLEAD' || user?.role === 'ADMIN';
+
+  const { mode: themeMode, setMode: setThemeMode } = useThemeMode();
+  const THEME_OPTIONS: { key: ThemeMode; labelKey: string; fallback: string; icon: keyof typeof Ionicons.glyphMap }[] = [
+    { key: 'system', labelKey: 'settings.theme.system', fallback: 'Система', icon: 'phone-portrait-outline' },
+    { key: 'light', labelKey: 'settings.theme.light', fallback: 'Світла', icon: 'sunny-outline' },
+    { key: 'dark', labelKey: 'settings.theme.dark', fallback: 'Темна', icon: 'moon-outline' },
+  ];
 
   useEffect(() => {
     if (!user) return;
@@ -286,6 +294,30 @@ export default function AccountScreen() {
           </Pressable>
         </SectionCard>
 
+        {/* Theme (day / night) */}
+        <SectionCard colors={c} title={t('settings.theme.title', 'Тема')}>
+          <View style={styles.segment}>
+            {THEME_OPTIONS.map((opt) => {
+              const active = opt.key === themeMode;
+              return (
+                <Pressable
+                  key={opt.key}
+                  onPress={() => setThemeMode(opt.key)}
+                  style={[
+                    styles.segmentBtn,
+                    { borderColor: c.border, backgroundColor: active ? c.primary : 'transparent' },
+                  ]}
+                >
+                  <Ionicons name={opt.icon} size={16} color={active ? c.primaryForeground : c.mutedForeground} />
+                  <Text style={[styles.segmentText, { color: active ? c.primaryForeground : c.foreground }]}>
+                    {t(opt.labelKey, opt.fallback)}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </SectionCard>
+
         {/* Company settings — teamlead / admin only. */}
         {elevated && (
           <SectionCard colors={c} title={t('settings.company.title', 'Компанія')}>
@@ -479,6 +511,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   rowText: { flex: 1, fontSize: 15 },
+  segment: { flexDirection: 'row', gap: Spacing.sm },
+  segmentBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+    borderWidth: 1,
+    borderRadius: Radius.sm,
+    paddingVertical: 9,
+  },
+  segmentText: { fontSize: 13, fontWeight: '600' },
   saveBtn: { alignItems: 'center', justifyContent: 'center', paddingVertical: 14, borderRadius: Radius.md },
   saveText: { fontSize: 15, fontWeight: '700' },
   savedHint: { fontSize: 12, textAlign: 'center' },
