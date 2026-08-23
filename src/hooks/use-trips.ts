@@ -6,6 +6,7 @@ import { StopType, Trip } from '@/lib/types';
 export interface StopFormData {
   type: StopType;
   order: number;
+  name?: string;
   address?: string;
   ref?: string;
   coords?: string;
@@ -55,16 +56,18 @@ export function useUpdateTripInfo(truckId: string) {
   return useMutation({
     mutationFn: async ({
       id,
+      title,
       notes,
       orderNumber,
       stops,
     }: {
       id: string;
+      title?: string | null;
       notes?: string | null;
       orderNumber?: string | null;
       stops: StopFormData[];
     }) => {
-      const res = await api.patch(`/trips/${id}/info`, { notes, orderNumber, stops });
+      const res = await api.patch(`/trips/${id}/info`, { title, notes, orderNumber, stops });
       return res.data as Trip;
     },
     onSuccess: (trip) => {

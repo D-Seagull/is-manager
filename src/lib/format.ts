@@ -36,6 +36,44 @@ export function formatStopWindow(stop: {
   return date ? `${date} · ${time}` : time;
 }
 
+// Витягує "CC поштовий_індекс" з адреси. Дзеркалить веб-хелпер.
+//   "Polcher Str. 113, DE-56727 Mayen"   → "DE 56727"
+//   "Lancaster Way, GB-CB6 3NW Ely"      → "GB CB6 3NW"
+//   "Some Street, 56727 Mayen"           → "56727"
+export function extractPostcodeCity(address: string): string {
+  const patterns: RegExp[] = [
+    /\b([A-Z]{2})[-\s](\d{2}-\d{3})\b/i, // PL: pl 51-106 / PL-51-106
+    /\b([A-Z]{2})[-\s]([A-Z]{1,2}\d[A-Z\d]?\s\d[A-Z]{2})\b/i, // GB: GB-CB6 3NW
+    /\b([A-Z]{2})[-\s](\d{4,6})\b/i, // DE/AT/FR: DE-56727
+    /\b(\d{2}-\d{3})\b/, // PL без коду: 51-106
+    /\b([A-Z]{1,2}\d[A-Z\d]?\s\d[A-Z]{2})\b/i, // UK без коду: CB6 3NW
+    /\b(\d{4,6})\b/, // DE/FR без коду: 56727
+  ];
+  for (const pattern of patterns) {
+    const match = address.match(pattern);
+    if (!match) continue;
+    if (match[2]) return `${match[1].toUpperCase()} ${match[2].toUpperCase()}`;
+    return match[1].toUpperCase();
+  }
+  const parts = address
+    .split(/[\n,]+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const last = parts[parts.length - 1] ?? address;
+  return last.replace(/^[a-z]{1,3}[-\s]/i, '').trim();
+}
+
+/** Назва рейсу з адрес: перше завантаження → останнє розвантаження. */
+export function deriveTripTitle(
+  rows: { type: string; address?: string | null }[],
+): string {
+  const from = rows.find((s) => s.type === 'LOADING')?.address;
+  const to = [...rows].reverse().find((s) => s.type === 'UNLOADING')?.address;
+  const fromShort = from ? extractPostcodeCity(from) : '';
+  const toShort = to ? extractPostcodeCity(to) : '';
+  return [fromShort, toShort].filter(Boolean).join(' → ');
+}
+
 /**
  * Two-letter avatar fallback: first letter of firstName + first letter of
  * lastName. Falls back to a single letter when there is no lastName, then

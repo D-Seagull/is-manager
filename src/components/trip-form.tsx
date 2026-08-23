@@ -1,7 +1,7 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
 import type { TFunction } from 'i18next';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
@@ -27,13 +27,25 @@ import {
   useReassignTrip,
   useUpdateTripInfo,
 } from '@/hooks/use-trips';
-import { fullName } from '@/lib/format';
-import { Trip } from '@/lib/types';
+import { deriveTripTitle, fullName } from '@/lib/format';
+import { StopType, Trip } from '@/lib/types';
 
-const LOAD_COLOR = '#10B981';
-const UNLOAD_COLOR = '#EF4444';
+const STOP_COLOR: Record<StopType, string> = {
+  LOADING: '#10B981',
+  UNLOADING: '#EF4444',
+  WAYPOINT: '#F59E0B',
+};
+const STOP_ICON: Record<StopType, keyof typeof Ionicons.glyphMap> = {
+  LOADING: 'ellipse-outline',
+  UNLOADING: 'location',
+  WAYPOINT: 'flag-outline',
+};
+const STOP_TYPES: StopType[] = ['LOADING', 'UNLOADING', 'WAYPOINT'];
+const WAYPOINT_PRESETS = ['customs', 'parking', 'fuel'] as const;
 
 type StopRowData = {
+  type: StopType;
+  name: string;
   address: string;
   ref: string;
   coords: string;
@@ -41,7 +53,22 @@ type StopRowData = {
   windowStart: string;
   windowEnd: string;
 };
-const emptyStop = (): StopRowData => ({ address: '', ref: '', coords: '', windowDate: '', windowStart: '', windowEnd: '' });
+const emptyStop = (type: StopType = 'LOADING'): StopRowData => ({
+  type,
+  name: '',
+  address: '',
+  ref: '',
+  coords: '',
+  windowDate: '',
+  windowStart: '',
+  windowEnd: '',
+});
+
+const stopTypeLabel = (type: StopType, t: TFunction) => {
+  if (type === 'LOADING') return t('trip.stops.loading', 'Завантаження');
+  if (type === 'UNLOADING') return t('trip.stops.unloading', 'Розвантаження');
+  return t('trip.stops.waypoint', 'Додаткова зупинка');
+};
 
 const pad = (n: number) => String(n).padStart(2, '0');
 const fmtDate = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -90,65 +117,84 @@ export function TripForm({
   const [tripName, setTripName] = useState('');
   const [orderNumber, setOrderNumber] = useState('');
   const [notes, setNotes] = useState('');
-  const [loadingStops, setLoadingStops] = useState<StopRowData[]>([emptyStop()]);
-  const [unloadingStops, setUnloadingStops] = useState<StopRowData[]>([emptyStop()]);
+  const [stops, setStops] = useState<StopRowData[]>([emptyStop('LOADING'), emptyStop('UNLOADING')]);
   const [driverPickerOpen, setDriverPickerOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [picker, setPicker] = useState<{ list: 'load' | 'unload'; idx: number; kind: 'date' | 'start' | 'end' } | null>(null);
+  const [picker, setPicker] = useState<{ idx: number; kind: 'date' | 'start' | 'end' } | null>(null);
+  const [typeMenu, setTypeMenu] = useState<{ mode: 'insert' | 'change'; idx: number } | null>(null);
+  // назва редагована вручну → не перезаписуємо автоматично з адрес
+  const isNameEdited = useRef(false);
 
   // (Re)seed state when opening.
   useEffect(() => {
     if (!visible) return;
     if (trip) {
       setDriverId(trip.driver?.id ?? '');
-      setTripName(trip.title ?? '');
       setOrderNumber(trip.orderNumber ?? '');
       setNotes(trip.notes ?? '');
       const toRow = (s: Trip['stops'][number]): StopRowData => ({
+        type: s.type,
+        name: s.name ?? '',
         address: s.address ?? '', ref: s.ref ?? '', coords: s.coords ?? '',
         windowDate: s.windowDate ?? '', windowStart: s.windowStart ?? '', windowEnd: s.windowEnd ?? '',
       });
-      const load = trip.stops.filter((s) => s.type === 'LOADING').map(toRow);
-      const unload = trip.stops.filter((s) => s.type === 'UNLOADING').map(toRow);
-      setLoadingStops(load.length ? load : [emptyStop()]);
-      setUnloadingStops(unload.length ? unload : [emptyStop()]);
+      // stops приходять із бекенду вже відсортовані за order (єдиний маршрут).
+      const rows = (trip.stops ?? []).map(toRow);
+      const seeded = rows.length ? rows : [emptyStop('LOADING'), emptyStop('UNLOADING')];
+      setStops(seeded);
+      setTripName(trip.title ?? '');
+      // якщо назва збігається з автогенерованою — вважаємо авто (оновлюємо з адрес),
+      // інакше це ручна назва — зберігаємо як є.
+      isNameEdited.current = !!trip.title && trip.title !== deriveTripTitle(seeded);
     } else {
       setDriverId(defaultDriverId ?? '');
       setTripName('');
       setOrderNumber('');
       setNotes('');
-      setLoadingStops([emptyStop()]);
-      setUnloadingStops([emptyStop()]);
+      setStops([emptyStop('LOADING'), emptyStop('UNLOADING')]);
+      isNameEdited.current = false;
     }
   }, [visible, trip, defaultDriverId]);
 
+  // автозаповнення назви з адрес поки користувач не редагував її вручну
+  useEffect(() => {
+    if (!visible || isNameEdited.current) return;
+    setTripName(deriveTripTitle(stops));
+  }, [stops, visible]);
+
   const driverName = fullName(drivers.find((d) => d.id === driverId)) || '';
 
-  const setStop = (list: 'load' | 'unload', idx: number, patch: Partial<StopRowData>) => {
-    const setter = list === 'load' ? setLoadingStops : setUnloadingStops;
-    setter((prev) => prev.map((s, i) => (i === idx ? { ...s, ...patch } : s)));
+  const setStop = (idx: number, patch: Partial<StopRowData>) => {
+    setStops((prev) => prev.map((s, i) => (i === idx ? { ...s, ...patch } : s)));
   };
-  const addStop = (list: 'load' | 'unload') => {
-    const setter = list === 'load' ? setLoadingStops : setUnloadingStops;
-    setter((prev) => [...prev, emptyStop()]);
+  const insertStop = (idx: number, type: StopType) => {
+    setStops((prev) => {
+      const next = [...prev];
+      next.splice(idx, 0, emptyStop(type));
+      return next;
+    });
   };
-  const removeStop = (list: 'load' | 'unload', idx: number) => {
-    const setter = list === 'load' ? setLoadingStops : setUnloadingStops;
-    setter((prev) => (prev.length > 1 ? prev.filter((_, i) => i !== idx) : prev));
+  const removeStop = (idx: number) => {
+    setStops((prev) => (prev.length > 1 ? prev.filter((_, i) => i !== idx) : prev));
+  };
+  const moveStop = (idx: number, dir: -1 | 1) => {
+    setStops((prev) => {
+      const j = idx + dir;
+      if (j < 0 || j >= prev.length) return prev;
+      const next = [...prev];
+      [next[idx], next[j]] = [next[j], next[idx]];
+      return next;
+    });
   };
 
-  const buildStops = (): StopFormData[] => [
-    ...loadingStops.map((s, i) => ({
-      type: 'LOADING' as const, order: i,
+  const buildStops = (): StopFormData[] =>
+    stops.map((s, i) => ({
+      type: s.type,
+      order: i,
+      name: s.type === 'WAYPOINT' ? s.name || undefined : undefined,
       address: s.address || undefined, ref: s.ref || undefined, coords: s.coords || undefined,
       windowDate: s.windowDate || undefined, windowStart: s.windowStart || undefined, windowEnd: s.windowEnd || undefined,
-    })),
-    ...unloadingStops.map((s, i) => ({
-      type: 'UNLOADING' as const, order: i,
-      address: s.address || undefined, ref: s.ref || undefined, coords: s.coords || undefined,
-      windowDate: s.windowDate || undefined, windowStart: s.windowStart || undefined, windowEnd: s.windowEnd || undefined,
-    })),
-  ];
+    }));
 
   const handleSave = async () => {
     if (!driverId) {
@@ -157,14 +203,15 @@ export function TripForm({
     }
     setSaving(true);
     try {
-      const stops = buildStops();
+      const built = buildStops();
       let result: Trip;
       if (isEdit && trip) {
         result = await updateInfo.mutateAsync({
           id: trip.id,
+          title: tripName.trim() || undefined,
           notes: notes || null,
           orderNumber: orderNumber || null,
-          stops,
+          stops: built,
         });
         if (trip.driver?.id !== driverId) {
           result = await reassign.mutateAsync({ id: trip.id, driverId });
@@ -173,7 +220,7 @@ export function TripForm({
         const title = tripName.trim() || t('truckPanel.newTrip.tripFallbackName', 'Новий рейс');
         result = await createTrip.mutateAsync({
           title, driverId, truckId,
-          notes: notes || undefined, orderNumber: orderNumber || undefined, stops,
+          notes: notes || undefined, orderNumber: orderNumber || undefined, stops: built,
         });
       }
       onClose();
@@ -189,14 +236,15 @@ export function TripForm({
     const cur = picker;
     setPicker(null);
     if (!date || !cur) return;
-    if (cur.kind === 'date') setStop(cur.list, cur.idx, { windowDate: fmtDate(date) });
-    else if (cur.kind === 'start') setStop(cur.list, cur.idx, { windowStart: fmtTime(date) });
-    else setStop(cur.list, cur.idx, { windowEnd: fmtTime(date) });
+    if (cur.kind === 'date') setStop(cur.idx, { windowDate: fmtDate(date) });
+    else if (cur.kind === 'start') setStop(cur.idx, { windowStart: fmtTime(date) });
+    else setStop(cur.idx, { windowEnd: fmtTime(date) });
   };
 
   const pickerValue = () => {
     if (!picker) return new Date();
-    const s = (picker.list === 'load' ? loadingStops : unloadingStops)[picker.idx];
+    const s = stops[picker.idx];
+    if (!s) return new Date();
     if (picker.kind === 'date') return parseDate(s.windowDate);
     if (picker.kind === 'start') return parseTime(s.windowStart);
     return parseTime(s.windowEnd);
@@ -229,28 +277,39 @@ export function TripForm({
             </Pressable>
           </Field>
 
-          {/* Trip name (create only — title is derived server-side on edit) */}
-          {!isEdit && (
-            <Field label={t('truckPanel.newTrip.tripNameLabel', 'Назва рейсу')} c={c}>
-              <TextInput value={tripName} onChangeText={setTripName} placeholder={t('truckPanel.newTrip.tripNamePlaceholder', 'Напр. Львів → Краків')} placeholderTextColor={c.mutedForeground} style={[styles.input, { backgroundColor: c.card, borderColor: c.border, color: c.foreground }]} />
-            </Field>
-          )}
+          {/* Trip name — автозаповнення з адрес, можна редагувати вручну */}
+          <Field label={t('truckPanel.newTrip.tripNameLabel', 'Назва рейсу')} c={c}>
+            <TextInput
+              value={tripName}
+              onChangeText={(v) => { isNameEdited.current = true; setTripName(v); }}
+              placeholder={t('truckPanel.newTrip.tripNamePlaceholder', 'Напр. Львів → Краків')}
+              placeholderTextColor={c.mutedForeground}
+              style={[styles.input, { backgroundColor: c.card, borderColor: c.border, color: c.foreground }]}
+            />
+          </Field>
 
           {/* Order number */}
           <Field label={t('truckPanel.newTrip.orderLabel', '№ замовлення')} c={c}>
             <TextInput value={orderNumber} onChangeText={setOrderNumber} placeholder="#" placeholderTextColor={c.mutedForeground} style={[styles.input, { backgroundColor: c.card, borderColor: c.border, color: c.foreground }]} />
           </Field>
 
-          {/* Loading stops */}
-          <StopsSection
-            title={t('trip.stops.loading', 'Завантаження')} color={LOAD_COLOR} c={c} list="load"
-            stops={loadingStops} setStop={setStop} addStop={addStop} removeStop={removeStop} openPicker={setPicker} t={t}
-          />
-          {/* Unloading stops */}
-          <StopsSection
-            title={t('trip.stops.unloading', 'Розвантаження')} color={UNLOAD_COLOR} c={c} list="unload"
-            stops={unloadingStops} setStop={setStop} addStop={addStop} removeStop={removeStop} openPicker={setPicker} t={t}
-          />
+          {/* Route — упорядкований список стопів; «+» вставляє між пунктами */}
+          <View style={{ gap: Spacing.sm }}>
+            <Text style={[styles.label, { color: c.mutedForeground }]}>{t('trip.stops.route', 'Маршрут')}</Text>
+            {stops.map((s, i) => (
+              <View key={i} style={{ gap: Spacing.sm }}>
+                <InsertRow c={c} onPress={() => setTypeMenu({ mode: 'insert', idx: i })} />
+                <StopCard
+                  c={c} t={t}
+                  stop={s} index={i} count={stops.length}
+                  setStop={setStop} removeStop={removeStop} moveStop={moveStop}
+                  openPicker={(kind) => setPicker({ idx: i, kind })}
+                  onChangeType={() => setTypeMenu({ mode: 'change', idx: i })}
+                />
+              </View>
+            ))}
+            <InsertRow c={c} onPress={() => setTypeMenu({ mode: 'insert', idx: stops.length })} />
+          </View>
 
           {/* Notes */}
           <Field label={t('truckPanel.newTrip.notesLabel', 'Нотатки')} c={c}>
@@ -279,6 +338,33 @@ export function TripForm({
         </Pressable>
       </Modal>
 
+      {/* Stop-type picker (insert new / change existing) */}
+      <Modal transparent visible={typeMenu !== null} animationType="fade" onRequestClose={() => setTypeMenu(null)}>
+        <Pressable style={styles.backdrop} onPress={() => setTypeMenu(null)}>
+          <Pressable style={[styles.sheet, { backgroundColor: c.card, paddingBottom: Math.max(insets.bottom, Spacing.sm) + Spacing.lg }]} onPress={(e) => e.stopPropagation()}>
+            <Text style={[styles.sheetTitle, { color: c.foreground }]}>
+              {typeMenu?.mode === 'change' ? t('stopRow.changeType', 'Змінити тип') : t('truckPanel.newTrip.addStop', 'Додати стоп')}
+            </Text>
+            {STOP_TYPES.map((tp) => (
+              <Pressable
+                key={tp}
+                onPress={() => {
+                  if (typeMenu) {
+                    if (typeMenu.mode === 'insert') insertStop(typeMenu.idx, tp);
+                    else setStop(typeMenu.idx, { type: tp });
+                  }
+                  setTypeMenu(null);
+                }}
+                style={({ pressed }) => [styles.sheetItem, { backgroundColor: pressed ? c.muted : 'transparent' }]}
+              >
+                <Ionicons name={STOP_ICON[tp]} size={18} color={STOP_COLOR[tp]} />
+                <Text style={{ flex: 1, color: c.foreground, fontSize: 15 }}>{stopTypeLabel(tp, t)}</Text>
+              </Pressable>
+            ))}
+          </Pressable>
+        </Pressable>
+      </Modal>
+
       {picker && (
         <DateTimePicker
           value={pickerValue()}
@@ -300,49 +386,90 @@ function Field({ label, c, children }: { label: string; c: (typeof Colors)['ligh
   );
 }
 
-function StopsSection({
-  title, color, c, list, stops, setStop, addStop, removeStop, openPicker, t,
-}: {
-  title: string; color: string; c: (typeof Colors)['light']; list: 'load' | 'unload';
-  stops: StopRowData[];
-  setStop: (l: 'load' | 'unload', i: number, p: Partial<StopRowData>) => void;
-  addStop: (l: 'load' | 'unload') => void;
-  removeStop: (l: 'load' | 'unload', i: number) => void;
-  openPicker: (p: { list: 'load' | 'unload'; idx: number; kind: 'date' | 'start' | 'end' }) => void;
-  t: TFunction;
-}) {
+function InsertRow({ c, onPress }: { c: (typeof Colors)['light']; onPress: () => void }) {
   return (
-    <View style={{ gap: Spacing.sm }}>
-      <View style={styles.sectionHead}>
-        <Ionicons name={list === 'load' ? 'ellipse-outline' : 'location'} size={14} color={color} />
-        <Text style={[styles.sectionTitle, { color }]}>{title}</Text>
+    <Pressable onPress={onPress} hitSlop={6} style={styles.insertRow}>
+      <View style={[styles.insertLine, { backgroundColor: c.border }]} />
+      <View style={[styles.insertBtn, { borderColor: c.border, backgroundColor: c.card }]}>
+        <Ionicons name="add" size={16} color={c.mutedForeground} />
       </View>
-      {stops.map((s, i) => (
-        <View key={i} style={[styles.stopCard, { backgroundColor: `${color}14`, borderColor: `${color}40` }]}>
-          <View style={styles.stopTop}>
-            <Text style={[styles.stopNum, { color }]}>{i + 1}</Text>
-            {stops.length > 1 && (
-              <Pressable onPress={() => removeStop(list, i)} hitSlop={8} style={{ padding: 2 }}>
-                <Ionicons name="trash-outline" size={16} color={c.destructive} />
-              </Pressable>
-            )}
-          </View>
-          <TextInput value={s.address} onChangeText={(v) => setStop(list, i, { address: v })} placeholder={t('stopRow.address', 'Адреса')} placeholderTextColor={c.mutedForeground} multiline style={[styles.stopInput, { backgroundColor: c.card, borderColor: c.border, color: c.foreground }]} />
-          <View style={styles.stopRowInputs}>
-            <TextInput value={s.ref} onChangeText={(v) => setStop(list, i, { ref: v })} placeholder="ref #" placeholderTextColor={c.mutedForeground} style={[styles.stopInput, { flex: 1, backgroundColor: c.card, borderColor: c.border, color: c.foreground }]} />
-            <TextInput value={s.coords} onChangeText={(v) => setStop(list, i, { coords: v })} placeholder={t('stopRow.coords', 'Коорд.')} placeholderTextColor={c.mutedForeground} style={[styles.stopInput, { flex: 1, backgroundColor: c.card, borderColor: c.border, color: c.foreground }]} />
-          </View>
-          <View style={styles.stopRowInputs}>
-            <DateChip label={s.windowDate || t('stopRow.date', 'Дата')} onPress={() => openPicker({ list, idx: i, kind: 'date' })} c={c} filled={!!s.windowDate} />
-            <DateChip label={s.windowStart || t('stopRow.from', 'з')} onPress={() => openPicker({ list, idx: i, kind: 'start' })} c={c} filled={!!s.windowStart} />
-            <DateChip label={s.windowEnd || t('stopRow.to', 'до')} onPress={() => openPicker({ list, idx: i, kind: 'end' })} c={c} filled={!!s.windowEnd} />
+      <View style={[styles.insertLine, { backgroundColor: c.border }]} />
+    </Pressable>
+  );
+}
+
+function StopCard({
+  c, t, stop, index, count, setStop, removeStop, moveStop, openPicker, onChangeType,
+}: {
+  c: (typeof Colors)['light']; t: TFunction;
+  stop: StopRowData; index: number; count: number;
+  setStop: (i: number, p: Partial<StopRowData>) => void;
+  removeStop: (i: number) => void;
+  moveStop: (i: number, dir: -1 | 1) => void;
+  openPicker: (kind: 'date' | 'start' | 'end') => void;
+  onChangeType: () => void;
+}) {
+  const color = STOP_COLOR[stop.type];
+  const label = stop.type === 'WAYPOINT' ? stop.name || stopTypeLabel('WAYPOINT', t) : stopTypeLabel(stop.type, t);
+  return (
+    <View style={[styles.stopCard, { backgroundColor: `${color}14`, borderColor: `${color}40` }]}>
+      {/* Header: type label (tap to change type) + reorder + delete */}
+      <View style={styles.stopTop}>
+        <Pressable onPress={onChangeType} hitSlop={6} style={styles.stopHeaderLabel}>
+          <Ionicons name={STOP_ICON[stop.type]} size={14} color={color} />
+          <Text style={{ fontSize: 12, fontWeight: '700', color }} numberOfLines={1}>
+            {index + 1}. {label}
+          </Text>
+          <Ionicons name="chevron-down" size={13} color={color} style={{ opacity: 0.6 }} />
+        </Pressable>
+        <View style={styles.stopActions}>
+          <Pressable onPress={() => moveStop(index, -1)} disabled={index === 0} hitSlop={6} style={{ padding: 2, opacity: index === 0 ? 0.3 : 1 }}>
+            <Ionicons name="chevron-up" size={18} color={c.mutedForeground} />
+          </Pressable>
+          <Pressable onPress={() => moveStop(index, 1)} disabled={index === count - 1} hitSlop={6} style={{ padding: 2, opacity: index === count - 1 ? 0.3 : 1 }}>
+            <Ionicons name="chevron-down" size={18} color={c.mutedForeground} />
+          </Pressable>
+          {count > 1 && (
+            <Pressable onPress={() => removeStop(index)} hitSlop={6} style={{ padding: 2 }}>
+              <Ionicons name="trash-outline" size={16} color={c.destructive} />
+            </Pressable>
+          )}
+        </View>
+      </View>
+
+      {/* Waypoint name + presets */}
+      {stop.type === 'WAYPOINT' && (
+        <View style={{ gap: Spacing.xs }}>
+          <TextInput
+            value={stop.name}
+            onChangeText={(v) => setStop(index, { name: v })}
+            placeholder={t('stopRow.name', 'Назва точки (напр. Кастомс)')}
+            placeholderTextColor={c.mutedForeground}
+            style={[styles.stopInput, { backgroundColor: c.card, borderColor: c.border, color: c.foreground }]}
+          />
+          <View style={styles.presetRow}>
+            {WAYPOINT_PRESETS.map((key) => {
+              const label = t(`trip.waypointPreset.${key}`, key === 'customs' ? 'Кастомс' : key === 'parking' ? 'Паркінг' : 'Заправка');
+              return (
+                <Pressable key={key} onPress={() => setStop(index, { name: label })} style={[styles.presetChip, { borderColor: c.border, backgroundColor: c.card }]}>
+                  <Text style={{ fontSize: 12, color: c.foreground }}>{label}</Text>
+                </Pressable>
+              );
+            })}
           </View>
         </View>
-      ))}
-      <Pressable onPress={() => addStop(list)} style={({ pressed }) => [styles.addStop, { borderColor: color, opacity: pressed ? 0.6 : 1 }]}>
-        <Ionicons name="add" size={16} color={color} />
-        <Text style={[styles.addStopText, { color }]}>{t('truckPanel.newTrip.addStop', 'Додати стоп')}</Text>
-      </Pressable>
+      )}
+
+      <TextInput value={stop.address} onChangeText={(v) => setStop(index, { address: v })} placeholder={t('stopRow.address', 'Адреса')} placeholderTextColor={c.mutedForeground} multiline style={[styles.stopInput, { backgroundColor: c.card, borderColor: c.border, color: c.foreground }]} />
+      <View style={styles.stopRowInputs}>
+        <TextInput value={stop.ref} onChangeText={(v) => setStop(index, { ref: v })} placeholder="ref #" placeholderTextColor={c.mutedForeground} style={[styles.stopInput, { flex: 1, backgroundColor: c.card, borderColor: c.border, color: c.foreground }]} />
+        <TextInput value={stop.coords} onChangeText={(v) => setStop(index, { coords: v })} placeholder={t('stopRow.coords', 'Коорд.')} placeholderTextColor={c.mutedForeground} style={[styles.stopInput, { flex: 1, backgroundColor: c.card, borderColor: c.border, color: c.foreground }]} />
+      </View>
+      <View style={styles.stopRowInputs}>
+        <DateChip label={stop.windowDate || t('stopRow.date', 'Дата')} onPress={() => openPicker('date')} c={c} filled={!!stop.windowDate} />
+        <DateChip label={stop.windowStart || t('stopRow.from', 'з')} onPress={() => openPicker('start')} c={c} filled={!!stop.windowStart} />
+        <DateChip label={stop.windowEnd || t('stopRow.to', 'до')} onPress={() => openPicker('end')} c={c} filled={!!stop.windowEnd} />
+      </View>
     </View>
   );
 }
@@ -363,16 +490,18 @@ const styles = StyleSheet.create({
   label: { fontSize: 13, fontWeight: '600' },
   input: { borderWidth: 1, borderRadius: Radius.md, paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm + 2, fontSize: 15 },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
-  sectionHead: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  sectionTitle: { fontSize: 12, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.4 },
   stopCard: { borderWidth: 1, borderRadius: 12, padding: Spacing.sm, gap: Spacing.sm },
-  stopTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  stopNum: { fontSize: 13, fontWeight: '700' },
+  stopTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.sm },
+  stopHeaderLabel: { flexDirection: 'row', alignItems: 'center', gap: 5, flexShrink: 1 },
+  stopActions: { flexDirection: 'row', alignItems: 'center', gap: 2 },
   stopInput: { borderWidth: 1, borderRadius: Radius.sm, paddingHorizontal: Spacing.sm, paddingVertical: 7, fontSize: 14 },
   stopRowInputs: { flexDirection: 'row', gap: Spacing.sm },
+  presetRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  presetChip: { borderWidth: 1, borderRadius: Radius.sm, paddingHorizontal: 10, paddingVertical: 5 },
   dateChip: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, borderWidth: 1, borderRadius: Radius.sm, paddingVertical: 8 },
-  addStop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, borderWidth: 1, borderStyle: 'dashed', borderRadius: Radius.md, paddingVertical: 9 },
-  addStopText: { fontSize: 13, fontWeight: '600' },
+  insertRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingVertical: 2 },
+  insertLine: { flex: 1, height: StyleSheet.hairlineWidth },
+  insertBtn: { width: 26, height: 26, borderRadius: 13, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   sheet: { borderTopLeftRadius: Radius.lg, borderTopRightRadius: Radius.lg, padding: Spacing.md },
   sheetTitle: { fontSize: 13, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: Spacing.sm, textAlign: 'center' },

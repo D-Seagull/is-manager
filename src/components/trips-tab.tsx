@@ -174,8 +174,15 @@ function TripRow({ trip, truckId, variant, onOpen }: { trip: Trip; truckId: stri
           ) : (
             trip.stops.map((s) => (
               <View key={s.id} style={styles.stopLine}>
-                <Ionicons name="location" size={12} color={s.type === 'LOADING' ? '#10B981' : '#EF4444'} />
-                <Text style={{ fontSize: 12, color: c.mutedForeground, flex: 1 }} numberOfLines={1}>{s.address || '—'}</Text>
+                <Ionicons
+                  name="location"
+                  size={12}
+                  color={s.type === 'LOADING' ? '#10B981' : s.type === 'WAYPOINT' ? '#F59E0B' : '#EF4444'}
+                />
+                <Text style={{ fontSize: 12, color: c.mutedForeground, flex: 1 }} numberOfLines={1}>
+                  {s.type === 'WAYPOINT' && s.name ? `${s.name}: ` : ''}
+                  {s.address || '—'}
+                </Text>
               </View>
             ))
           )}

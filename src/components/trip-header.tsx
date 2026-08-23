@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import type { TFunction } from 'i18next';
 import * as Clipboard from 'expo-clipboard';
 import * as Linking from 'expo-linking';
 import { useState } from 'react';
@@ -16,6 +17,18 @@ import { TripStop } from '@/lib/types';
 
 const LOAD_COLOR = '#10B981';
 const UNLOAD_COLOR = '#EF4444';
+const WAYPOINT_COLOR = '#F59E0B';
+
+function stopMeta(
+  s: TripStop,
+  t: TFunction,
+): { color: string; icon: keyof typeof Ionicons.glyphMap; label: string } {
+  if (s.type === 'LOADING')
+    return { color: LOAD_COLOR, icon: 'ellipse-outline', label: t('trip.stops.loading', 'Завантаження') };
+  if (s.type === 'UNLOADING')
+    return { color: UNLOAD_COLOR, icon: 'location', label: t('trip.stops.unloading', 'Розвантаження') };
+  return { color: WAYPOINT_COLOR, icon: 'flag-outline', label: s.name || t('trip.stops.waypoint', 'Додаткова зупинка') };
+}
 
 async function copyToClipboard(value: string) {
   try {
@@ -48,9 +61,6 @@ export function TripHeader({ tripId }: { tripId: string }) {
 
   const statusCol = TRIP_STATUS_COLORS[trip.status];
 
-  const loading = trip.stops.filter((s) => s.type === 'LOADING');
-  const unloading = trip.stops.filter((s) => s.type === 'UNLOADING');
-
   return (
     <View style={[styles.card, { backgroundColor: c.card, borderBottomColor: c.border }]}>
       <View style={styles.cardHeader}>
@@ -80,22 +90,9 @@ export function TripHeader({ tripId }: { tripId: string }) {
 
       {!collapsed && (
         <>
-          {loading.length > 0 && (
-            <TypeBlock
-              label={t('trip.stops.loading', 'Завантаження')}
-              icon="ellipse-outline"
-              color={LOAD_COLOR}
-              stops={loading}
-            />
-          )}
-          {unloading.length > 0 && (
-            <TypeBlock
-              label={t('trip.stops.unloading', 'Розвантаження')}
-              icon="location"
-              color={UNLOAD_COLOR}
-              stops={unloading}
-            />
-          )}
+          {trip.stops.map((s, i) => (
+            <StopBlock key={s.id} stop={s} index={i} count={trip.stops.length} t={t} />
+          ))}
           {trip.notes ? (
             <View style={[styles.notes, { borderTopColor: c.border }]}>
               <Text style={[styles.notesText, { color: UNLOAD_COLOR }]}>{trip.notes}</Text>
@@ -141,62 +138,61 @@ export function TripHeader({ tripId }: { tripId: string }) {
   );
 }
 
-function TypeBlock({
-  label,
-  icon,
-  color,
-  stops,
+function StopBlock({
+  stop: s,
+  index,
+  count,
+  t,
 }: {
-  label: string;
-  icon: keyof typeof Ionicons.glyphMap;
-  color: string;
-  stops: TripStop[];
+  stop: TripStop;
+  index: number;
+  count: number;
+  t: TFunction;
 }) {
   const c = Colors[useColorScheme() ?? 'light'];
+  const { color, icon, label } = stopMeta(s, t);
   const chipBorder = `${color}55`;
   return (
     <View style={[styles.block, { backgroundColor: `${color}18` }]}>
       <View style={styles.blockHeader}>
         <Ionicons name={icon} size={14} color={color} />
         <Text style={[styles.blockLabel, { color }]}>
-          {label} ({stops.length})
+          {count > 1 ? `${index + 1}. ` : ''}
+          {label}
         </Text>
       </View>
 
-      {stops.map((s, i) => (
-        <View key={s.id} style={[styles.stop, i > 0 && { borderTopColor: chipBorder, borderTopWidth: StyleSheet.hairlineWidth, paddingTop: 8 }]}>
-          <Pressable onPress={() => s.address && copyToClipboard(s.address)} hitSlop={4}>
-            <Text style={[styles.address, { color: c.foreground }]} numberOfLines={3}>
-              {stops.length > 1 ? `${i + 1}. ` : ''}
-              {s.address ?? '—'}
-            </Text>
-          </Pressable>
+      <View style={styles.stop}>
+        <Pressable onPress={() => s.address && copyToClipboard(s.address)} hitSlop={4}>
+          <Text style={[styles.address, { color: c.foreground }]} numberOfLines={3}>
+            {s.address ?? '—'}
+          </Text>
+        </Pressable>
 
-          <View style={styles.chips}>
-            {s.ref ? (
-              <Pressable onPress={() => copyToClipboard(s.ref!)} style={[styles.chip, { borderColor: chipBorder }]} hitSlop={4}>
-                <Text style={[styles.chipHash, { color }]}>#</Text>
-                <Text style={[styles.chipText, { color: c.foreground }]} numberOfLines={1}>{s.ref}</Text>
+        <View style={styles.chips}>
+          {s.ref ? (
+            <Pressable onPress={() => copyToClipboard(s.ref!)} style={[styles.chip, { borderColor: chipBorder }]} hitSlop={4}>
+              <Text style={[styles.chipHash, { color }]}>#</Text>
+              <Text style={[styles.chipText, { color: c.foreground }]} numberOfLines={1}>{s.ref}</Text>
+            </Pressable>
+          ) : null}
+          {s.coords ? (
+            <View style={[styles.chip, { borderColor: chipBorder }]}>
+              <Ionicons name="navigate-outline" size={12} color={color} />
+              <Text style={[styles.chipText, { color: c.foreground }]} numberOfLines={1}>{s.coords}</Text>
+              <Pressable onPress={() => openInMaps(s.coords!)} hitSlop={8} style={{ paddingLeft: 2 }}>
+                <Ionicons name="open-outline" size={14} color={color} />
               </Pressable>
-            ) : null}
-            {s.coords ? (
-              <View style={[styles.chip, { borderColor: chipBorder }]}>
-                <Ionicons name="navigate-outline" size={12} color={color} />
-                <Text style={[styles.chipText, { color: c.foreground }]} numberOfLines={1}>{s.coords}</Text>
-                <Pressable onPress={() => openInMaps(s.coords!)} hitSlop={8} style={{ paddingLeft: 2 }}>
-                  <Ionicons name="open-outline" size={14} color={color} />
-                </Pressable>
-              </View>
-            ) : null}
-            {formatStopWindow(s) ? (
-              <View style={[styles.chip, { borderColor: chipBorder }]}>
-                <Ionicons name="time-outline" size={12} color={color} />
-                <Text style={[styles.chipText, { color: c.foreground }]}>{formatStopWindow(s)}</Text>
-              </View>
-            ) : null}
-          </View>
+            </View>
+          ) : null}
+          {formatStopWindow(s) ? (
+            <View style={[styles.chip, { borderColor: chipBorder }]}>
+              <Ionicons name="time-outline" size={12} color={color} />
+              <Text style={[styles.chipText, { color: c.foreground }]}>{formatStopWindow(s)}</Text>
+            </View>
+          ) : null}
         </View>
-      ))}
+      </View>
     </View>
   );
 }
