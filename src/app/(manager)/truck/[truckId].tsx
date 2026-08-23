@@ -6,9 +6,13 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AlarmTab } from '@/components/alarm-tab';
+import { DocumentsTab } from '@/components/documents-tab';
+import { InfoTab } from '@/components/info-tab';
 import { ScreenPlaceholder } from '@/components/screen-placeholder';
 import { TripChat } from '@/components/trip-chat';
 import { TripForm } from '@/components/trip-form';
+import { TripsTab } from '@/components/trips-tab';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMyTrucks } from '@/hooks/use-my-trucks';
@@ -45,6 +49,8 @@ export default function TruckDetailScreen() {
   const activeTripId = truck?.trips?.[0]?.id ?? null;
   const driverName = fullName(truck?.currentDriver);
   const [newTripOpen, setNewTripOpen] = useState(false);
+  // A trip picked from the Trips tab opens its chat; falls back to the active trip.
+  const [selectedTripId, setSelectedTripId] = useState<string | null>(null);
 
   return (
     <View style={[styles.root, { backgroundColor: c.background }]}>
@@ -98,7 +104,22 @@ export default function TruckDetailScreen() {
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={0} style={styles.fill}>
         <View style={styles.content}>
           {tab === 'chat' ? (
-            <TripChat tripId={activeTripId} isFocused={tab === 'chat'} />
+            <TripChat tripId={selectedTripId ?? activeTripId} isFocused={tab === 'chat'} />
+          ) : tab === 'trips' ? (
+            <TripsTab
+              truckId={truckId ?? ''}
+              onOpenTrip={(id) => {
+                setSelectedTripId(id);
+                setTab('chat');
+              }}
+              onNewTrip={() => setNewTripOpen(true)}
+            />
+          ) : tab === 'documents' ? (
+            <DocumentsTab truckId={truckId ?? ''} />
+          ) : tab === 'alarm' && truck ? (
+            <AlarmTab truck={truck} activeTripId={activeTripId} />
+          ) : tab === 'info' && truck ? (
+            <InfoTab truck={truck} activeTripId={activeTripId} />
           ) : (
             <TabContent tab={tab} />
           )}

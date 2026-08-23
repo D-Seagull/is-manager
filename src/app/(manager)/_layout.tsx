@@ -1,10 +1,19 @@
 import { Redirect, Stack } from 'expo-router';
 
+import { useDmUnreadSync } from '@/hooks/use-direct-messages';
+import { useFleetSync } from '@/hooks/use-fleet-sync';
+import { usePresenceSync } from '@/hooks/use-presence';
 import { useAuthStore } from '@/store/auth';
 
 export default function ManagerLayout() {
   const token = useAuthStore((s) => s.token);
   const isHydrated = useAuthStore((s) => s.isHydrated);
+
+  // Global live sync — always active while authenticated so statuses, unread
+  // badges and presence update everywhere instantly (no reload).
+  useDmUnreadSync();
+  usePresenceSync();
+  useFleetSync();
 
   // Bounce to login once we know there's no session.
   if (isHydrated && !token) {
