@@ -137,11 +137,17 @@ export const useAuthStore = create<AuthState>()(
         // Set token first so the api interceptor injects Authorization on the
         // follow-up /auth/me call below.
         set({ user, token, refreshToken, isLoading: false });
+        let finalUser: AuthUser = user;
         try {
-          const enriched = await fetchMe();
-          set({ user: enriched });
+          finalUser = await fetchMe();
+          set({ user: finalUser });
         } catch {
           // Non-fatal — the basic user from login is enough to proceed.
+        }
+        // Застосунок менеджера — лише для MANAGER/TEAMLEAD/ADMIN. Водіїв відсікаємо.
+        if (finalUser.role === 'DRIVER') {
+          get().logout();
+          throw new Error('MANAGER_ONLY');
         }
         // Open the socket connection now that we have a token.
         getSocket(get().token ?? undefined);
@@ -157,6 +163,11 @@ export const useAuthStore = create<AuthState>()(
           // If the access token is expired, the api interceptor transparently
           // refreshes and retries this call.
           const user = await fetchMe();
+          // Персистована сесія водія не має доступу до застосунку менеджера.
+          if (user.role === 'DRIVER') {
+            set({ user: null, token: null, refreshToken: null, isLoading: false });
+            return;
+          }
           set({ user, isLoading: false });
         } catch {
           set({ user: null, token: null, refreshToken: null, isLoading: false });
@@ -168,6 +179,10 @@ export const useAuthStore = create<AuthState>()(
         if (!rt) return null;
         try {
           const { user, token, refreshToken } = await refreshTokens(rt);
+          if (user.role === 'DRIVER') {
+            set({ user: null, token: null, refreshToken: null });
+            return null;
+          }
           set({ user, token, refreshToken });
           return token;
         } catch {

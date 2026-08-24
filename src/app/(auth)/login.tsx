@@ -39,14 +39,18 @@ export default function LoginScreen() {
       await login(email.trim(), password);
       router.replace('/(manager)' as never);
     } catch (err) {
-      const ax = err as AxiosError<{ message?: string }>;
-      const status = ax?.response?.status;
-      if (status === 401 || status === 400) {
-        setError(t('login.invalidCredentials', 'Невірний email або пароль'));
-      } else if (ax?.code === 'ECONNABORTED' || !ax?.response) {
-        setError(t('login.networkError', 'Немає зв’язку із сервером. Спробуйте ще раз.'));
+      if (err instanceof Error && err.message === 'MANAGER_ONLY') {
+        setError(t('login.driverNotAllowed', 'Цей застосунок лише для менеджерів. Увійдіть під акаунтом менеджера.'));
       } else {
-        setError(ax?.response?.data?.message ?? t('login.genericError', 'Помилка входу'));
+        const ax = err as AxiosError<{ message?: string }>;
+        const status = ax?.response?.status;
+        if (status === 401 || status === 400) {
+          setError(t('login.invalidCredentials', 'Невірний email або пароль'));
+        } else if (ax?.code === 'ECONNABORTED' || !ax?.response) {
+          setError(t('login.networkError', 'Немає зв’язку із сервером. Спробуйте ще раз.'));
+        } else {
+          setError(ax?.response?.data?.message ?? t('login.genericError', 'Помилка входу'));
+        }
       }
     } finally {
       setSubmitting(false);
