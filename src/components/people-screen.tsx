@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
 import { router } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -26,13 +26,18 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useCompanyUsers, type CompanyUser } from '@/hooks/use-company-users';
 import { useCreateDriver, useCreateManager } from '@/hooks/use-people';
 import { fullName } from '@/lib/format';
+import { useUser } from '@/store/auth';
 
 export function PeopleScreen({ kind }: { kind: 'driver' | 'manager' }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
+  const insets = useSafeAreaInsets();
+  const me = useUser();
   const { data: users, isLoading, refetch } = useCompanyUsers();
   const [search, setSearch] = useState('');
   const [createOpen, setCreateOpen] = useState(false);
+  // Менеджери: перемикач «Моя команда» / «Усі». Для водіїв не показується.
+  const [mode, setMode] = useState<'team' | 'all'>('team');
 
   const isFocused = useIsFocused();
   useEffect(() => {
@@ -42,14 +47,27 @@ export function PeopleScreen({ kind }: { kind: 'driver' | 'manager' }) {
   const roles = kind === 'driver' ? ['DRIVER'] : ['MANAGER', 'TEAMLEAD'];
   const title = kind === 'driver' ? t('nav.items.drivers', 'Водії') : t('nav.items.managers', 'Менеджери');
 
+  // Тімлід моєї команди: TEAMLEAD → власний id; MANAGER → його teamleadId; ADMIN → null.
+  const myTeamleadId = useMemo<string | null>(() => {
+    if (kind !== 'manager' || !me) return null;
+    if (me.role === 'TEAMLEAD') return me.id;
+    if (me.role === 'MANAGER') return (users ?? []).find((u) => u.id === me.id)?.teamleadId ?? null;
+    return null;
+  }, [kind, me, users]);
+
   const list = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return (users ?? [])
+    let rows = (users ?? [])
       .filter((u) => roles.includes(u.role) && u.isActive)
+      .filter((u) => u.id !== me?.id); // не показуємо власний акаунт
+    if (kind === 'manager' && mode === 'team') {
+      rows = rows.filter((u) => myTeamleadId && u.teamleadId === myTeamleadId);
+    }
+    return rows
       .filter((u) => !q || fullName(u).toLowerCase().includes(q) || (u.phone ?? '').toLowerCase().includes(q) || (u.currentTruck?.plate ?? '').toLowerCase().includes(q))
       .sort((a, b) => fullName(a).localeCompare(fullName(b)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [users, search, kind]);
+  }, [users, search, kind, mode, myTeamleadId, me?.id]);
 
   return (
     <View style={{ flex: 1, backgroundColor: c.background }}>
@@ -72,7 +90,15 @@ export function PeopleScreen({ kind }: { kind: 'driver' | 'manager' }) {
       {isLoading ? (
         <View style={styles.center}><ActivityIndicator color={c.primary} /></View>
       ) : list.length === 0 ? (
-        <View style={styles.center}><Text style={{ color: c.mutedForeground }}>{search ? t('common.noMatches', 'Нічого не знайдено') : t('common.empty', 'Порожньо')}</Text></View>
+        <View style={styles.center}>
+          <Text style={{ color: c.mutedForeground, textAlign: 'center', paddingHorizontal: Spacing.lg }}>
+            {search
+              ? t('common.noMatches', 'Нічого не знайдено')
+              : kind === 'manager' && mode === 'team'
+                ? t('people.teamEmpty', 'У вашій команді немає інших менеджерів')
+                : t('common.empty', 'Порожньо')}
+          </Text>
+        </View>
       ) : (
         <FlatList
           data={list}
@@ -82,8 +108,25 @@ export function PeopleScreen({ kind }: { kind: 'driver' | 'manager' }) {
         />
       )}
 
+      {kind === 'manager' ? (
+        <View style={[styles.segmentBar, { borderTopColor: c.border, backgroundColor: c.card, paddingBottom: Math.max(insets.bottom, Spacing.sm) }]}>
+          <SegBtn active={mode === 'team'} label={t('people.myTeam', 'Моя команда')} onPress={() => setMode('team')} c={c} />
+          <SegBtn active={mode === 'all'} label={t('people.allManagers', 'Усі менеджери')} onPress={() => setMode('all')} c={c} />
+        </View>
+      ) : null}
+
       <CreateModal kind={kind} visible={createOpen} onClose={() => setCreateOpen(false)} />
     </View>
+  );
+}
+
+function SegBtn({ active, label, onPress, c }: { active: boolean; label: string; onPress: () => void; c: (typeof Colors)['light'] }) {
+  return (
+    <Pressable onPress={onPress} style={[styles.segBtn, { backgroundColor: c.muted }, active && { backgroundColor: c.primary }]}>
+      <Text style={{ fontSize: 14, fontWeight: '700', color: active ? c.primaryForeground : c.mutedForeground }} numberOfLines={1}>
+        {label}
+      </Text>
+    </Pressable>
   );
 }
 
@@ -107,6 +150,12 @@ function PersonRow({ user, kind }: { user: CompanyUser; kind: 'driver' | 'manage
         <Text style={[styles.name, { color: c.foreground }]} numberOfLines={1}>{fullName(user) || '—'}</Text>
         <Text style={[styles.sub, { color: c.mutedForeground }]} numberOfLines={1}>{subtitle}</Text>
       </View>
+      {kind === 'manager' ? (
+        <View style={styles.truckCount}>
+          <MaterialCommunityIcons name="truck-outline" size={16} color={c.mutedForeground} />
+          <Text style={{ fontSize: 13, fontWeight: '600', color: c.mutedForeground }}>{user.truckCount ?? 0}</Text>
+        </View>
+      ) : null}
       <Ionicons name="chevron-forward" size={18} color={c.mutedForeground} />
     </Pressable>
   );
@@ -194,6 +243,9 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   sep: { height: StyleSheet.hairlineWidth, marginLeft: 68 },
+  segmentBar: { flexDirection: 'row', gap: Spacing.sm, paddingHorizontal: Spacing.md, paddingTop: Spacing.sm, borderTopWidth: StyleSheet.hairlineWidth },
+  segBtn: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 11, borderRadius: Radius.md },
+  truckCount: { flexDirection: 'row', alignItems: 'center', gap: 3, marginRight: Spacing.xs },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm },
   avatarWrap: { width: 44, height: 44 },
   dotWrap: { position: 'absolute', right: -2, bottom: -2 },

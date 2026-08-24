@@ -3,6 +3,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { AppLanguage, UserStatus } from '@/lib/auth-api';
 
+export interface PersonMini {
+  id: string;
+  firstName: string;
+  lastName: string | null;
+  avatar: string | null;
+}
+
 export interface PersonDetail {
   id: string;
   firstName: string;
@@ -16,6 +23,14 @@ export interface PersonDetail {
   statusUntil?: string | null;
   isActive: boolean;
   currentTruck?: { id: string; plate: string; status: string } | null;
+  // Менеджерські поля (бекенд повертає їх для MANAGER/TEAMLEAD/ADMIN на /users/:id).
+  teamlead?: PersonMini | null;
+  assignedTrucks?: {
+    id: string;
+    plate: string;
+    status: string;
+    currentDriver: PersonMini | null;
+  }[];
 }
 
 export function useUserDetail(id: string | null | undefined) {

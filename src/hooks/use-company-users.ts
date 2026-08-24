@@ -15,6 +15,8 @@ export interface CompanyUser {
   status?: string | null;
   statusUntil?: string | null;
   isActive: boolean;
+  teamleadId?: string | null;
+  truckCount?: number; // к-сть вантажівок, де цей юзер — призначений менеджер
   currentTruck?: { id: string; plate: string; status: string } | null;
 }
 

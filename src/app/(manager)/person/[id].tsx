@@ -1,7 +1,7 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -84,8 +84,12 @@ export default function PersonScreen() {
             {person.phone ? <InfoRow icon="call-outline" label={t('login.phone', 'Телефон')} value={person.phone} c={c} onPress={() => Linking.openURL(`tel:${person.phone}`)} /> : null}
             {person.email ? <InfoRow icon="mail-outline" label={t('login.email', 'Email')} value={person.email} c={c} onPress={() => Linking.openURL(`mailto:${person.email}`)} /> : null}
             {person.language ? <InfoRow icon="language-outline" label={t('settings.language.title', 'Мова')} value={langLabels[person.language] ?? person.language} c={c} /> : null}
-            {person.currentTruck ? <InfoRow icon="bus-outline" label={t('nav.items.trucks', 'Вантажівка')} value={person.currentTruck.plate} c={c} /> : null}
+            {person.currentTruck ? <InfoRow iconNode={<MaterialCommunityIcons name="truck-outline" size={16} color={c.mutedForeground} />} label={t('nav.items.trucks', 'Вантажівка')} value={person.currentTruck.plate} c={c} /> : null}
+            {person.teamlead ? <InfoRow icon="ribbon-outline" label={t('people.teamlead', 'Тімлід')} value={fullName(person.teamlead) || '—'} c={c} /> : null}
           </View>
+
+          {/* Manager-only: assigned trucks + drivers */}
+          <ManagerLists person={person} c={c} />
 
           {/* Ratings */}
           <RatingsSection person={person} c={c} />
@@ -252,10 +256,31 @@ function RatingsSection({ person, c }: { person: PersonDetail; c: (typeof Colors
   );
 }
 
-function InfoRow({ icon, label, value, c, onPress }: { icon: keyof typeof Ionicons.glyphMap; label: string; value: string; c: (typeof Colors)['light']; onPress?: () => void }) {
+function ManagerLists({ person, c }: { person: PersonDetail; c: (typeof Colors)['light'] }) {
+  const { t } = useTranslation();
+  const trucks = person.assignedTrucks ?? [];
+  if (trucks.length === 0) return null;
+  return (
+    <View style={[styles.card, { backgroundColor: c.card, borderColor: c.border, gap: Spacing.sm }]}>
+      <Text style={[styles.sectionTitle, { color: c.foreground }]}>{`${t('people.trucks', 'Вантажівки')} (${trucks.length})`}</Text>
+      {trucks.map((tr) => (
+        <Pressable key={tr.id} onPress={() => router.push(`/(manager)/truck/${tr.id}` as never)} style={styles.listRow}>
+          <MaterialCommunityIcons name="truck-outline" size={18} color={c.mutedForeground} />
+          <Text style={{ flex: 1, color: c.foreground, fontSize: 14, fontWeight: '600' }} numberOfLines={1}>{tr.plate}</Text>
+          {tr.currentDriver ? (
+            <Text style={{ color: c.mutedForeground, fontSize: 12, maxWidth: 130 }} numberOfLines={1}>{fullName(tr.currentDriver)}</Text>
+          ) : null}
+          <Ionicons name="chevron-forward" size={16} color={c.mutedForeground} />
+        </Pressable>
+      ))}
+    </View>
+  );
+}
+
+function InfoRow({ icon, iconNode, label, value, c, onPress }: { icon?: keyof typeof Ionicons.glyphMap; iconNode?: ReactNode; label: string; value: string; c: (typeof Colors)['light']; onPress?: () => void }) {
   return (
     <Pressable onPress={onPress} disabled={!onPress} style={styles.infoRow}>
-      <Ionicons name={icon} size={16} color={c.mutedForeground} />
+      {iconNode ?? <Ionicons name={icon ?? 'ellipse-outline'} size={16} color={c.mutedForeground} />}
       <Text style={{ color: c.mutedForeground, fontSize: 13, width: 84 }}>{label}</Text>
       <Text style={{ flex: 1, color: onPress ? c.primary : c.foreground, fontSize: 14 }} numberOfLines={1}>{value}</Text>
     </Pressable>
@@ -278,6 +303,7 @@ const styles = StyleSheet.create({
   infoRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingVertical: 9 },
   dangerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: Spacing.sm },
   sectionTitle: { fontSize: 15, fontWeight: '700' },
+  listRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingVertical: 7 },
   ratingItem: { borderRadius: Radius.sm, paddingHorizontal: Spacing.sm, paddingVertical: 6 },
   commentInput: { borderWidth: 1, borderRadius: Radius.sm, paddingHorizontal: Spacing.sm, paddingVertical: 7, fontSize: 14 },
   submitBtn: { alignItems: 'center', justifyContent: 'center', paddingVertical: 8, paddingHorizontal: 18, borderRadius: Radius.md, minWidth: 96 },
