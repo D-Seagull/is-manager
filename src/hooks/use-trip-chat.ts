@@ -103,6 +103,12 @@ export function useTripChat(
     myIdRef.current = myId;
   }, [myId]);
 
+  // ADMIN бачить живі повідомлення будь-якої сесії (повний нагляд, як у вебі).
+  const isAdminRef = useRef(user?.role === 'ADMIN');
+  useEffect(() => {
+    isAdminRef.current = user?.role === 'ADMIN';
+  }, [user?.role]);
+
   // Same trick for focus — read via ref inside the socket effect so changing
   // focus doesn't tear down/re-attach listeners.
   const focusedRef = useRef(isFocused);
@@ -110,16 +116,11 @@ export function useTripChat(
     focusedRef.current = isFocused;
   }, [isFocused]);
 
-  // Filter: own + manager messages only. Memoized so the returned array keeps
-  // a stable reference between renders — otherwise the consumer's `timeline`
-  // useMemo re-runs every render and defeats memo() on the message rows.
-  const visible = useMemo(
-    () =>
-      messages.filter(
-        (m) => m.senderId === myId || m.sender.role !== 'DRIVER',
-      ),
-    [messages, myId],
-  );
+  // У менеджер-застосунку показуємо ВСІ повідомлення рейсу (водій + менеджер +
+  // адмін). Рольовий фільтр із is-driver (сховати чужі DRIVER-повідомлення) тут
+  // хибний — він приховував би саме повідомлення водія від менеджера.
+  // useMemo лишаємо для стабільної референції масиву між рендерами.
+  const visible = useMemo(() => messages, [messages]);
 
   useEffect(() => {
     if (!tripId) return;
@@ -187,7 +188,7 @@ export function useTripChat(
       const meId = myIdRef.current;
       const inSession =
         msg.session?.driverId === meId || msg.session?.managerId === meId;
-      if (!inSession) return;
+      if (!isAdminRef.current && !inSession) return;
 
       // Synchronous check before setState — prevents duplicate adds when two
       // listeners fire with the same message before React commits the first update
