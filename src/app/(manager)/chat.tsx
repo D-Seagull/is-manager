@@ -30,19 +30,24 @@ import { fullName } from '@/lib/format';
 import { useUser } from '@/store/auth';
 
 const DIR_PAGE = 20;
-type Tab = 'dm' | 'groups';
+type Tab = 'managers' | 'groups' | 'drivers';
 
 export default function ChatScreen() {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
-  const [tab, setTab] = useState<Tab>('dm');
+  const [tab, setTab] = useState<Tab>('managers');
 
   const { data: conversations, refetch: refetchConvs } = useConversations();
   const { data: groups, refetch: refetchGroups } = useGroups();
   const { data: groupUnread, refetch: refetchGroupUnread } = useGroupUnread();
 
-  const dmUnread = (conversations ?? []).reduce((s, cv) => s + cv.unreadCount, 0);
+  const mgrUnread = (conversations ?? [])
+    .filter((cv) => cv.user.role !== 'DRIVER')
+    .reduce((s, cv) => s + cv.unreadCount, 0);
+  const drvUnread = (conversations ?? [])
+    .filter((cv) => cv.user.role === 'DRIVER')
+    .reduce((s, cv) => s + cv.unreadCount, 0);
   const groupUnreadTotal = groupUnread?.total ?? 0;
 
   const isFocused = useIsFocused();
@@ -59,7 +64,11 @@ export default function ChatScreen() {
       <SectionHeader title={t('nav.items.chat', 'Чат')} />
 
       <View style={styles.content}>
-        {tab === 'dm' ? <DmTab /> : <GroupsTab groups={groups} unread={groupUnread} />}
+        {tab === 'groups' ? (
+          <GroupsTab groups={groups} unread={groupUnread} />
+        ) : (
+          <DmTab kind={tab === 'managers' ? 'manager' : 'driver'} />
+        )}
       </View>
 
       {/* Contextual bottom buttons — sub-views of Chat. */}
@@ -74,11 +83,11 @@ export default function ChatScreen() {
         ]}
       >
         <BottomTab
-          label={t('chat.tabs.direct', 'Особисті')}
-          icon="chatbubble-outline"
-          active={tab === 'dm'}
-          badge={dmUnread}
-          onPress={() => setTab('dm')}
+          label={t('nav.items.managers', 'Менеджери')}
+          icon="headset-outline"
+          active={tab === 'managers'}
+          badge={mgrUnread}
+          onPress={() => setTab('managers')}
         />
         <BottomTab
           label={t('nav.groups', 'Групи')}
@@ -86,6 +95,13 @@ export default function ChatScreen() {
           active={tab === 'groups'}
           badge={groupUnreadTotal}
           onPress={() => setTab('groups')}
+        />
+        <BottomTab
+          label={t('nav.items.drivers', 'Водії')}
+          icon="car-outline"
+          active={tab === 'drivers'}
+          badge={drvUnread}
+          onPress={() => setTab('drivers')}
         />
       </View>
     </View>
@@ -126,7 +142,7 @@ function BottomTab({
 
 // ─── Direct messages tab ───────────────────────────────────────────────────
 
-function DmTab() {
+function DmTab({ kind }: { kind: 'manager' | 'driver' }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const me = useUser();
@@ -145,31 +161,30 @@ function DmTab() {
   const matches = (name: string, phone: string, plate: string) =>
     !q || name.includes(q) || phone.includes(q) || plate.includes(q);
 
-  const sorted = [...(conversations ?? [])].sort((a, b) => {
-    const aMgr = a.user.role !== 'DRIVER' ? 0 : 1;
-    const bMgr = b.user.role !== 'DRIVER' ? 0 : 1;
-    if (aMgr !== bMgr) return aMgr - bMgr;
-    return (
-      new Date(b.lastMessage.createdAt).getTime() -
-      new Date(a.lastMessage.createdAt).getTime()
+  // Розмежування вкладок: «Водії» → DRIVER; «Менеджери» → MANAGER/TEAMLEAD.
+  const convInKind = (role: string) => (kind === 'driver' ? role === 'DRIVER' : role !== 'DRIVER');
+  const dirInKind = (role: string) =>
+    kind === 'driver' ? role === 'DRIVER' : role === 'MANAGER' || role === 'TEAMLEAD';
+
+  const filteredConvs = [...(conversations ?? [])]
+    .filter((cv) => convInKind(cv.user.role))
+    .sort(
+      (a, b) =>
+        new Date(b.lastMessage.createdAt).getTime() -
+        new Date(a.lastMessage.createdAt).getTime(),
+    )
+    .filter((cv) =>
+      matches(
+        fullName(cv.user).toLowerCase(),
+        (cv.user.phone ?? '').toLowerCase(),
+        (cv.user.truckPlate ?? '').toLowerCase(),
+      ),
     );
-  });
-  const filteredConvs = sorted.filter((cv) =>
-    matches(
-      fullName(cv.user).toLowerCase(),
-      (cv.user.phone ?? '').toLowerCase(),
-      (cv.user.truckPlate ?? '').toLowerCase(),
-    ),
-  );
 
   const convIds = new Set((conversations ?? []).map((cv) => cv.user.id));
   const directory = (companyUsers ?? [])
     .filter(
-      (u) =>
-        (u.role === 'MANAGER' || u.role === 'TEAMLEAD' || u.role === 'DRIVER') &&
-        u.isActive &&
-        u.id !== myId &&
-        !convIds.has(u.id),
+      (u) => dirInKind(u.role) && u.isActive && u.id !== myId && !convIds.has(u.id),
     )
     .filter((u) =>
       matches(
@@ -178,12 +193,7 @@ function DmTab() {
         (u.currentTruck?.plate ?? '').toLowerCase(),
       ),
     )
-    .sort((a, b) => {
-      const am = a.role !== 'DRIVER' ? 0 : 1;
-      const bm = b.role !== 'DRIVER' ? 0 : 1;
-      if (am !== bm) return am - bm;
-      return fullName(a).localeCompare(fullName(b));
-    });
+    .sort((a, b) => fullName(a).localeCompare(fullName(b)));
 
   const shownDir = directory.slice(0, visibleDir);
 
