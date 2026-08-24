@@ -1,16 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking';
 import { router, useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatAvatar } from '@/components/chat-avatar';
 import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useSetUserActive, useUserDetail } from '@/hooks/use-people';
+import { PersonDetail, useRateDriver, useSetUserActive, useUserDetail, useUserRatings } from '@/hooks/use-people';
 import { fullName } from '@/lib/format';
+import { useUser } from '@/store/auth';
 
 export default function PersonScreen() {
   const { t } = useTranslation();
@@ -85,6 +87,9 @@ export default function PersonScreen() {
             {person.currentTruck ? <InfoRow icon="bus-outline" label={t('nav.items.trucks', 'Вантажівка')} value={person.currentTruck.plate} c={c} /> : null}
           </View>
 
+          {/* Ratings */}
+          <RatingsSection person={person} c={c} />
+
           {/* Deactivate */}
           <Pressable onPress={toggleActive} style={[styles.card, styles.dangerRow, { backgroundColor: c.card, borderColor: c.border }]}>
             <Ionicons name={person.isActive ? 'person-remove-outline' : 'person-add-outline'} size={17} color={person.isActive ? c.destructive : c.primary} />
@@ -94,6 +99,155 @@ export default function PersonScreen() {
           </Pressable>
         </ScrollView>
       )}
+    </View>
+  );
+}
+
+const STAR_COLOR = '#F59E0B';
+
+function Stars({ value, size, muted }: { value: number; size: number; muted: string }) {
+  return (
+    <View style={{ flexDirection: 'row', gap: 2 }}>
+      {[1, 2, 3, 4, 5].map((n) => (
+        <Ionicons key={n} name={n <= value ? 'star' : 'star-outline'} size={size} color={n <= value ? STAR_COLOR : muted} />
+      ))}
+    </View>
+  );
+}
+
+function StarPicker({ value, onChange, muted, size = 26 }: { value: number; onChange: (v: number) => void; muted: string; size?: number }) {
+  return (
+    <View style={{ flexDirection: 'row', gap: 6 }}>
+      {[1, 2, 3, 4, 5].map((n) => (
+        <Pressable key={n} onPress={() => onChange(n)} hitSlop={6}>
+          <Ionicons name={n <= value ? 'star' : 'star-outline'} size={size} color={n <= value ? STAR_COLOR : muted} />
+        </Pressable>
+      ))}
+    </View>
+  );
+}
+
+function RatingsSection({ person, c }: { person: PersonDetail; c: (typeof Colors)['light'] }) {
+  const { t } = useTranslation();
+  const me = useUser();
+  const isDriver = person.role === 'DRIVER';
+  const { data, isLoading } = useUserRatings(person.id, isDriver ? 'driver' : 'manager');
+  const rate = useRateDriver(person.id);
+  const [showAll, setShowAll] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
+  const [score, setScore] = useState(0);
+  const [comment, setComment] = useState('');
+  const [anonymous, setAnonymous] = useState(false);
+
+  const ratings = data?.ratings ?? [];
+  const avg = data?.averageRating ?? null;
+  const count = data?.ratingCount ?? 0;
+  const mine = ratings.find((r) => r.ratedBy?.id === me?.id);
+
+  const openForm = () => {
+    setScore(mine?.score ?? 0);
+    setComment(mine?.comment ?? '');
+    setAnonymous(mine?.anonymous ?? false);
+    setFormOpen(true);
+  };
+
+  const submit = async () => {
+    if (score === 0) return;
+    await rate.mutateAsync({ score, comment: comment.trim() || undefined, anonymous });
+    setFormOpen(false);
+  };
+
+  return (
+    <View style={[styles.card, { backgroundColor: c.card, borderColor: c.border, gap: Spacing.sm }]}>
+      {/* Summary row: title + ★ avg (count), tappable to expand list */}
+      <Pressable
+        onPress={() => count > 0 && setShowAll((v) => !v)}
+        style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}
+      >
+        <Text style={[styles.sectionTitle, { color: c.foreground }]}>{t('people.ratings.title', 'Рейтинг')}</Text>
+        <View style={{ flex: 1 }} />
+        {isLoading ? (
+          <ActivityIndicator color={c.primary} size="small" />
+        ) : avg !== null ? (
+          <>
+            <Ionicons name="star" size={15} color={STAR_COLOR} />
+            <Text style={{ fontSize: 14, fontWeight: '700', color: c.foreground }}>{avg.toFixed(1)}</Text>
+            <Text style={{ fontSize: 13, color: c.mutedForeground }}>({count})</Text>
+            <Ionicons name={showAll ? 'chevron-up' : 'chevron-down'} size={16} color={c.mutedForeground} />
+          </>
+        ) : (
+          <Text style={{ fontSize: 13, color: c.mutedForeground }}>{t('people.ratings.none', 'Немає оцінок')}</Text>
+        )}
+      </Pressable>
+
+      {/* Expanded list */}
+      {showAll && ratings.length > 0 ? (
+        <View style={{ gap: 6, borderTopColor: c.border, borderTopWidth: StyleSheet.hairlineWidth, paddingTop: Spacing.sm }}>
+          {ratings.map((r) => (
+            <View key={r.id} style={[styles.ratingItem, { backgroundColor: c.muted }]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Stars value={r.score} size={12} muted={c.mutedForeground} />
+                <Text style={{ fontSize: 12, fontWeight: '600', color: c.foreground, flex: 1 }} numberOfLines={1}>
+                  {r.anonymous ? t('people.ratings.anonymous', 'Анонімно') : fullName(r.ratedBy) || t('people.ratings.unknown', '—')}
+                </Text>
+                <Text style={{ fontSize: 10, color: c.mutedForeground }}>{new Date(r.createdAt).toLocaleDateString()}</Text>
+              </View>
+              {r.comment ? <Text style={{ fontSize: 12, color: c.mutedForeground, marginTop: 1 }}>{`“${r.comment}”`}</Text> : null}
+            </View>
+          ))}
+        </View>
+      ) : null}
+
+      {/* Driver — compact rate control (form collapsed by default) */}
+      {isDriver ? (
+        !formOpen ? (
+          <Pressable
+            onPress={openForm}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 6, borderTopColor: c.border, borderTopWidth: StyleSheet.hairlineWidth, paddingTop: Spacing.sm }}
+            hitSlop={4}
+          >
+            <Ionicons name={mine ? 'create-outline' : 'star-outline'} size={16} color={c.primary} />
+            <Text style={{ fontSize: 13, fontWeight: '600', color: c.primary }}>
+              {mine ? `${t('people.ratings.current', 'Ваша оцінка')}: ${mine.score}/5` : t('people.ratings.rateTitle', 'Оцінити водія')}
+            </Text>
+          </Pressable>
+        ) : (
+          <View style={{ gap: Spacing.sm, borderTopColor: c.border, borderTopWidth: StyleSheet.hairlineWidth, paddingTop: Spacing.sm }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <StarPicker value={score} onChange={setScore} muted={c.mutedForeground} />
+              <Pressable onPress={() => setFormOpen(false)} hitSlop={8}>
+                <Ionicons name="close" size={18} color={c.mutedForeground} />
+              </Pressable>
+            </View>
+            <TextInput
+              value={comment}
+              onChangeText={setComment}
+              placeholder={t('people.ratings.commentPlaceholder', 'Коментар (необов’язково)')}
+              placeholderTextColor={c.mutedForeground}
+              style={[styles.commentInput, { backgroundColor: c.background, borderColor: c.border, color: c.foreground }]}
+            />
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Pressable onPress={() => setAnonymous((v) => !v)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }} hitSlop={6}>
+                <Ionicons name={anonymous ? 'checkbox' : 'square-outline'} size={18} color={anonymous ? c.primary : c.mutedForeground} />
+                <Text style={{ fontSize: 13, color: c.foreground }}>{t('people.ratings.anonymous', 'Анонімно')}</Text>
+              </Pressable>
+              <Pressable
+                onPress={submit}
+                disabled={score === 0 || rate.isPending}
+                style={[styles.submitBtn, { backgroundColor: c.primary, opacity: score === 0 || rate.isPending ? 0.5 : 1 }]}
+              >
+                {rate.isPending ? (
+                  <ActivityIndicator color={c.primaryForeground} size="small" />
+                ) : (
+                  <Text style={{ color: c.primaryForeground, fontWeight: '700', fontSize: 13 }}>
+                    {mine ? t('people.ratings.update', 'Оновити') : t('people.ratings.submit', 'Надіслати')}
+                  </Text>
+                )}
+              </Pressable>
+            </View>
+          </View>
+        )
+      ) : null}
     </View>
   );
 }
@@ -123,4 +277,8 @@ const styles = StyleSheet.create({
   actText: { fontSize: 14, fontWeight: '700' },
   infoRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingVertical: 9 },
   dangerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: Spacing.sm },
+  sectionTitle: { fontSize: 15, fontWeight: '700' },
+  ratingItem: { borderRadius: Radius.sm, paddingHorizontal: Spacing.sm, paddingVertical: 6 },
+  commentInput: { borderWidth: 1, borderRadius: Radius.sm, paddingHorizontal: Spacing.sm, paddingVertical: 7, fontSize: 14 },
+  submitBtn: { alignItems: 'center', justifyContent: 'center', paddingVertical: 8, paddingHorizontal: 18, borderRadius: Radius.md, minWidth: 96 },
 });

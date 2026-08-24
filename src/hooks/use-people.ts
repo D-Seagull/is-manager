@@ -29,6 +29,55 @@ export function useUserDetail(id: string | null | undefined) {
   });
 }
 
+export interface UserRating {
+  id: string;
+  score: number;
+  comment: string | null;
+  anonymous: boolean;
+  createdAt: string;
+  ratedBy: {
+    id: string;
+    firstName: string;
+    lastName: string | null;
+    avatar: string | null;
+    role: string;
+  } | null;
+}
+
+export interface RatingsResponse {
+  ratings: UserRating[];
+  averageRating: number | null;
+  ratingCount: number;
+}
+
+/** Оцінки користувача. kind='driver' → /ratings (водій), 'manager' → /manager-ratings. */
+export function useUserRatings(id: string | null | undefined, kind: 'driver' | 'manager') {
+  const path = kind === 'driver' ? 'ratings' : 'manager-ratings';
+  return useQuery<RatingsResponse>({
+    queryKey: ['user-ratings', kind, id],
+    queryFn: async () => {
+      const res = await api.get(`/users/${id}/${path}`);
+      return res.data;
+    },
+    enabled: !!id,
+  });
+}
+
+/** Менеджер оцінює водія (POST /users/:id/ratings). Оцінювати менеджерів можуть лише водії. */
+export function useRateDriver(id: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: { score: number; comment?: string; anonymous?: boolean }) => {
+      const res = await api.post(`/users/${id}/ratings`, data);
+      return res.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['user-ratings', 'driver', id] });
+      qc.invalidateQueries({ queryKey: ['user', id] });
+    },
+  });
+}
+
 export function useCreateDriver() {
   const qc = useQueryClient();
   return useMutation({
