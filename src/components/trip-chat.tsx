@@ -181,7 +181,7 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
       <ChatBackground />
       <TripHeader tripId={tripId} />
       {/* Рядок «Чат рейсу»: статус зʼєднання + папка документів */}
-      <View style={[styles.chatLabel, { borderBottomColor: c.border }]}>
+      <View style={[styles.chatLabel, { backgroundColor: c.muted, borderBottomColor: c.border }]}>
         <Ionicons name="chatbubble-ellipses-outline" size={13} color={c.mutedForeground} />
         <Text style={[styles.chatLabelText, { color: c.mutedForeground }]}>{t('trip.chatLabel', 'Чат рейсу')}</Text>
         <View style={[styles.chatDot, { backgroundColor: chat.connected ? '#10B981' : '#f87171' }]} />
@@ -196,7 +196,7 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
       </View>
 
       {archiveSessions.length > 0 && (
-        <Pressable onPress={() => setArchiveOpen(true)} style={[styles.archiveBanner, { backgroundColor: c.muted, borderBottomColor: c.border }]}>
+        <Pressable onPress={() => setArchiveOpen(true)} style={[styles.archiveBanner, { backgroundColor: 'transparent', borderBottomColor: c.border }]}>
           <Ionicons name="time-outline" size={15} color={c.mutedForeground} />
           <Text style={{ flex: 1, color: c.mutedForeground, fontSize: 12 }} numberOfLines={1}>
             {t('chat.archive.banner', { defaultValue: 'Попередні чати: {{count}}', count: archiveSessions.length })}
