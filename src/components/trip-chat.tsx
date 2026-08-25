@@ -31,7 +31,9 @@ import { ScreenPlaceholder } from '@/components/screen-placeholder';
 import { TripHeader } from '@/components/trip-header';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { ChatArchiveModal } from '@/components/chat-archive-modal';
 import { useTripDocuments, useUploadDocuments } from '@/hooks/use-documents';
+import { useTripChatArchive } from '@/hooks/use-trip-archive';
 import { useTrip } from '@/hooks/use-trip';
 import { ChatMessage, useTripChat } from '@/hooks/use-trip-chat';
 import { DriverDocument } from '@/lib/documents-api';
@@ -64,6 +66,8 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
   const chat = useTripChat(tripId, { isFocused, nearBottomRef });
   const { data: trip } = useTrip(tripId);
   const { data: documents = [] } = useTripDocuments(tripId);
+  const { data: archiveSessions = [] } = useTripChatArchive(tripId);
+  const [archiveOpen, setArchiveOpen] = useState(false);
 
   // Писати в тріп-чат може лише ПОТОЧНИЙ менеджер/водій рейсу. Якщо менеджера
   // змінили — цей чат стає лише для перегляду (як у вебі: isActiveParticipant).
@@ -238,6 +242,16 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
         />
       )}
 
+      {archiveSessions.length > 0 && (
+        <Pressable onPress={() => setArchiveOpen(true)} style={[styles.archiveBanner, { backgroundColor: c.muted, borderTopColor: c.border }]}>
+          <Ionicons name="time-outline" size={15} color={c.mutedForeground} />
+          <Text style={{ flex: 1, color: c.mutedForeground, fontSize: 12 }} numberOfLines={1}>
+            {t('chat.archive.banner', { defaultValue: 'Попередні чати: {{count}}', count: archiveSessions.length })}
+          </Text>
+          <Text style={{ color: c.primary, fontSize: 12, fontWeight: '600' }}>{t('chat.archive.view', 'Переглянути')}</Text>
+        </Pressable>
+      )}
+
       {trip && !isActiveParticipant ? (
         <View style={[styles.inactiveBar, { paddingBottom: Math.max(insets.bottom, Spacing.sm), borderTopColor: c.border }]}>
           <Ionicons name="lock-closed-outline" size={15} color={c.mutedForeground} />
@@ -271,6 +285,10 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
       )}
 
       <EmojiPicker open={emojiOpen} onClose={() => setEmojiOpen(false)} onEmojiSelected={(e) => setText((prev) => prev + e.emoji)} />
+
+      {tripId ? (
+        <ChatArchiveModal visible={archiveOpen} onClose={() => setArchiveOpen(false)} tripId={tripId} myId={myId} />
+      ) : null}
 
       <MessageActionsSheet
         visible={!!sheetFor}
@@ -452,6 +470,7 @@ const styles = StyleSheet.create({
   bannerPreview: { fontSize: 11, marginTop: 1 },
   composer: { flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: Spacing.sm, paddingTop: Spacing.sm, gap: Spacing.sm },
   inactiveBar: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingHorizontal: Spacing.md, paddingTop: Spacing.md, borderTopWidth: StyleSheet.hairlineWidth },
+  archiveBanner: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, borderTopWidth: StyleSheet.hairlineWidth },
   iconBtn: { width: 38, height: 38, alignItems: 'center', justifyContent: 'center' },
   input: { flex: 1, minHeight: 38, maxHeight: 120, borderRadius: Radius.md, paddingHorizontal: Spacing.md, paddingVertical: 8, fontSize: 15 },
   sendBtn: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center' },

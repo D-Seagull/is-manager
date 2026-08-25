@@ -25,6 +25,8 @@ export function useFleetSync() {
       qc.invalidateQueries({ queryKey: ['trucks-my'] });
       qc.invalidateQueries({ queryKey: ['trucks-all'] });
       qc.invalidateQueries({ queryKey: ['truck'] });
+      // Зміна водія/менеджера архівує стару сесію — оновити банер архіву.
+      qc.invalidateQueries({ queryKey: ['trip-chat-archive'] });
     };
     const onTruckChanged = () => {
       qc.invalidateQueries({ queryKey: ['trucks-my'] });
