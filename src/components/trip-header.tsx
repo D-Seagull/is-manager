@@ -52,7 +52,7 @@ export function TripHeader({ tripId }: { tripId: string }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const { data: trip } = useTrip(tripId);
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [editOpen, setEditOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
   const updateStatus = useUpdateTripStatus(trip?.truck?.id ?? '');
