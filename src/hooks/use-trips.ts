@@ -24,6 +24,17 @@ export interface CreateTripPayload {
   stops: StopFormData[];
 }
 
+/** Усі рейси компанії (GET /trips) — для загального екрана «Рейси». */
+export function useTrips() {
+  return useQuery<Trip[]>({
+    queryKey: ['trips-all'],
+    queryFn: async () => {
+      const res = await api.get('/trips');
+      return res.data;
+    },
+  });
+}
+
 /** All trips of a truck (newest first) — GET /trips/truck/:truckId. */
 export function useTripsByTruck(truckId: string | null | undefined) {
   return useQuery<Trip[]>({

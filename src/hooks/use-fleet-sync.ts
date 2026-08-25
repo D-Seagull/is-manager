@@ -22,6 +22,7 @@ export function useFleetSync() {
     const onTripUpdated = (p: { tripId: string }) => {
       qc.invalidateQueries({ queryKey: ['trip', p.tripId] });
       qc.invalidateQueries({ queryKey: ['trips-by-truck'] });
+      qc.invalidateQueries({ queryKey: ['trips-all'] });
       qc.invalidateQueries({ queryKey: ['trucks-my'] });
       qc.invalidateQueries({ queryKey: ['trucks-all'] });
       qc.invalidateQueries({ queryKey: ['truck'] });
