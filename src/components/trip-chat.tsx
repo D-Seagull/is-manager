@@ -179,6 +179,15 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
     <View style={styles.root}>
       <ChatBackground />
       <TripHeader tripId={tripId} />
+      {archiveSessions.length > 0 && (
+        <Pressable onPress={() => setArchiveOpen(true)} style={[styles.archiveBanner, { backgroundColor: c.muted, borderBottomColor: c.border }]}>
+          <Ionicons name="time-outline" size={15} color={c.mutedForeground} />
+          <Text style={{ flex: 1, color: c.mutedForeground, fontSize: 12 }} numberOfLines={1}>
+            {t('chat.archive.banner', { defaultValue: 'Попередні чати: {{count}}', count: archiveSessions.length })}
+          </Text>
+          <Text style={{ color: c.primary, fontSize: 12, fontWeight: '600' }}>{t('chat.archive.view', 'Переглянути')}</Text>
+        </Pressable>
+      )}
       {chat.isLoading ? (
         <View style={styles.center}>
           <ActivityIndicator color={c.primary} />
@@ -240,16 +249,6 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
             setText('');
           }}
         />
-      )}
-
-      {archiveSessions.length > 0 && (
-        <Pressable onPress={() => setArchiveOpen(true)} style={[styles.archiveBanner, { backgroundColor: c.muted, borderTopColor: c.border }]}>
-          <Ionicons name="time-outline" size={15} color={c.mutedForeground} />
-          <Text style={{ flex: 1, color: c.mutedForeground, fontSize: 12 }} numberOfLines={1}>
-            {t('chat.archive.banner', { defaultValue: 'Попередні чати: {{count}}', count: archiveSessions.length })}
-          </Text>
-          <Text style={{ color: c.primary, fontSize: 12, fontWeight: '600' }}>{t('chat.archive.view', 'Переглянути')}</Text>
-        </Pressable>
       )}
 
       {trip && !isActiveParticipant ? (
@@ -470,7 +469,7 @@ const styles = StyleSheet.create({
   bannerPreview: { fontSize: 11, marginTop: 1 },
   composer: { flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: Spacing.sm, paddingTop: Spacing.sm, gap: Spacing.sm },
   inactiveBar: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingHorizontal: Spacing.md, paddingTop: Spacing.md, borderTopWidth: StyleSheet.hairlineWidth },
-  archiveBanner: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, borderTopWidth: StyleSheet.hairlineWidth },
+  archiveBanner: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, borderBottomWidth: StyleSheet.hairlineWidth },
   iconBtn: { width: 38, height: 38, alignItems: 'center', justifyContent: 'center' },
   input: { flex: 1, minHeight: 38, maxHeight: 120, borderRadius: Radius.md, paddingHorizontal: Spacing.md, paddingVertical: 8, fontSize: 15 },
   sendBtn: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center' },
