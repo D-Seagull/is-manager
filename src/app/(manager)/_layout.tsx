@@ -1,5 +1,6 @@
 import { Redirect, Stack } from 'expo-router';
 
+import { useAppStatePresence } from '@/hooks/use-app-state-presence';
 import { useDmUnreadSync } from '@/hooks/use-direct-messages';
 import { useFleetSync } from '@/hooks/use-fleet-sync';
 import { usePresenceSync } from '@/hooks/use-presence';
@@ -16,6 +17,7 @@ export default function ManagerLayout() {
   usePresenceSync();
   useUserStatusSync();
   useFleetSync();
+  useAppStatePresence();
 
   // Bounce to login once we know there's no session.
   if (isHydrated && !token) {
