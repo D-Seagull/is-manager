@@ -8,12 +8,20 @@ import { StatusDot } from '@/components/status-dot';
 import { TRIP_STATUS_COLORS } from '@/constants/trip-status';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { type MyTruck } from '@/hooks/use-my-trucks';
+import { type MyTruck, useUpdateTruck } from '@/hooks/use-my-trucks';
 import { fullName } from '@/lib/format';
+import { useUser } from '@/store/auth';
 
 export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat' | 'info' }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
+  const me = useUser();
+  const updateTruck = useUpdateTruck();
+  // Взяти трак (стати його менеджером) / звільнити — доступно всім у застосунку
+  // менеджера (MANAGER/TEAMLEAD/ADMIN), як у вебі.
+  const mine = !!me && truck.managerId === me.id;
+  const toggleTake = () =>
+    updateTruck.mutate({ id: truck.id, data: { managerId: mine ? null : me?.id ?? null } });
 
   const activeTrip = truck.trips?.[0];
   const driver = truck.currentDriver;
@@ -89,10 +97,28 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
       </View>
 
       {truck.truckNotes && truck.truckNotes.length > 0 ? (
-        <Text style={[styles.note, { color: c.destructive }]} numberOfLines={1}>
+        <Text style={[styles.note, { color: c.destructive, paddingRight: 40 }]} numberOfLines={1}>
           {truck.truckNotes[0].content}
         </Text>
       ) : null}
+
+      {/* Взяти / звільнити трак — правий нижній кут */}
+      <Pressable
+        onPress={toggleTake}
+        disabled={updateTruck.isPending}
+        hitSlop={8}
+        style={({ pressed }) => [
+          styles.takeBtn,
+          { borderColor: c.border, backgroundColor: mine ? `${c.primary}1A` : c.background, opacity: pressed || updateTruck.isPending ? 0.5 : 1 },
+        ]}
+        accessibilityLabel={mine ? t('trucks.release', 'Звільнити трак') : t('trucks.take', 'Взяти трак')}
+      >
+        <Ionicons
+          name={mine ? 'person-remove-outline' : 'person-add-outline'}
+          size={18}
+          color={mine ? c.primary : c.mutedForeground}
+        />
+      </Pressable>
     </Pressable>
   );
 }
@@ -122,6 +148,7 @@ const styles = StyleSheet.create({
   plate: { borderRadius: 8, paddingHorizontal: Spacing.sm, paddingVertical: 5 },
   plateText: { fontSize: 14, fontWeight: '700', letterSpacing: 0.5, fontVariant: ['tabular-nums'] },
   badge: { marginLeft: 'auto', borderRadius: 8, paddingHorizontal: Spacing.sm, paddingVertical: 4 },
+  takeBtn: { position: 'absolute', right: Spacing.md, bottom: Spacing.md, width: 34, height: 34, borderRadius: 17, borderWidth: StyleSheet.hairlineWidth, alignItems: 'center', justifyContent: 'center' },
   badgeText: { fontSize: 11, fontWeight: '700' },
   driverRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   driverAvatar: { width: 34, height: 34 },
