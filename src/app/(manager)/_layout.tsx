@@ -3,6 +3,7 @@ import { Redirect, Stack } from 'expo-router';
 import { useDmUnreadSync } from '@/hooks/use-direct-messages';
 import { useFleetSync } from '@/hooks/use-fleet-sync';
 import { usePresenceSync } from '@/hooks/use-presence';
+import { useUserStatusSync } from '@/hooks/use-user-status-sync';
 import { useAuthStore } from '@/store/auth';
 
 export default function ManagerLayout() {
@@ -13,6 +14,7 @@ export default function ManagerLayout() {
   // badges and presence update everywhere instantly (no reload).
   useDmUnreadSync();
   usePresenceSync();
+  useUserStatusSync();
   useFleetSync();
 
   // Bounce to login once we know there's no session.

@@ -55,7 +55,7 @@ export function usePresenceSync() {
 
     // Re-ask the backend for a fresh snapshot now that our listener
     // is wired up. Catches the case where the initial snapshot landed
-    // before this effect ran (right after OTP verify).
+    // before this effect ran (right after login).
     const requestSnapshot = () => socket.emit('requestPresence');
     if (socket.connected) requestSnapshot();
     socket.on('connect', requestSnapshot);

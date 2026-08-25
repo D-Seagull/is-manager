@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChatAvatar } from '@/components/chat-avatar';
 import { ScreenPlaceholder } from '@/components/screen-placeholder';
 import { SectionHeader } from '@/components/section-header';
+import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useCompanyUsers, type CompanyUser } from '@/hooks/use-company-users';
@@ -26,6 +27,7 @@ import {
   useGroupUnread,
   type ManagerGroup,
 } from '@/hooks/use-groups';
+import { type UserStatus } from '@/lib/auth-api';
 import { fullName } from '@/lib/format';
 import { useUser } from '@/store/auth';
 
@@ -300,6 +302,13 @@ function DirectoryRow({ user }: { user: CompanyUser }) {
             <Ionicons name="headset-outline" size={9} color={c.primaryForeground} />
           </View>
         )}
+        <View style={styles.presenceDot}>
+          <StatusDot
+            user={{ id: user.id, status: user.status as UserStatus | null, statusUntil: user.statusUntil }}
+            size={11}
+            ring={c.background}
+          />
+        </View>
       </View>
       <View style={styles.rowText}>
         <Text style={[styles.name, { color: c.foreground }]} numberOfLines={1}>
@@ -341,6 +350,13 @@ function ConversationRow({ conv }: { conv: Conversation }) {
             <Ionicons name="headset-outline" size={9} color={c.primaryForeground} />
           </View>
         )}
+        <View style={styles.presenceDot}>
+          <StatusDot
+            user={{ id: conv.user.id, status: conv.user.status as UserStatus | null, statusUntil: conv.user.statusUntil }}
+            size={11}
+            ring={c.background}
+          />
+        </View>
       </View>
       <View style={styles.rowText}>
         <View style={styles.rowTopLine}>
@@ -534,13 +550,14 @@ const styles = StyleSheet.create({
   managerBadge: {
     position: 'absolute',
     right: -2,
-    bottom: -2,
+    top: -2,
     width: 16,
     height: 16,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  presenceDot: { position: 'absolute', right: -2, bottom: -2 },
   rowText: { flex: 1, minWidth: 0 },
   rowTopLine: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   name: { flex: 1, fontSize: 15 },

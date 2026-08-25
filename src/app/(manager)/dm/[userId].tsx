@@ -29,6 +29,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
 import { ChatAvatar } from '@/components/chat-avatar';
+import { StatusDot } from '@/components/status-dot';
 import { MessageActionsSheet, type MessageActions } from '@/components/message-actions-sheet';
 import { MessageQuote } from '@/components/message-quote';
 import { MessageReactionsCluster } from '@/components/message-reactions';
@@ -321,7 +322,12 @@ export default function DmScreen() {
         >
           <Ionicons name="chevron-back" size={26} color={c.foreground} />
         </Pressable>
-        <ChatAvatar user={peer} size={36} />
+        <View style={{ width: 36, height: 36 }}>
+          <ChatAvatar user={peer} size={36} />
+          <View style={{ position: 'absolute', right: -2, bottom: -2 }}>
+            <StatusDot user={peer} size={11} ring={c.card} />
+          </View>
+        </View>
         <View style={styles.headerText}>
           <Text style={[styles.headerName, { color: c.foreground }]} numberOfLines={1}>
             {peerName}
