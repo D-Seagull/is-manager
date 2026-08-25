@@ -72,7 +72,7 @@ export default function TrucksScreen() {
           data={list}
           keyExtractor={(tr) => tr.id}
           contentContainerStyle={styles.list}
-          renderItem={({ item }) => <TruckCard truck={item} />}
+          renderItem={({ item }) => <TruckCard truck={item} openTab="info" />}
         />
       )}
     </View>

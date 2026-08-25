@@ -11,7 +11,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { type MyTruck } from '@/hooks/use-my-trucks';
 import { fullName } from '@/lib/format';
 
-export function TruckCard({ truck }: { truck: MyTruck }) {
+export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat' | 'info' }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
 
@@ -37,7 +37,8 @@ export function TruckCard({ truck }: { truck: MyTruck }) {
       onPress={() =>
         router.push({
           pathname: '/(manager)/truck/[truckId]',
-          params: { truckId: truck.id, plate: truck.plate },
+          // Мої вантажівки → чат (дефолт), загальний список → інфо.
+          params: { truckId: truck.id, plate: truck.plate, ...(openTab ? { tab: openTab } : {}) },
         } as never)
       }
       style={({ pressed }) => [

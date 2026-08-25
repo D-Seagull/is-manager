@@ -15,7 +15,7 @@ import { TripForm } from '@/components/trip-form';
 import { TripsTab } from '@/components/trips-tab';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useMyTrucks } from '@/hooks/use-my-trucks';
+import { useTruck } from '@/hooks/use-my-trucks';
 import { fullName } from '@/lib/format';
 
 type Tab = 'chat' | 'trips' | 'documents' | 'alarm' | 'info';
@@ -42,10 +42,9 @@ export default function TruckDetailScreen() {
     TABS.some((x) => x.key === tabParam) ? (tabParam as Tab) : 'chat',
   );
 
-  // Chat is tied to the truck's active (non-DELIVERED) trip — read from the
-  // cached /trucks/my list so no extra request is needed.
-  const { data: myTrucks } = useMyTrucks();
-  const truck = myTrucks?.find((x) => x.id === truckId);
+  // Трак тягнемо по id (GET /trucks/:id) — працює для будь-якого трака компанії
+  // (не лише «моїх») і повертає manager + активний рейс.
+  const { data: truck } = useTruck(truckId);
   const activeTripId = truck?.trips?.[0]?.id ?? null;
   const driverName = fullName(truck?.currentDriver);
   const [newTripOpen, setNewTripOpen] = useState(false);

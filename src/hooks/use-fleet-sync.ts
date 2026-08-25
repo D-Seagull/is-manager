@@ -24,10 +24,12 @@ export function useFleetSync() {
       qc.invalidateQueries({ queryKey: ['trips-by-truck'] });
       qc.invalidateQueries({ queryKey: ['trucks-my'] });
       qc.invalidateQueries({ queryKey: ['trucks-all'] });
+      qc.invalidateQueries({ queryKey: ['truck'] });
     };
     const onTruckChanged = () => {
       qc.invalidateQueries({ queryKey: ['trucks-my'] });
       qc.invalidateQueries({ queryKey: ['trucks-all'] });
+      qc.invalidateQueries({ queryKey: ['truck'] });
       qc.invalidateQueries({ queryKey: ['trips-by-truck'] });
       qc.invalidateQueries({ queryKey: ['company-users'] });
     };

@@ -60,6 +60,22 @@ export function useTrucks() {
   });
 }
 
+/**
+ * Один трак компанії по id (GET /trucks/:id). Працює для будь-якого трака
+ * компанії (не лише «моїх») і повертає currentDriver + manager + активний рейс —
+ * тому екран деталі траку бере дані звідси, а не з /trucks/my.
+ */
+export function useTruck(truckId: string | null | undefined) {
+  return useQuery<MyTruck>({
+    queryKey: ['truck', truckId],
+    queryFn: async () => {
+      const res = await api.get(`/trucks/${truckId}`);
+      return res.data;
+    },
+    enabled: !!truckId,
+  });
+}
+
 // ─── Truck update + notes (Info tab) ────────────────────────────────────────
 
 export function useUpdateTruck() {
@@ -75,7 +91,11 @@ export function useUpdateTruck() {
       const res = await api.patch(`/trucks/${id}`, data);
       return res.data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['trucks-my'] }),
+    onSuccess: (_d, { id }) => {
+      qc.invalidateQueries({ queryKey: ['trucks-my'] });
+      qc.invalidateQueries({ queryKey: ['trucks-all'] });
+      qc.invalidateQueries({ queryKey: ['truck', id] });
+    },
   });
 }
 
