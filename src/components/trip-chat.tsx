@@ -32,6 +32,7 @@ import { TripHeader } from '@/components/trip-header';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useTripDocuments, useUploadDocuments } from '@/hooks/use-documents';
+import { useTrip } from '@/hooks/use-trip';
 import { ChatMessage, useTripChat } from '@/hooks/use-trip-chat';
 import { DriverDocument } from '@/lib/documents-api';
 import { fullName } from '@/lib/format';
@@ -61,7 +62,12 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
 
   const nearBottomRef = useRef(true);
   const chat = useTripChat(tripId, { isFocused, nearBottomRef });
+  const { data: trip } = useTrip(tripId);
   const { data: documents = [] } = useTripDocuments(tripId);
+
+  // Писати в тріп-чат може лише ПОТОЧНИЙ менеджер/водій рейсу. Якщо менеджера
+  // змінили — цей чат стає лише для перегляду (як у вебі: isActiveParticipant).
+  const isActiveParticipant = !!trip && (trip.manager?.id === myId || trip.driver?.id === myId);
   const uploadDocs = useUploadDocuments();
 
   const [text, setText] = useState('');
@@ -139,6 +145,7 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
   };
 
   const handleSend = () => {
+    if (!isActiveParticipant) return;
     const trimmed = text.trim();
     if (!trimmed) return;
     if (editing) {
@@ -231,28 +238,37 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
         />
       )}
 
-      <View style={[styles.composer, { paddingBottom: Math.max(insets.bottom, Spacing.sm) }]}>
-        {!editing && (
-          <Pressable onPress={showAttachSheet} disabled={uploadDocs.isPending} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed || uploadDocs.isPending ? 0.5 : 1 }]}>
-            {uploadDocs.isPending ? <ActivityIndicator size="small" color={c.mutedForeground} /> : <Ionicons name="attach" size={24} color={c.mutedForeground} />}
+      {trip && !isActiveParticipant ? (
+        <View style={[styles.inactiveBar, { paddingBottom: Math.max(insets.bottom, Spacing.sm), borderTopColor: c.border }]}>
+          <Ionicons name="lock-closed-outline" size={15} color={c.mutedForeground} />
+          <Text style={{ color: c.mutedForeground, fontSize: 13, flex: 1 }}>
+            {t('tripChat.inactive', 'Ви більше не менеджер цього рейсу — чат лише для перегляду')}
+          </Text>
+        </View>
+      ) : (
+        <View style={[styles.composer, { paddingBottom: Math.max(insets.bottom, Spacing.sm) }]}>
+          {!editing && (
+            <Pressable onPress={showAttachSheet} disabled={uploadDocs.isPending} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed || uploadDocs.isPending ? 0.5 : 1 }]}>
+              {uploadDocs.isPending ? <ActivityIndicator size="small" color={c.mutedForeground} /> : <Ionicons name="attach" size={24} color={c.mutedForeground} />}
+            </Pressable>
+          )}
+          <Pressable onPress={() => { Keyboard.dismiss(); setEmojiOpen(true); }} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed ? 0.6 : 1 }]}>
+            <Ionicons name="happy-outline" size={24} color={c.mutedForeground} />
           </Pressable>
-        )}
-        <Pressable onPress={() => { Keyboard.dismiss(); setEmojiOpen(true); }} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed ? 0.6 : 1 }]}>
-          <Ionicons name="happy-outline" size={24} color={c.mutedForeground} />
-        </Pressable>
-        <TextInput
-          value={text}
-          onChangeText={(v) => { setText(v); chat.notifyTyping(); }}
-          onBlur={() => chat.notifyStopTyping()}
-          placeholder={editing ? t('chat.editPlaceholder', 'Редагувати…') : t('chat.messagePlaceholder', 'Повідомлення…')}
-          placeholderTextColor={c.mutedForeground}
-          style={[styles.input, { color: c.foreground, backgroundColor: c.muted }]}
-          multiline
-        />
-        <Pressable onPress={handleSend} disabled={!text.trim()} style={({ pressed }) => [styles.sendBtn, { backgroundColor: c.primary, opacity: pressed ? 0.7 : text.trim() ? 1 : 0.4 }]}>
-          <Ionicons name={editing ? 'checkmark' : 'send'} size={18} color={c.primaryForeground} />
-        </Pressable>
-      </View>
+          <TextInput
+            value={text}
+            onChangeText={(v) => { setText(v); chat.notifyTyping(); }}
+            onBlur={() => chat.notifyStopTyping()}
+            placeholder={editing ? t('chat.editPlaceholder', 'Редагувати…') : t('chat.messagePlaceholder', 'Повідомлення…')}
+            placeholderTextColor={c.mutedForeground}
+            style={[styles.input, { color: c.foreground, backgroundColor: c.muted }]}
+            multiline
+          />
+          <Pressable onPress={handleSend} disabled={!text.trim()} style={({ pressed }) => [styles.sendBtn, { backgroundColor: c.primary, opacity: pressed ? 0.7 : text.trim() ? 1 : 0.4 }]}>
+            <Ionicons name={editing ? 'checkmark' : 'send'} size={18} color={c.primaryForeground} />
+          </Pressable>
+        </View>
+      )}
 
       <EmojiPicker open={emojiOpen} onClose={() => setEmojiOpen(false)} onEmojiSelected={(e) => setText((prev) => prev + e.emoji)} />
 
@@ -435,6 +451,7 @@ const styles = StyleSheet.create({
   bannerTitle: { fontSize: 11, fontWeight: '600' },
   bannerPreview: { fontSize: 11, marginTop: 1 },
   composer: { flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: Spacing.sm, paddingTop: Spacing.sm, gap: Spacing.sm },
+  inactiveBar: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingHorizontal: Spacing.md, paddingTop: Spacing.md, borderTopWidth: StyleSheet.hairlineWidth },
   iconBtn: { width: 38, height: 38, alignItems: 'center', justifyContent: 'center' },
   input: { flex: 1, minHeight: 38, maxHeight: 120, borderRadius: Radius.md, paddingHorizontal: Spacing.md, paddingVertical: 8, fontSize: 15 },
   sendBtn: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center' },
