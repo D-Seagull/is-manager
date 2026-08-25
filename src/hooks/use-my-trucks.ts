@@ -45,6 +45,21 @@ export function useMyTrucks(enabled = true) {
   });
 }
 
+/**
+ * Усі активні вантажівки компанії (GET /trucks). На відміну від /trucks/my не
+ * повертає активний рейс (`trips`), тож картка показує власний статус траку —
+ * як у вебі (`(app)/trucks`).
+ */
+export function useTrucks() {
+  return useQuery<MyTruck[]>({
+    queryKey: ['trucks-all'],
+    queryFn: async () => {
+      const res = await api.get('/trucks');
+      return res.data;
+    },
+  });
+}
+
 // ─── Truck update + notes (Info tab) ────────────────────────────────────────
 
 export function useUpdateTruck() {

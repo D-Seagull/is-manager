@@ -23,23 +23,22 @@ export function useFleetSync() {
       qc.invalidateQueries({ queryKey: ['trip', p.tripId] });
       qc.invalidateQueries({ queryKey: ['trips-by-truck'] });
       qc.invalidateQueries({ queryKey: ['trucks-my'] });
+      qc.invalidateQueries({ queryKey: ['trucks-all'] });
     };
     const onTruckChanged = () => {
       qc.invalidateQueries({ queryKey: ['trucks-my'] });
+      qc.invalidateQueries({ queryKey: ['trucks-all'] });
       qc.invalidateQueries({ queryKey: ['trips-by-truck'] });
       qc.invalidateQueries({ queryKey: ['company-users'] });
     };
-    const onUserStatusChanged = () => {
-      qc.invalidateQueries({ queryKey: ['company-users'] });
-    };
+    // Опція статусу (ONLINE/BUSY/SLEEP/…) обробляється окремо в useUserStatusSync —
+    // прямим патчем кешу, тож тут `userStatusChanged` не слухаємо (уникаємо refetch).
 
     socket.on('tripUpdated', onTripUpdated);
     socket.on('truckChanged', onTruckChanged);
-    socket.on('userStatusChanged', onUserStatusChanged);
     return () => {
       socket.off('tripUpdated', onTripUpdated);
       socket.off('truckChanged', onTruckChanged);
-      socket.off('userStatusChanged', onUserStatusChanged);
     };
   }, [qc, token]);
 }
