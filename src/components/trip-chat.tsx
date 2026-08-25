@@ -68,6 +68,7 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
   const { data: documents = [] } = useTripDocuments(tripId);
   const { data: archiveSessions = [] } = useTripChatArchive(tripId);
   const [archiveOpen, setArchiveOpen] = useState(false);
+  const [docsOpen, setDocsOpen] = useState(false);
 
   // Писати в тріп-чат може лише ПОТОЧНИЙ менеджер/водій рейсу. Якщо менеджера
   // змінили — цей чат стає лише для перегляду (як у вебі: isActiveParticipant).
@@ -188,6 +189,22 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
           <Text style={{ color: c.primary, fontSize: 12, fontWeight: '600' }}>{t('chat.archive.view', 'Переглянути')}</Text>
         </Pressable>
       )}
+
+      {/* Рядок «Чат рейсу»: статус зʼєднання + папка документів */}
+      <View style={[styles.chatLabel, { borderBottomColor: c.border }]}>
+        <Ionicons name="chatbubble-ellipses-outline" size={13} color={c.mutedForeground} />
+        <Text style={[styles.chatLabelText, { color: c.mutedForeground }]}>{t('trip.chatLabel', 'Чат рейсу')}</Text>
+        <View style={[styles.chatDot, { backgroundColor: chat.connected ? '#10B981' : '#f87171' }]} />
+        <Text style={[styles.chatLabelText, { color: chat.connected ? '#10B981' : '#f87171' }]}>
+          {chat.connected ? t('trip.online', 'онлайн') : t('trip.connecting', 'зʼєднання…')}
+        </Text>
+        <View style={{ flex: 1 }} />
+        <Pressable onPress={() => setDocsOpen(true)} hitSlop={6} style={({ pressed }) => [styles.folderBtn, { opacity: pressed ? 0.6 : 1 }]}>
+          <Ionicons name="folder-outline" size={16} color={c.mutedForeground} />
+          <Text style={[styles.chatLabelText, { color: c.mutedForeground }]}>{documents.length}</Text>
+        </Pressable>
+      </View>
+
       {chat.isLoading ? (
         <View style={styles.center}>
           <ActivityIndicator color={c.primary} />
@@ -288,6 +305,15 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
       {tripId ? (
         <ChatArchiveModal visible={archiveOpen} onClose={() => setArchiveOpen(false)} tripId={tripId} myId={myId} />
       ) : null}
+
+      <TripDocsSheet
+        visible={docsOpen}
+        onClose={() => setDocsOpen(false)}
+        docs={documents}
+        onOpen={openDoc}
+        onUpload={showAttachSheet}
+        uploading={uploadDocs.isPending}
+      />
 
       <MessageActionsSheet
         visible={!!sheetFor}
@@ -442,7 +468,99 @@ function DocBubble({ doc, isOwn, onOpen, onLongPress }: { doc: DriverDocument; i
   );
 }
 
+type DocTab = 'ALL' | 'PHOTO' | 'DOCUMENT';
+
+function TripDocsSheet({
+  visible,
+  onClose,
+  docs,
+  onOpen,
+  onUpload,
+  uploading,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  docs: DriverDocument[];
+  onOpen: (d: DriverDocument) => void;
+  onUpload: () => void;
+  uploading: boolean;
+}) {
+  const { t } = useTranslation();
+  const c = Colors[useColorScheme() ?? 'light'];
+  const insets = useSafeAreaInsets();
+  const [tab, setTab] = useState<DocTab>('ALL');
+  const photos = docs.filter((d) => d.fileType === 'PHOTO');
+  const files = docs.filter((d) => d.fileType === 'DOCUMENT');
+  const filtered = tab === 'ALL' ? docs : tab === 'PHOTO' ? photos : files;
+  const tabs: { key: DocTab; label: string; count: number }[] = [
+    { key: 'ALL', label: t('documents.tabs.all', 'Усі'), count: docs.length },
+    { key: 'PHOTO', label: t('documents.tabs.photos', 'Фото'), count: photos.length },
+    { key: 'DOCUMENT', label: t('documents.tabs.files', 'Файли'), count: files.length },
+  ];
+  return (
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+      <View style={{ flex: 1, backgroundColor: c.background }}>
+        <View style={[styles.docsHeader, { backgroundColor: c.card, borderBottomColor: c.border, paddingTop: insets.top + Spacing.sm }]}>
+          <Pressable onPress={onClose} hitSlop={8} style={{ padding: 4 }}>
+            <Ionicons name="close" size={24} color={c.foreground} />
+          </Pressable>
+          <Text style={[styles.docsTitle, { color: c.foreground }]}>{t('trip.docsTitle', 'Документи рейсу')}</Text>
+          <Pressable onPress={onUpload} disabled={uploading} hitSlop={8} style={({ pressed }) => [styles.docsUpload, { backgroundColor: c.primary, opacity: pressed || uploading ? 0.85 : 1 }]}>
+            {uploading ? <ActivityIndicator size="small" color={c.primaryForeground} /> : <Ionicons name="add" size={20} color={c.primaryForeground} />}
+          </Pressable>
+        </View>
+        <View style={styles.docsTabs}>
+          {tabs.map((tb) => (
+            <Pressable key={tb.key} onPress={() => setTab(tb.key)} style={[styles.docsTab, { backgroundColor: tab === tb.key ? c.muted : 'transparent' }]}>
+              <Text style={{ fontSize: 13, fontWeight: tab === tb.key ? '700' : '500', color: tab === tb.key ? c.foreground : c.mutedForeground }}>
+                {`${tb.label} ${tb.count}`}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+        {filtered.length === 0 ? (
+          <View style={styles.center}>
+            <Ionicons name="folder-open-outline" size={34} color={c.mutedForeground} style={{ opacity: 0.4, marginBottom: Spacing.sm }} />
+            <Text style={{ color: c.mutedForeground }}>{t('documents.empty', 'Документів немає')}</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={filtered}
+            keyExtractor={(d) => d.id}
+            contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm }}
+            renderItem={({ item }) => (
+              <Pressable onPress={() => onOpen(item)} style={[styles.docItem, { borderColor: c.border }]}>
+                {item.fileType === 'PHOTO' ? (
+                  <Image source={{ uri: item.signedUrl }} style={styles.docSheetThumb} />
+                ) : (
+                  <View style={[styles.docSheetThumb, styles.docSheetThumbFile, { backgroundColor: c.muted }]}>
+                    <Ionicons name="document-text-outline" size={22} color={c.mutedForeground} />
+                  </View>
+                )}
+                <Text style={{ flex: 1, fontSize: 14, color: c.foreground }} numberOfLines={2}>{item.fileName}</Text>
+                <Ionicons name="open-outline" size={18} color={c.mutedForeground} />
+              </Pressable>
+            )}
+          />
+        )}
+      </View>
+    </Modal>
+  );
+}
+
 const styles = StyleSheet.create({
+  chatLabel: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: Spacing.md, paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth },
+  chatLabelText: { fontSize: 12, fontWeight: '600' },
+  chatDot: { width: 7, height: 7, borderRadius: 4, marginLeft: 4 },
+  folderBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 6, paddingVertical: 2 },
+  docsHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: Spacing.md, paddingBottom: Spacing.sm, borderBottomWidth: StyleSheet.hairlineWidth },
+  docsTitle: { fontSize: 16, fontWeight: '700' },
+  docsUpload: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
+  docsTabs: { flexDirection: 'row', gap: Spacing.sm, paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm },
+  docsTab: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: Radius.md },
+  docItem: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, borderWidth: StyleSheet.hairlineWidth, borderRadius: 12, padding: Spacing.sm },
+  docSheetThumb: { width: 44, height: 44, borderRadius: 8 },
+  docSheetThumbFile: { alignItems: 'center', justifyContent: 'center' },
   root: { flex: 1 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   typing: { fontSize: 11, paddingHorizontal: Spacing.md, paddingBottom: 2 },
