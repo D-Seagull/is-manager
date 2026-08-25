@@ -180,16 +180,6 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
     <View style={styles.root}>
       <ChatBackground />
       <TripHeader tripId={tripId} />
-      {archiveSessions.length > 0 && (
-        <Pressable onPress={() => setArchiveOpen(true)} style={[styles.archiveBanner, { backgroundColor: c.muted, borderBottomColor: c.border }]}>
-          <Ionicons name="time-outline" size={15} color={c.mutedForeground} />
-          <Text style={{ flex: 1, color: c.mutedForeground, fontSize: 12 }} numberOfLines={1}>
-            {t('chat.archive.banner', { defaultValue: 'Попередні чати: {{count}}', count: archiveSessions.length })}
-          </Text>
-          <Text style={{ color: c.primary, fontSize: 12, fontWeight: '600' }}>{t('chat.archive.view', 'Переглянути')}</Text>
-        </Pressable>
-      )}
-
       {/* Рядок «Чат рейсу»: статус зʼєднання + папка документів */}
       <View style={[styles.chatLabel, { borderBottomColor: c.border }]}>
         <Ionicons name="chatbubble-ellipses-outline" size={13} color={c.mutedForeground} />
@@ -204,6 +194,16 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
           <Text style={[styles.chatLabelText, { color: c.mutedForeground }]}>{documents.length}</Text>
         </Pressable>
       </View>
+
+      {archiveSessions.length > 0 && (
+        <Pressable onPress={() => setArchiveOpen(true)} style={[styles.archiveBanner, { backgroundColor: c.muted, borderBottomColor: c.border }]}>
+          <Ionicons name="time-outline" size={15} color={c.mutedForeground} />
+          <Text style={{ flex: 1, color: c.mutedForeground, fontSize: 12 }} numberOfLines={1}>
+            {t('chat.archive.banner', { defaultValue: 'Попередні чати: {{count}}', count: archiveSessions.length })}
+          </Text>
+          <Text style={{ color: c.primary, fontSize: 12, fontWeight: '600' }}>{t('chat.archive.view', 'Переглянути')}</Text>
+        </Pressable>
+      )}
 
       {chat.isLoading ? (
         <View style={styles.center}>
