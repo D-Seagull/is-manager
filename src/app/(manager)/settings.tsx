@@ -83,7 +83,7 @@ export default function SettingsScreen() {
         <View style={styles.center}><ActivityIndicator color={c.primary} /></View>
       ) : (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-          <ScrollView contentContainerStyle={{ padding: Spacing.md, gap: Spacing.lg }} keyboardShouldPersistTaps="handled">
+          <ScrollView contentContainerStyle={{ padding: Spacing.md, paddingBottom: insets.bottom + Spacing.xl, gap: Spacing.lg }} keyboardShouldPersistTaps="handled">
             {company?.name ? (
               <View style={[styles.card, { backgroundColor: c.card, borderColor: c.border }]}>
                 <Text style={{ fontSize: 12, color: c.mutedForeground }}>{t('settings.company.name', 'Компанія')}</Text>
