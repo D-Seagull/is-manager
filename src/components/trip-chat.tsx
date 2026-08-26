@@ -55,7 +55,7 @@ type TimelineItem =
   | { kind: 'msg'; data: ChatMessage; ts: number }
   | { kind: 'doc'; data: DriverDocument; ts: number };
 
-export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocused: boolean }) {
+export function TripChat({ tripId, isFocused, loading }: { tripId: string | null; isFocused: boolean; loading?: boolean }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
@@ -92,6 +92,15 @@ export function TripChat({ tripId, isFocused }: { tripId: string | null; isFocus
   }, [chat.messages, documents]);
 
   if (!tripId) {
+    // Поки трак/рейс ще вантажиться — показуємо лоадер, а не «немає рейсу»
+    // (інакше на повільному з'єднанні блимає хибне повідомлення).
+    if (loading) {
+      return (
+        <View style={[styles.center, { backgroundColor: c.background }]}>
+          <ActivityIndicator color={c.primary} />
+        </View>
+      );
+    }
     return (
       <ScreenPlaceholder
         icon="chatbubbles-outline"

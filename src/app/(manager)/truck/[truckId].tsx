@@ -45,7 +45,7 @@ export default function TruckDetailScreen() {
 
   // Трак тягнемо по id (GET /trucks/:id) — працює для будь-якого трака компанії
   // (не лише «моїх») і повертає manager + активний рейс.
-  const { data: truck } = useTruck(truckId);
+  const { data: truck, isLoading: truckLoading } = useTruck(truckId);
   const activeTripId = truck?.trips?.[0]?.id ?? null;
   const driverName = fullName(truck?.currentDriver);
   const [newTripOpen, setNewTripOpen] = useState(false);
@@ -105,7 +105,7 @@ export default function TruckDetailScreen() {
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={0} style={styles.fill}>
         <View style={styles.content}>
           {tab === 'chat' ? (
-            <TripChat tripId={selectedTripId ?? activeTripId} isFocused={tab === 'chat'} />
+            <TripChat tripId={selectedTripId ?? activeTripId} isFocused={tab === 'chat'} loading={truckLoading} />
           ) : tab === 'trips' ? (
             <TripsTab
               truckId={truckId ?? ''}
