@@ -200,7 +200,7 @@ export default function AccountScreen() {
         style={{ flex: 1 }}
         contentContainerStyle={{
           padding: Spacing.md,
-          paddingBottom: Math.max(insets.bottom, Spacing.md) + Spacing.lg,
+          paddingBottom: insets.bottom + Spacing.xl,
           gap: Spacing.lg,
         }}
         showsVerticalScrollIndicator={false}
@@ -305,6 +305,31 @@ export default function AccountScreen() {
           </View>
         </SectionCard>
 
+        {/* Save — profile (name) changes; language saves itself on pick. */}
+        <View style={{ gap: Spacing.xs }}>
+          <Pressable
+            onPress={handleSaveProfile}
+            disabled={!canSaveProfile}
+            style={({ pressed }) => [
+              styles.saveBtn,
+              { backgroundColor: canSaveProfile ? c.primary : c.muted, opacity: pressed && canSaveProfile ? 0.85 : 1 },
+            ]}
+          >
+            {savingProfile ? (
+              <ActivityIndicator color={c.primaryForeground} />
+            ) : (
+              <Text style={[styles.saveText, { color: canSaveProfile ? c.primaryForeground : c.mutedForeground }]}>
+                {t('settings.saveChanges', 'Зберегти')}
+              </Text>
+            )}
+          </Pressable>
+          {savedHint && (
+            <Text style={[styles.savedHint, { color: c.primary }]}>
+              {t('settings.saved', 'Збережено')}
+            </Text>
+          )}
+        </View>
+
         {/* Language */}
         <SectionCard colors={c} title={t('settings.language.title', 'Мова')}>
           <Pressable
@@ -364,31 +389,6 @@ export default function AccountScreen() {
             </Pressable>
           </SectionCard>
         )}
-
-        {/* Save */}
-        <View style={{ gap: Spacing.xs }}>
-          <Pressable
-            onPress={handleSaveProfile}
-            disabled={!canSaveProfile}
-            style={({ pressed }) => [
-              styles.saveBtn,
-              { backgroundColor: canSaveProfile ? c.primary : c.muted, opacity: pressed && canSaveProfile ? 0.85 : 1 },
-            ]}
-          >
-            {savingProfile ? (
-              <ActivityIndicator color={c.primaryForeground} />
-            ) : (
-              <Text style={[styles.saveText, { color: canSaveProfile ? c.primaryForeground : c.mutedForeground }]}>
-                {t('settings.saveChanges', 'Зберегти')}
-              </Text>
-            )}
-          </Pressable>
-          {savedHint && (
-            <Text style={[styles.savedHint, { color: c.primary }]}>
-              {t('settings.saved', 'Збережено')}
-            </Text>
-          )}
-        </View>
 
         {/* Logout */}
         <Pressable
