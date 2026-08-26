@@ -15,9 +15,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { ThemeProvider } from '@/hooks/use-theme';
-import { setAppLanguage } from '@/lib/i18n';
 import { queryClient } from '@/lib/query';
-import { useAuthStore } from '@/store/auth';
 
 // Tell React Query when the app returns to foreground from background.
 // We track the PREVIOUS state so we only trigger on a real background→active
@@ -38,14 +36,10 @@ function useAppStateRefetch() {
   }, []);
 }
 
-// Keep the app UI language in sync with the user's saved language (set from the
-// Settings picker). Falls back to the device locale / EN via lib/i18n.
-function useSyncLanguage() {
-  const lang = useAuthStore((s) => s.user?.language);
-  useEffect(() => {
-    setAppLanguage(lang);
-  }, [lang]);
-}
+// The app UI language follows the device locale by default and is overridden
+// only by an explicit pick in Settings (persisted locally via lib/i18n). The
+// server `uiLocale` is written on pick for web/cross-device parity but is not
+// auto-applied here — otherwise its UK default would override the phone locale.
 
 export const unstable_settings = {
   anchor: '(manager)',
@@ -53,7 +47,6 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   useAppStateRefetch();
-  useSyncLanguage();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>

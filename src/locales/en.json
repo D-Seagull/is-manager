@@ -1,69 +1,29 @@
 {
-  "common": {
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "save": "Save",
-    "reply": "Reply",
-    "copy": "Copy",
-    "edit": "Edit",
-    "search": "Search",
-    "upload": "Upload",
-    "noMatches": "No matches.",
-    "loading": "Loading…",
-    "messageDeleted": "Message deleted",
-    "fileDeleted": "File deleted",
-    "file": "File",
-    "error": "Error"
-  },
-  "chatDir": {
-    "searchPlaceholder": "Search name, phone or truck…",
-    "otherContacts": "Other contacts",
-    "noConversations": "No conversations yet.",
-    "teamlead": "Teamlead"
-  },
-  "groups": {
-    "empty": {
-      "title": "No groups yet",
-      "subtitle": "Your company's driver group will appear here."
+  "alarm": {
+    "title": "Alarms",
+    "new": "+ New",
+    "create": "Create",
+    "empty": "No alarms",
+    "titlePlaceholder": "Title",
+    "notePlaceholder": "Note (optional)",
+    "linkToTrip": "Link to active trip",
+    "restartIn": "Restart in",
+    "deleteConfirm": "Delete alarm?",
+    "toMe": "To me",
+    "self": "Myself",
+    "driverNone": "Driver",
+    "noDriverAlert": "The truck has no driver",
+    "recurrence": {
+      "NONE": "Once",
+      "DAILY": "Daily",
+      "WEEKLY": "Weekly"
     },
-    "memberCount_one": "{{count}} driver",
-    "memberCount_other": "{{count}} drivers",
-    "placeholderSubtitle": "Driver-only groups. You can add other drivers as members."
-  },
-  "settings": {
-    "title": "Settings",
-    "driverFallback": "Driver",
-    "avatar": {
-      "title": "Profile photo",
-      "change": "Change",
-      "remove": "Remove"
-    },
-    "status": { "title": "Status" },
-    "name": {
-      "title": "Name",
-      "first": "First name",
-      "firstPlaceholder": "John",
-      "last": "Last name (optional)",
-      "lastPlaceholder": "Smith"
-    },
-    "language": {
-      "title": "Language",
-      "pick": "Choose language"
-    },
-    "saveChanges": "Save changes",
-    "saved": "Changes saved ✓",
-    "logout": "Log out",
-    "logoutConfirm": {
-      "title": "Log out",
-      "body": "Log out for sure?",
-      "confirm": "Log out"
-    },
-    "errors": {
-      "saveProfile": "Couldn't save changes.",
-      "photoPermTitle": "Photo access",
-      "photoPermBody": "Allow gallery access to pick a profile photo.",
-      "uploadAvatar": "Couldn't upload photo.",
-      "deleteAvatar": "Couldn't delete photo."
+    "offsets": {
+      "off5": "5 min",
+      "off15": "15 min",
+      "off30": "30 min",
+      "off60": "1 h",
+      "off120": "2 h"
     }
   },
   "auth": {
@@ -87,166 +47,133 @@
       "invalidCode": "Invalid code."
     }
   },
-  "alarm": {
-    "myAlarms": "My alarms ({{count}})",
-    "new": "+ New",
-    "reuseTitle": "Restart in…",
-    "from": "from {{name}}",
-    "recurrence": {
-      "NONE": "Once",
-      "DAILY": "Daily",
-      "WEEKLY": "Weekly"
-    },
-    "quickOffsets": {
-      "min5": "+5 min",
-      "min15": "+15 min",
-      "min30": "+30 min",
-      "hour1": "+1 h",
-      "hour2": "+2 h"
-    },
-    "form": {
-      "title": "Title *",
-      "titlePlaceholder": "e.g. Call the client",
-      "note": "Comment",
-      "notePlaceholder": "Details (optional)",
-      "when": "When",
-      "recurrence": "Repeat",
-      "submit": "Create"
-    },
-    "picker": {
-      "pickDate": "Choose date",
-      "pickTime": "Choose time",
-      "done": "Done"
-    },
-    "deleteConfirm": {
-      "title": "Delete alarm?"
-    },
-    "empty": {
-      "title": "No alarms",
-      "subtitle": "Tap \"+ New\" to set a reminder."
-    },
-    "errors": {
-      "titleRequired": "Title is required",
-      "createFailed": "Couldn't create the alarm"
-    }
-  },
-  "sys": {
-    "driverAssigned": "Driver {{name}} assigned to truck {{plate}}",
-    "managerAssigned": "Manager {{name}} assigned to truck {{plate}}"
+  "broadcast": {
+    "title": "Broadcast to drivers",
+    "subtitle": "The message goes to the drivers of all your trucks.",
+    "subjectPlaceholder": "Subject (optional)",
+    "messagePlaceholder": "Message text…",
+    "sendButton": "Send",
+    "sentTitle": "Sent",
+    "sentBody": "{{count}} drivers received the message.",
+    "sendError": "Couldn't send the broadcast.",
+    "templates": "Templates",
+    "saveTemplate": "Save template",
+    "noTemplates": "No saved templates",
+    "defaultTemplateName": "Template",
+    "templateError": "Couldn't save the template."
   },
   "chat": {
-    "typingOne": "is typing",
-    "typingMany": "are typing",
-    "editingMessage": "Editing message",
-    "replyTo": "Reply to {{name}}",
-    "unknownSender": "Unknown",
-    "deleted": "Deleted",
-    "editedShort": "(ed.)",
     "messagePlaceholder": "Message…",
     "editPlaceholder": "Edit the message…",
-    "emptyChat": "No messages yet. Start the conversation.",
-    "groupFallback": "Group",
+    "editingMessage": "Editing message",
+    "editedShort": "(ed.)",
+    "replyTo": "Reply to {{name}}",
+    "typing": "{{name}} is typing…",
+    "unknownSender": "Unknown",
     "groupChat": "Group chat",
-    "groupDocsTitle": "Group documents"
-  },
-  "trip": {
-    "noActiveTrip": {
-      "title": "No active trip",
-      "subtitle": "When your manager assigns a trip, it'll show up here. Pull down to refresh."
-    },
-    "chatLabel": "Trip chat",
-    "nextTripLabel": "Next: {{title}}",
-    "nextTripHint": "Becomes active once the current one is finished",
-    "nextAssigned": {
-      "title": "You've been assigned the next order",
-      "loadingAt": "Loading: {{address}}"
-    },
-    "online": "online",
-    "connecting": "connecting…",
-    "newCount_one": "{{count}} new",
-    "newCount_other": "{{count}} new",
-    "readOnlyNotice": "You're no longer a member of this chat — read-only.",
-    "docsTitle": "Trip documents",
-    "attachSheet": { "title": "Attach" },
-    "stops": {
-      "loading": "Loading",
-      "unloading": "Unloading"
+    "groupDocsTitle": "Group documents",
+    "groupFallback": "Group",
+    "archive": {
+      "title": "Previous chats",
+      "titleSession": "Archived conversation",
+      "banner": "Previous chats: {{count}}",
+      "view": "View",
+      "noSessions": "No archived conversations",
+      "noMessages": "No messages",
+      "reason": {
+        "DRIVER_CHANGED": "Driver changed",
+        "MANAGER_CHANGED": "Manager changed",
+        "TRIP_COMPLETED": "Trip completed",
+        "LEGACY_RESET": "Reset"
+      }
     }
   },
-  "tripStatus": {
-    "ASSIGNED": "Assigned",
-    "ACCEPTED": "Accepted",
-    "ON_WAY": "On Way",
-    "ON_SITE": "On Site",
-    "LOADED": "Loaded",
-    "DELIVERED": "Delivered"
+  "chatDir": {
+    "searchPlaceholder": "Search name, phone or truck…",
+    "noConversations": "No conversations yet.",
+    "otherContacts": "Other contacts",
+    "teamlead": "Teamlead"
   },
-  "trips": {
-    "searchPlaceholder": "Search by route, order #, address…",
-    "active": "Active",
-    "next": "Upcoming",
-    "nextTag": "Next",
-    "done": "Completed",
-    "empty": {
-      "title": "No trips yet",
-      "subtitle": "Trips assigned to you will appear here."
-    },
-    "noMatches": {
-      "title": "No matches",
-      "subtitle": "Try a different search."
-    }
+  "common": {
+    "cancel": "Cancel",
+    "copy": "Copy",
+    "delete": "Delete",
+    "edit": "Edit",
+    "empty": "Empty",
+    "error": "Error",
+    "file": "File",
+    "fileDeleted": "File deleted",
+    "messageDeleted": "Message deleted",
+    "noMatches": "No matches.",
+    "reply": "Reply",
+    "save": "Save",
+    "search": "Search…",
+    "soon": "Soon",
+    "upload": "Upload"
   },
   "documents": {
-    "active": "Active",
-    "searchPlaceholder": "Trip #, date or postcode…",
-    "noTruck": {
-      "subtitle": "Documents are linked to your truck. Once your manager assigns one, they'll show up here."
-    },
-    "empty": {
-      "title": "No documents yet",
-      "subtitleActive": "Tap Upload to add photos or files for the current trip.",
-      "subtitleInactive": "When you have a trip with uploaded files, they'll appear here."
-    },
+    "empty": "No documents",
     "nothingHere": "Nothing here yet.",
+    "cannotOpen": "Cannot open",
+    "uploadFailed": "Upload failed",
+    "tabs": {
+      "all": "All",
+      "documents": "Documents",
+      "files": "Files",
+      "photos": "Photos"
+    },
     "uploadSheet": {
-      "title": "Upload",
       "subtitle": "Choose source",
       "camera": "Camera",
       "gallery": "Gallery",
       "file": "File"
-    },
-    "uploadFailed": "Upload failed",
-    "cannotOpen": "Cannot open",
-    "deleteConfirm": {
-      "title": "Delete?",
-      "body": "{{name}} will be permanently removed."
-    },
-    "tabs": {
-      "all": "All",
-      "photos": "Photos",
-      "documents": "Documents"
     }
   },
-  "truck": {
-    "status": {
-      "AVAILABLE": "Available",
-      "ON_TRIP": "On trip",
-      "REPAIR": "Repair"
+  "drivers": {
+    "addDriver": "New driver",
+    "inviteHint": "The driver signs in with their phone number via an SMS code."
+  },
+  "forgot": {
+    "title": "Password recovery",
+    "subtitle": "Enter your email — we'll send a password reset link.",
+    "submit": "Send",
+    "sent": "If that email exists, we've sent a message with instructions.",
+    "back": "← Back to sign in"
+  },
+  "groups": {
+    "empty": {
+      "title": "No groups yet",
+      "subtitle": "Your company's driver group will appear here."
     },
-    "noTruck": {
-      "title": "No truck assigned",
-      "subtitle": "When a manager assigns a truck to you, it'll appear here."
-    },
-    "dispatcher": "Manager",
-    "unknownUser": "Unknown",
-    "notes": {
-      "title": "Notes ({{count}})",
-      "placeholder": "Add a note visible to manager…",
-      "empty": "No notes yet. Add one above.",
-      "saveError": "Could not save note. Please try again.",
-      "deleteTitle": "Delete note",
-      "deleteBody": "Remove this note?"
-    }
+    "memberCount_one": "{{count}} driver",
+    "memberCount_other": "{{count}} drivers"
+  },
+  "home": {
+    "myTrucksSub": "Your fleet & trips",
+    "managersSub": "Your team of managers"
+  },
+  "info": {
+    "notes": "Notes",
+    "noNotes": "No notes",
+    "addNotePlaceholder": "Add a note…",
+    "deleteNote": "Delete note?",
+    "driver": "Driver",
+    "manager": "Manager",
+    "noDriver": "No driver",
+    "noManager": "No manager"
+  },
+  "login": {
+    "title": "IS Fleet · Manager",
+    "subtitle": "Sign in to your account",
+    "email": "Email",
+    "password": "Password",
+    "phone": "Phone",
+    "submit": "Sign in",
+    "forgot": "Forgot password?",
+    "invalidCredentials": "Invalid email or password",
+    "genericError": "Sign-in error",
+    "networkError": "No connection to the server. Please try again.",
+    "driverNotAllowed": "This app is for managers only. Sign in with a manager account."
   },
   "manager": {
     "noManager": "No manager assigned yet.",
@@ -268,42 +195,69 @@
       "submit": "Submit"
     }
   },
+  "managers": {
+    "addManager": "New manager",
+    "inviteHint": "The manager gets an email with a password at the address you enter."
+  },
+  "myTrucks": {
+    "empty": {
+      "title": "No trucks",
+      "subtitle": "No truck is assigned to you yet."
+    },
+    "noDriver": "No driver"
+  },
   "nav": {
     "items": {
-      "trip": "Trip",
-      "trips": "Trips",
-      "truck": "My Truck",
-      "documents": "Documents",
       "chat": "Chat",
-      "alarm": "Alarm"
+      "trips": "Trips",
+      "trucks": "Trucks",
+      "drivers": "Drivers",
+      "managers": "Managers",
+      "myTrucks": "My Trucks",
+      "documents": "Documents",
+      "account": "Account",
+      "settings": "Settings"
     },
     "manager": "Manager",
     "groups": "Groups",
-    "noUnread": "No unread messages",
-    "chatFallback": "Chat",
+    "notifications": "Notifications",
     "driverFallback": "Driver",
-    "openSettings": "Open settings",
-    "toggleTheme": "Toggle theme",
-    "messageManager": "Message manager",
+    "chatFallback": "Chat",
     "fileAttachment": "📎 File"
   },
-  "push": {
-    "noticeTitle": "Notification"
+  "notifications": {
+    "allCaughtUp": "All caught up",
+    "noUnread": "No unread",
+    "unreadCount": "Unread: {{count}}"
   },
-  "status": {
-    "ONLINE": "Online",
-    "BUSY": "Do not disturb",
-    "AWAY": "Away",
-    "SLEEP": "Sleeping",
-    "VACATION": "On vacation",
-    "OFFLINE": "Not in app"
+  "people": {
+    "myTeam": "My team",
+    "allManagers": "All managers",
+    "teamEmpty": "Your team has no other managers",
+    "teamlead": "Team lead",
+    "trucks": "Trucks",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "call": "Call",
+    "message": "Message",
+    "ratings": {
+      "title": "Rating",
+      "rateTitle": "Rate driver",
+      "current": "Your rating",
+      "none": "No ratings",
+      "submit": "Send",
+      "update": "Update",
+      "anonymous": "Anonymous",
+      "commentPlaceholder": "Comment (optional)",
+      "unknown": "—"
+    }
   },
   "presence": {
     "pickStatus": "Choose status",
-    "sleepEllipsis": "Sleep…",
-    "vacationEllipsis": "Vacation…",
     "howLong": "For how long?",
     "noLimit": "No limit",
+    "sleepEllipsis": "Sleep…",
+    "vacationEllipsis": "Vacation…",
     "updateError": "Couldn't update status.",
     "sleepPresets": {
       "min30": "30 min",
@@ -314,8 +268,176 @@
     "vacationPresets": {
       "day1": "1 day",
       "days3": "3 days",
-      "week1": "Week",
+      "week1": "A week",
       "weeks2": "2 weeks"
     }
+  },
+  "push": {
+    "noticeTitle": "Notification"
+  },
+  "settings": {
+    "name": {
+      "title": "Name",
+      "first": "First name",
+      "firstPlaceholder": "Your first name",
+      "last": "Last name (optional)",
+      "lastPlaceholder": "Your last name"
+    },
+    "avatar": {
+      "title": "Profile photo",
+      "change": "Change",
+      "remove": "Remove"
+    },
+    "language": {
+      "title": "Language",
+      "pick": "Choose language"
+    },
+    "status": {
+      "title": "Status"
+    },
+    "theme": {
+      "title": "Theme",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "saveChanges": "Save changes",
+    "saved": "Changes saved ✓",
+    "logout": "Log out",
+    "logoutConfirm": {
+      "title": "Log out?",
+      "body": "Log out for sure?"
+    },
+    "accessDenied": {
+      "description": "These settings are for team leads / admins only."
+    },
+    "company": {
+      "title": "Company",
+      "name": "Company",
+      "settings": "Company settings",
+      "director": "Director",
+      "accounting": "Accounting",
+      "hr": "HR",
+      "emails": "Work emails"
+    },
+    "driverFallback": "Manager",
+    "errors": {
+      "saveProfile": "Couldn't save changes.",
+      "uploadAvatar": "Couldn't upload photo.",
+      "deleteAvatar": "Couldn't delete photo.",
+      "photoPermTitle": "Photo access",
+      "photoPermBody": "Allow gallery access to pick a profile photo."
+    }
+  },
+  "status": {
+    "ONLINE": "Online",
+    "BUSY": "Do not disturb",
+    "AWAY": "Away",
+    "SLEEP": "Sleeping",
+    "VACATION": "On vacation",
+    "OFFLINE": "Not in app"
+  },
+  "stopRow": {
+    "name": "Stop name (e.g. Customs)",
+    "address": "Address",
+    "coords": "Coord.",
+    "date": "Date",
+    "from": "from",
+    "to": "to",
+    "changeType": "Change type"
+  },
+  "sys": {
+    "driverAssigned": "Driver {{name}} assigned to truck {{plate}}",
+    "managerAssigned": "Manager {{name}} assigned to truck {{plate}}"
+  },
+  "trip": {
+    "chatLabel": "Trip chat",
+    "docsTitle": "Trip documents",
+    "attachSheet": {
+      "title": "Attach"
+    },
+    "online": "online",
+    "connecting": "connecting…",
+    "stops": {
+      "route": "Route",
+      "loading": "Loading",
+      "unloading": "Unloading",
+      "waypoint": "Waypoint"
+    },
+    "waypointPreset": {
+      "customs": "Customs",
+      "parking": "Parking",
+      "fuel": "Fuel"
+    }
+  },
+  "tripChat": {
+    "inactive": "You're no longer this trip's manager — the chat is read-only",
+    "noTrip": {
+      "title": "No active trip",
+      "subtitle": "The chat appears once a trip is assigned to the truck."
+    }
+  },
+  "tripStatus": {
+    "ASSIGNED": "Assigned",
+    "ACCEPTED": "Accepted",
+    "ON_WAY": "On Way",
+    "ON_SITE": "On Site",
+    "LOADED": "Loaded",
+    "DELIVERED": "Delivered",
+    "pick": "Trip status"
+  },
+  "trips": {
+    "searchPlaceholder": "Search: order #, plate, driver…"
+  },
+  "truck": {
+    "driverLabel": "Driver",
+    "tabs": {
+      "chat": "Chat",
+      "trips": "Trips",
+      "documents": "Documents",
+      "alarm": "Alarm",
+      "info": "Info"
+    }
+  },
+  "truckPanel": {
+    "newTrip": {
+      "title": "New trip",
+      "editTitle": "Edit trip",
+      "button": "New",
+      "addStop": "Add stop",
+      "driverLabel": "Driver",
+      "selectDriver": "Choose driver",
+      "orderLabel": "Order #",
+      "notesLabel": "Notes",
+      "tripNameLabel": "Trip name",
+      "tripNamePlaceholder": "e.g. Lviv → Krakow",
+      "tripFallbackName": "New trip"
+    },
+    "trips": {
+      "empty": "No trips yet",
+      "noStops": "No stops",
+      "searchPlaceholder": "Search trip…",
+      "sectionActive": "Active",
+      "sectionQueued": "Queued",
+      "sectionDone": "Done"
+    },
+    "documents": {
+      "allTrips": "All trips ({{count}})",
+      "filterTitle": "Filter by trip",
+      "noAttachments": "No documents",
+      "noTrips": "Create a trip first",
+      "searchPlaceholder": "Search: name, date, #…",
+      "uploadTo": "Upload to trip"
+    }
+  },
+  "truckStatus": {
+    "ON_TRIP": "On trip",
+    "REPAIR": "Repair",
+    "AVAILABLE": "Available"
+  },
+  "trucks": {
+    "take": "Take truck",
+    "release": "Release truck",
+    "searchPlaceholder": "Search by plate or driver…"
   }
 }

@@ -1,0 +1,443 @@
+{
+  "alarm": {
+    "title": "Wecker",
+    "new": "+ Neu",
+    "create": "Erstellen",
+    "empty": "Keine Wecker",
+    "titlePlaceholder": "Titel",
+    "notePlaceholder": "Notiz (optional)",
+    "linkToTrip": "Mit aktiver Fahrt verknüpfen",
+    "restartIn": "Neustart in",
+    "deleteConfirm": "Wecker löschen?",
+    "toMe": "An mich",
+    "self": "Mir selbst",
+    "driverNone": "Fahrer",
+    "noDriverAlert": "Der Lkw hat keinen Fahrer",
+    "recurrence": {
+      "NONE": "Einmal",
+      "DAILY": "Täglich",
+      "WEEKLY": "Wöchentlich"
+    },
+    "offsets": {
+      "off5": "5 Min",
+      "off15": "15 Min",
+      "off30": "30 Min",
+      "off60": "1 Std",
+      "off120": "2 Std"
+    }
+  },
+  "auth": {
+    "phone": {
+      "title": "Sign in",
+      "subtitle": "Enter your phone number — we'll send a one-time code via SMS.",
+      "sendCode": "Send code"
+    },
+    "otp": {
+      "title": "Enter code",
+      "subtitle": "We sent a 6-digit code to {{phone}}.",
+      "subtitleFallback": "your phone",
+      "mockHint": "Mock mode — any 6 digits will work (e.g. 123456).",
+      "verify": "Verify",
+      "changePhone": "Change phone number"
+    },
+    "errors": {
+      "server": "Server error ({{status}})",
+      "cannotReach": "Cannot reach server. Check that the backend is running and EXPO_PUBLIC_API_URL is correct.",
+      "sendFailed": "Failed to send code.",
+      "invalidCode": "Invalid code."
+    }
+  },
+  "broadcast": {
+    "title": "Rundnachricht an Fahrer",
+    "subtitle": "Die Nachricht geht an die Fahrer aller Ihrer Lkw.",
+    "subjectPlaceholder": "Betreff (optional)",
+    "messagePlaceholder": "Nachrichtentext…",
+    "sendButton": "Senden",
+    "sentTitle": "Gesendet",
+    "sentBody": "{{count}} Fahrer haben die Nachricht erhalten.",
+    "sendError": "Rundnachricht konnte nicht gesendet werden.",
+    "templates": "Vorlagen",
+    "saveTemplate": "Vorlage speichern",
+    "noTemplates": "Keine gespeicherten Vorlagen",
+    "defaultTemplateName": "Vorlage",
+    "templateError": "Vorlage konnte nicht gespeichert werden."
+  },
+  "chat": {
+    "messagePlaceholder": "Nachricht…",
+    "editPlaceholder": "Nachricht bearbeiten…",
+    "editingMessage": "Nachricht bearbeiten",
+    "editedShort": "(bearb.)",
+    "replyTo": "Antwort an {{name}}",
+    "typing": "{{name}} schreibt…",
+    "unknownSender": "Unbekannt",
+    "groupChat": "Gruppenchat",
+    "groupDocsTitle": "Gruppendokumente",
+    "groupFallback": "Gruppe",
+    "archive": {
+      "title": "Frühere Chats",
+      "titleSession": "Archiviertes Gespräch",
+      "banner": "Frühere Chats: {{count}}",
+      "view": "Ansehen",
+      "noSessions": "Keine archivierten Gespräche",
+      "noMessages": "Keine Nachrichten",
+      "reason": {
+        "DRIVER_CHANGED": "Fahrerwechsel",
+        "MANAGER_CHANGED": "Managerwechsel",
+        "TRIP_COMPLETED": "Fahrt abgeschlossen",
+        "LEGACY_RESET": "Zurücksetzen"
+      }
+    }
+  },
+  "chatDir": {
+    "searchPlaceholder": "Name, Telefon oder Lkw suchen…",
+    "noConversations": "Noch keine Gespräche.",
+    "otherContacts": "Weitere Kontakte",
+    "teamlead": "Teamleiter"
+  },
+  "common": {
+    "cancel": "Abbrechen",
+    "copy": "Kopieren",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "empty": "Leer",
+    "error": "Fehler",
+    "file": "Datei",
+    "fileDeleted": "Datei gelöscht",
+    "messageDeleted": "Nachricht gelöscht",
+    "noMatches": "Keine Treffer.",
+    "reply": "Antworten",
+    "save": "Speichern",
+    "search": "Suchen…",
+    "soon": "Bald",
+    "upload": "Hochladen"
+  },
+  "documents": {
+    "empty": "Keine Dokumente",
+    "nothingHere": "Hier ist noch nichts.",
+    "cannotOpen": "Kann nicht geöffnet werden",
+    "uploadFailed": "Upload fehlgeschlagen",
+    "tabs": {
+      "all": "Alle",
+      "documents": "Dokumente",
+      "files": "Dateien",
+      "photos": "Fotos"
+    },
+    "uploadSheet": {
+      "subtitle": "Quelle wählen",
+      "camera": "Kamera",
+      "gallery": "Galerie",
+      "file": "Datei"
+    }
+  },
+  "drivers": {
+    "addDriver": "Neuer Fahrer",
+    "inviteHint": "Der Fahrer meldet sich mit seiner Telefonnummer per SMS-Code an."
+  },
+  "forgot": {
+    "title": "Passwort zurücksetzen",
+    "subtitle": "Geben Sie Ihre E-Mail ein — wir senden einen Link zum Zurücksetzen des Passworts.",
+    "submit": "Senden",
+    "sent": "Falls diese E-Mail existiert, haben wir eine Nachricht mit Anweisungen gesendet.",
+    "back": "← Zurück zur Anmeldung"
+  },
+  "groups": {
+    "empty": {
+      "title": "Noch keine Gruppen",
+      "subtitle": "Die Fahrergruppe Ihres Unternehmens erscheint hier."
+    },
+    "memberCount_one": "{{count}} Fahrer",
+    "memberCount_other": "{{count}} Fahrer"
+  },
+  "home": {
+    "myTrucksSub": "Ihr Fuhrpark & Fahrten",
+    "managersSub": "Ihr Manager-Team"
+  },
+  "info": {
+    "notes": "Notizen",
+    "noNotes": "Keine Notizen",
+    "addNotePlaceholder": "Notiz hinzufügen…",
+    "deleteNote": "Notiz löschen?",
+    "driver": "Fahrer",
+    "manager": "Manager",
+    "noDriver": "Kein Fahrer",
+    "noManager": "Kein Manager"
+  },
+  "login": {
+    "title": "IS Fleet · Manager",
+    "subtitle": "Melden Sie sich bei Ihrem Konto an",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "phone": "Telefon",
+    "submit": "Anmelden",
+    "forgot": "Passwort vergessen?",
+    "invalidCredentials": "Ungültige E-Mail oder Passwort",
+    "genericError": "Anmeldefehler",
+    "networkError": "Keine Verbindung zum Server. Bitte versuchen Sie es erneut.",
+    "driverNotAllowed": "Diese App ist nur für Manager. Melden Sie sich mit einem Manager-Konto an."
+  },
+  "manager": {
+    "noManager": "No manager assigned yet.",
+    "noRatings": "No ratings yet",
+    "ratingCount_one": "({{count}} rating)",
+    "ratingCount_other": "({{count}} ratings)",
+    "rate": "Rate manager",
+    "updateRating": "Update my rating",
+    "yourRating": "Your current rating",
+    "reviews": "Reviews ({{count}})",
+    "info": {
+      "email": "Email",
+      "phone": "Phone"
+    },
+    "modal": {
+      "title": "Rate your manager",
+      "commentPlaceholder": "Comment (optional)",
+      "anonymous": "Leave anonymously",
+      "submit": "Submit"
+    }
+  },
+  "managers": {
+    "addManager": "Neuer Manager",
+    "inviteHint": "Der Manager erhält eine E-Mail mit einem Passwort an die angegebene Adresse."
+  },
+  "myTrucks": {
+    "empty": {
+      "title": "Keine Lkw",
+      "subtitle": "Ihnen ist noch kein Lkw zugewiesen."
+    },
+    "noDriver": "Kein Fahrer"
+  },
+  "nav": {
+    "items": {
+      "chat": "Chat",
+      "trips": "Fahrten",
+      "trucks": "Lkw",
+      "drivers": "Fahrer",
+      "managers": "Manager",
+      "myTrucks": "Meine Lkw",
+      "documents": "Dokumente",
+      "account": "Konto",
+      "settings": "Einstellungen"
+    },
+    "manager": "Manager",
+    "groups": "Gruppen",
+    "notifications": "Benachrichtigungen",
+    "driverFallback": "Fahrer",
+    "chatFallback": "Chat",
+    "fileAttachment": "📎 Datei"
+  },
+  "notifications": {
+    "allCaughtUp": "Alles gelesen",
+    "noUnread": "Keine ungelesenen",
+    "unreadCount": "Ungelesen: {{count}}"
+  },
+  "people": {
+    "myTeam": "Mein Team",
+    "allManagers": "Alle Manager",
+    "teamEmpty": "Ihr Team hat keine weiteren Manager",
+    "teamlead": "Teamleiter",
+    "trucks": "Lkw",
+    "activate": "Aktivieren",
+    "deactivate": "Deaktivieren",
+    "call": "Anrufen",
+    "message": "Nachricht",
+    "ratings": {
+      "title": "Bewertung",
+      "rateTitle": "Fahrer bewerten",
+      "current": "Ihre Bewertung",
+      "none": "Keine Bewertungen",
+      "submit": "Senden",
+      "update": "Aktualisieren",
+      "anonymous": "Anonym",
+      "commentPlaceholder": "Kommentar (optional)",
+      "unknown": "—"
+    }
+  },
+  "presence": {
+    "pickStatus": "Status wählen",
+    "howLong": "Für wie lange?",
+    "noLimit": "Keine Begrenzung",
+    "sleepEllipsis": "Schlafen…",
+    "vacationEllipsis": "Urlaub…",
+    "updateError": "Status konnte nicht aktualisiert werden.",
+    "sleepPresets": {
+      "min30": "30 Min",
+      "hours2": "2 Stunden",
+      "shortRest": "9 Stunden (kurze Ruhe)",
+      "regularRest": "11 Stunden (reguläre Ruhe)"
+    },
+    "vacationPresets": {
+      "day1": "1 Tag",
+      "days3": "3 Tage",
+      "week1": "Eine Woche",
+      "weeks2": "2 Wochen"
+    }
+  },
+  "push": {
+    "noticeTitle": "Notification"
+  },
+  "settings": {
+    "name": {
+      "title": "Name",
+      "first": "Vorname",
+      "firstPlaceholder": "Ihr Vorname",
+      "last": "Nachname (optional)",
+      "lastPlaceholder": "Ihr Nachname"
+    },
+    "avatar": {
+      "title": "Profilfoto",
+      "change": "Ändern",
+      "remove": "Entfernen"
+    },
+    "language": {
+      "title": "Sprache",
+      "pick": "Sprache wählen"
+    },
+    "status": {
+      "title": "Status"
+    },
+    "theme": {
+      "title": "Design",
+      "system": "System",
+      "light": "Hell",
+      "dark": "Dunkel"
+    },
+    "saveChanges": "Änderungen speichern",
+    "saved": "Gespeichert ✓",
+    "logout": "Abmelden",
+    "logoutConfirm": {
+      "title": "Abmelden?",
+      "body": "Wirklich abmelden?"
+    },
+    "accessDenied": {
+      "description": "Diese Einstellungen sind nur für Teamleiter / Administratoren."
+    },
+    "company": {
+      "title": "Firma",
+      "name": "Firma",
+      "settings": "Firmeneinstellungen",
+      "director": "Direktor",
+      "accounting": "Buchhaltung",
+      "hr": "Personal (HR)",
+      "emails": "Dienstliche E-Mails"
+    },
+    "driverFallback": "Manager",
+    "errors": {
+      "saveProfile": "Änderungen konnten nicht gespeichert werden.",
+      "uploadAvatar": "Foto konnte nicht hochgeladen werden.",
+      "deleteAvatar": "Foto konnte nicht gelöscht werden.",
+      "photoPermTitle": "Fotozugriff",
+      "photoPermBody": "Erlauben Sie den Galeriezugriff, um ein Profilfoto auszuwählen."
+    }
+  },
+  "status": {
+    "ONLINE": "online",
+    "BUSY": "nicht stören",
+    "AWAY": "abwesend",
+    "SLEEP": "schläft",
+    "VACATION": "im Urlaub",
+    "OFFLINE": "nicht in der App"
+  },
+  "stopRow": {
+    "name": "Stoppname (z. B. Zoll)",
+    "address": "Adresse",
+    "coords": "Koord.",
+    "date": "Datum",
+    "from": "von",
+    "to": "bis",
+    "changeType": "Typ ändern"
+  },
+  "sys": {
+    "driverAssigned": "Fahrer {{name}} dem Lkw {{plate}} zugewiesen",
+    "managerAssigned": "Manager {{name}} dem Lkw {{plate}} zugewiesen"
+  },
+  "trip": {
+    "chatLabel": "Fahrt-Chat",
+    "docsTitle": "Fahrtdokumente",
+    "attachSheet": {
+      "title": "Anhängen"
+    },
+    "online": "online",
+    "connecting": "verbinden…",
+    "stops": {
+      "route": "Route",
+      "loading": "Beladung",
+      "unloading": "Entladung",
+      "waypoint": "Zwischenstopp"
+    },
+    "waypointPreset": {
+      "customs": "Zoll",
+      "parking": "Parken",
+      "fuel": "Tanken"
+    }
+  },
+  "tripChat": {
+    "inactive": "Sie sind nicht mehr der Manager dieser Fahrt — der Chat ist schreibgeschützt",
+    "noTrip": {
+      "title": "Keine aktive Fahrt",
+      "subtitle": "Der Chat erscheint, sobald dem Lkw eine Fahrt zugewiesen wird."
+    }
+  },
+  "tripStatus": {
+    "ASSIGNED": "Zugewiesen",
+    "ACCEPTED": "Angenommen",
+    "ON_WAY": "Unterwegs",
+    "ON_SITE": "Vor Ort",
+    "LOADED": "Beladen",
+    "DELIVERED": "Zugestellt",
+    "pick": "Fahrtstatus"
+  },
+  "trips": {
+    "searchPlaceholder": "Suche: Auftrags-Nr., Kennzeichen, Fahrer…"
+  },
+  "truck": {
+    "driverLabel": "Fahrer",
+    "tabs": {
+      "chat": "Chat",
+      "trips": "Fahrten",
+      "documents": "Dokumente",
+      "alarm": "Wecker",
+      "info": "Info"
+    }
+  },
+  "truckPanel": {
+    "newTrip": {
+      "title": "Neue Fahrt",
+      "editTitle": "Fahrt bearbeiten",
+      "button": "Neu",
+      "addStop": "Stopp hinzufügen",
+      "driverLabel": "Fahrer",
+      "selectDriver": "Fahrer wählen",
+      "orderLabel": "Auftrags-Nr.",
+      "notesLabel": "Notizen",
+      "tripNameLabel": "Fahrtname",
+      "tripNamePlaceholder": "z. B. Lviv → Krakau",
+      "tripFallbackName": "Neue Fahrt"
+    },
+    "trips": {
+      "empty": "Noch keine Fahrten",
+      "noStops": "Keine Stopps",
+      "searchPlaceholder": "Fahrt suchen…",
+      "sectionActive": "Aktiv",
+      "sectionQueued": "In Warteschlange",
+      "sectionDone": "Erledigt"
+    },
+    "documents": {
+      "allTrips": "Alle Fahrten ({{count}})",
+      "filterTitle": "Nach Fahrt filtern",
+      "noAttachments": "Keine Dokumente",
+      "noTrips": "Erstellen Sie zuerst eine Fahrt",
+      "searchPlaceholder": "Suche: Name, Datum, Nr…",
+      "uploadTo": "Zur Fahrt hochladen"
+    }
+  },
+  "truckStatus": {
+    "ON_TRIP": "Unterwegs",
+    "REPAIR": "Reparatur",
+    "AVAILABLE": "Verfügbar"
+  },
+  "trucks": {
+    "take": "Lkw übernehmen",
+    "release": "Lkw freigeben",
+    "searchPlaceholder": "Nach Kennzeichen oder Fahrer suchen…"
+  }
+}

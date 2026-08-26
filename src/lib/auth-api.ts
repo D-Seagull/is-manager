@@ -17,6 +17,14 @@ export type AppLanguage =
   | 'HI'
   | 'RU';
 
+/**
+ * UI-language preference (`User.uiLocale`) — which locales/*.json the app
+ * renders. Kept separate from `language`, which is the chat auto-translation
+ * preference. This is the enum the Settings language picker drives, and it is
+ * the only one that includes German.
+ */
+export type UILocale = 'UK' | 'EN' | 'PL' | 'LT' | 'DE' | 'RU';
+
 export interface AuthUser {
   id: string;
   role: 'DRIVER' | 'MANAGER' | 'TEAMLEAD' | 'ADMIN';
@@ -27,6 +35,7 @@ export interface AuthUser {
   phone?: string | null;
   avatar?: string | null;
   language?: AppLanguage;
+  uiLocale?: UILocale;
   status?: UserStatus;
   statusUntil?: string | null;
   timezone?: string | null;
@@ -119,6 +128,7 @@ export interface UpdateMePayload {
   lastName?: string | null;
   phone?: string;
   language?: AppLanguage;
+  uiLocale?: UILocale;
   status?: UserStatus;
   /** ISO-8601 timestamp at which BUSY/SLEEP should auto-clear, or null for
    *  indefinite. Omit to leave the timer untouched. */

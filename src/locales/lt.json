@@ -1,70 +1,29 @@
 {
-  "common": {
-    "cancel": "Atšaukti",
-    "delete": "Ištrinti",
-    "save": "Išsaugoti",
-    "reply": "Atsakyti",
-    "copy": "Kopijuoti",
-    "edit": "Redaguoti",
-    "search": "Ieškoti",
-    "upload": "Įkelti",
-    "noMatches": "Nėra atitikmenų.",
-    "loading": "Įkeliama…",
-    "messageDeleted": "Žinutė ištrinta",
-    "fileDeleted": "Failas ištrintas",
-    "file": "Failas",
-    "error": "Klaida"
-  },
-  "chatDir": {
-    "searchPlaceholder": "Ieškoti pagal vardą, telefoną ar vilkiką…",
-    "otherContacts": "Kiti kontaktai",
-    "noConversations": "Kol kas nėra pokalbių.",
-    "teamlead": "Komandos vadovas"
-  },
-  "groups": {
-    "empty": {
-      "title": "Kol kas nėra grupių",
-      "subtitle": "Jūsų įmonės vairuotojų grupė atsiras čia."
+  "alarm": {
+    "title": "Žadintuvai",
+    "new": "Naujas",
+    "create": "Sukurti",
+    "empty": "Nėra žadintuvų",
+    "titlePlaceholder": "Pavadinimas",
+    "notePlaceholder": "Pastaba (nebūtina)",
+    "linkToTrip": "Susieti su aktyviu reisu",
+    "restartIn": "Paleisti iš naujo po",
+    "deleteConfirm": "Ištrinti žadintuvą?",
+    "toMe": "Man",
+    "self": "Sau",
+    "driverNone": "Vairuotojas",
+    "noDriverAlert": "Vilkikas neturi vairuotojo",
+    "recurrence": {
+      "NONE": "Vieną kartą",
+      "DAILY": "Kasdien",
+      "WEEKLY": "Kas savaitę"
     },
-    "memberCount_one": "{{count}} vairuotojas",
-    "memberCount_few": "{{count}} vairuotojai",
-    "memberCount_other": "{{count}} vairuotojų",
-    "placeholderSubtitle": "Grupės tik vairuotojams. Galite pridėti kitų vairuotojų kaip narių."
-  },
-  "settings": {
-    "title": "Nustatymai",
-    "driverFallback": "Vairuotojas",
-    "avatar": {
-      "title": "Profilio nuotrauka",
-      "change": "Keisti",
-      "remove": "Pašalinti"
-    },
-    "status": { "title": "Būsena" },
-    "name": {
-      "title": "Vardas ir pavardė",
-      "first": "Vardas",
-      "firstPlaceholder": "Jonas",
-      "last": "Pavardė (nebūtina)",
-      "lastPlaceholder": "Kazlauskas"
-    },
-    "language": {
-      "title": "Kalba",
-      "pick": "Pasirinkite kalbą"
-    },
-    "saveChanges": "Išsaugoti pakeitimus",
-    "saved": "Pakeitimai išsaugoti ✓",
-    "logout": "Atsijungti",
-    "logoutConfirm": {
-      "title": "Atsijungimas",
-      "body": "Tikrai atsijungti?",
-      "confirm": "Atsijungti"
-    },
-    "errors": {
-      "saveProfile": "Nepavyko išsaugoti pakeitimų.",
-      "photoPermTitle": "Prieiga prie nuotraukų",
-      "photoPermBody": "Leiskite pasiekti galeriją, kad pasirinktumėte profilio nuotrauką.",
-      "uploadAvatar": "Nepavyko įkelti nuotraukos.",
-      "deleteAvatar": "Nepavyko ištrinti nuotraukos."
+    "offsets": {
+      "off5": "5 min",
+      "off15": "15 min",
+      "off30": "30 min",
+      "off60": "1 val.",
+      "off120": "2 val."
     }
   },
   "auth": {
@@ -88,167 +47,135 @@
       "invalidCode": "Neteisingas kodas."
     }
   },
-  "alarm": {
-    "myAlarms": "Mano žadintuvai ({{count}})",
-    "new": "+ Naujas",
-    "reuseTitle": "Kartoti po…",
-    "from": "nuo {{name}}",
-    "recurrence": {
-      "NONE": "Vieną kartą",
-      "DAILY": "Kasdien",
-      "WEEKLY": "Kas savaitę"
-    },
-    "quickOffsets": {
-      "min5": "+5 min",
-      "min15": "+15 min",
-      "min30": "+30 min",
-      "hour1": "+1 val",
-      "hour2": "+2 val"
-    },
-    "form": {
-      "title": "Tema *",
-      "titlePlaceholder": "pvz. Paskambinti klientui",
-      "note": "Komentaras",
-      "notePlaceholder": "Detalės (nebūtina)",
-      "when": "Kada",
-      "recurrence": "Kartoti",
-      "submit": "Sukurti"
-    },
-    "picker": {
-      "pickDate": "Pasirinkite datą",
-      "pickTime": "Pasirinkite laiką",
-      "done": "Atlikta"
-    },
-    "deleteConfirm": {
-      "title": "Ištrinti žadintuvą?"
-    },
-    "empty": {
-      "title": "Nėra žadintuvų",
-      "subtitle": "Bakstelėkite „+ Naujas“, kad nustatytumėte priminimą."
-    },
-    "errors": {
-      "titleRequired": "Tema privaloma",
-      "createFailed": "Nepavyko sukurti žadintuvo"
-    }
-  },
-  "sys": {
-    "driverAssigned": "Vairuotojas {{name}} priskirtas vilkikui {{plate}}",
-    "managerAssigned": "Vadovas {{name}} priskirtas vilkikui {{plate}}"
+  "broadcast": {
+    "title": "Žinutė vairuotojams",
+    "subtitle": "Žinutę gaus visų jūsų vilkikų vairuotojai.",
+    "subjectPlaceholder": "Tema (nebūtina)",
+    "messagePlaceholder": "Žinutės tekstas…",
+    "sendButton": "Siųsti",
+    "sentTitle": "Išsiųsta",
+    "sentBody": "Žinutę gavo {{count}} vairuotojų.",
+    "sendError": "Nepavyko išsiųsti žinutės.",
+    "templates": "Šablonai",
+    "saveTemplate": "Išsaugoti šabloną",
+    "noTemplates": "Nėra išsaugotų šablonų",
+    "defaultTemplateName": "Šablonas",
+    "templateError": "Nepavyko išsaugoti šablono."
   },
   "chat": {
-    "typingOne": "rašo",
-    "typingMany": "rašo",
-    "editingMessage": "Žinutės redagavimas",
-    "replyTo": "Atsakymas: {{name}}",
-    "unknownSender": "Nežinomas",
-    "deleted": "Ištrinta",
-    "editedShort": "(red.)",
     "messagePlaceholder": "Žinutė…",
-    "editPlaceholder": "Redaguokite žinutę…",
-    "emptyChat": "Žinučių dar nėra. Pradėkite pokalbį.",
-    "groupFallback": "Grupė",
+    "editPlaceholder": "Redaguoti žinutę…",
+    "editingMessage": "Žinutės redagavimas",
+    "editedShort": "(red.)",
+    "replyTo": "Atsakymas {{name}}",
+    "typing": "{{name}} rašo…",
+    "unknownSender": "Nežinomas",
     "groupChat": "Grupės pokalbis",
-    "groupDocsTitle": "Grupės dokumentai"
-  },
-  "trip": {
-    "noActiveTrip": {
-      "title": "Nėra aktyvaus reiso",
-      "subtitle": "Kai vadovas priskirs reisą, jis atsiras čia. Patraukite žemyn, kad atnaujintumėte."
-    },
-    "chatLabel": "Reiso pokalbis",
-    "nextTripLabel": "Kitas: {{title}}",
-    "nextTripHint": "Taps aktyvus, kai bus baigtas dabartinis",
-    "nextAssigned": {
-      "title": "Jums priskirtas kitas užsakymas",
-      "loadingAt": "Pakrovimas: {{address}}"
-    },
-    "online": "prisijungęs",
-    "connecting": "jungiamasi…",
-    "newCount_one": "{{count}} nauja",
-    "newCount_few": "{{count}} naujos",
-    "newCount_other": "{{count}} naujų",
-    "readOnlyNotice": "Jūs nebeesate šio pokalbio narys — tik skaitymui.",
-    "docsTitle": "Reiso dokumentai",
-    "attachSheet": { "title": "Prisegti" },
-    "stops": {
-      "loading": "Pakrovimas",
-      "unloading": "Iškrovimas"
+    "groupDocsTitle": "Grupės dokumentai",
+    "groupFallback": "Grupė",
+    "archive": {
+      "title": "Ankstesni pokalbiai",
+      "titleSession": "Archyvuotas pokalbis",
+      "banner": "Ankstesni pokalbiai: {{count}}",
+      "view": "Peržiūrėti",
+      "noSessions": "Nėra archyvuotų pokalbių",
+      "noMessages": "Žinučių nėra",
+      "reason": {
+        "DRIVER_CHANGED": "Vairuotojo keitimas",
+        "MANAGER_CHANGED": "Vadovo keitimas",
+        "TRIP_COMPLETED": "Reisas baigtas",
+        "LEGACY_RESET": "Atstatymas"
+      }
     }
   },
-  "tripStatus": {
-    "ASSIGNED": "Priskirtas",
-    "ACCEPTED": "Priimtas",
-    "ON_WAY": "Kelyje",
-    "ON_SITE": "Vietoje",
-    "LOADED": "Pakrautas",
-    "DELIVERED": "Pristatytas"
+  "chatDir": {
+    "searchPlaceholder": "Ieškoti: vardas, telefonas ar vilkikas…",
+    "noConversations": "Pokalbių dar nėra.",
+    "otherContacts": "Kiti kontaktai",
+    "teamlead": "Komandos vadovas"
   },
-  "trips": {
-    "searchPlaceholder": "Ieškoti pagal maršrutą, užsakymo nr., adresą…",
-    "active": "Aktyvus",
-    "next": "Būsimi",
-    "nextTag": "Kitas",
-    "done": "Užbaigti",
-    "empty": {
-      "title": "Kol kas nėra reisų",
-      "subtitle": "Jums priskirti reisai atsiras čia."
-    },
-    "noMatches": {
-      "title": "Nėra atitikmenų",
-      "subtitle": "Pabandykite kitą paiešką."
-    }
+  "common": {
+    "cancel": "Atšaukti",
+    "copy": "Kopijuoti",
+    "delete": "Ištrinti",
+    "edit": "Redaguoti",
+    "empty": "Tuščia",
+    "error": "Klaida",
+    "file": "Failas",
+    "fileDeleted": "Failas ištrintas",
+    "messageDeleted": "Žinutė ištrinta",
+    "noMatches": "Atitikmenų nėra.",
+    "reply": "Atsakyti",
+    "save": "Išsaugoti",
+    "search": "Ieškoti…",
+    "soon": "Netrukus",
+    "upload": "Įkelti"
   },
   "documents": {
-    "active": "Aktyvus",
-    "searchPlaceholder": "Reiso nr., data ar pašto kodas…",
-    "noTruck": {
-      "subtitle": "Dokumentai susieti su jūsų vilkiku. Kai vadovas jį priskirs, jie atsiras čia."
-    },
-    "empty": {
-      "title": "Kol kas nėra dokumentų",
-      "subtitleActive": "Bakstelėkite „Įkelti”, kad pridėtumėte nuotraukų ar failų dabartiniam reisui.",
-      "subtitleInactive": "Kai turėsite reisą su įkeltais failais, jie atsiras čia."
-    },
+    "empty": "Nėra dokumentų",
     "nothingHere": "Čia dar nieko nėra.",
+    "cannotOpen": "Nepavyko atidaryti",
+    "uploadFailed": "Įkėlimo klaida",
+    "tabs": {
+      "all": "Visi",
+      "documents": "Dokumentai",
+      "files": "Failai",
+      "photos": "Nuotraukos"
+    },
     "uploadSheet": {
-      "title": "Įkėlimas",
       "subtitle": "Pasirinkite šaltinį",
       "camera": "Kamera",
       "gallery": "Galerija",
       "file": "Failas"
-    },
-    "uploadFailed": "Nepavyko įkelti",
-    "cannotOpen": "Nepavyko atidaryti",
-    "deleteConfirm": {
-      "title": "Ištrinti?",
-      "body": "{{name}} bus visam laikui pašalintas."
-    },
-    "tabs": {
-      "all": "Visi",
-      "photos": "Nuotraukos",
-      "documents": "Dokumentai"
     }
   },
-  "truck": {
-    "status": {
-      "AVAILABLE": "Laisvas",
-      "ON_TRIP": "Reise",
-      "REPAIR": "Remontas"
+  "drivers": {
+    "addDriver": "Naujas vairuotojas",
+    "inviteHint": "Vairuotojas prisijungia telefono numeriu su SMS kodu."
+  },
+  "forgot": {
+    "title": "Slaptažodžio atkūrimas",
+    "subtitle": "Įveskite el. paštą — atsiųsime slaptažodžio atstatymo nuorodą.",
+    "submit": "Siųsti",
+    "sent": "Jei toks el. paštas egzistuoja, išsiuntėme laišką su instrukcijomis.",
+    "back": "← Grįžti į prisijungimą"
+  },
+  "groups": {
+    "empty": {
+      "title": "Grupių dar nėra",
+      "subtitle": "Čia atsiras jūsų įmonės vairuotojų grupė."
     },
-    "noTruck": {
-      "title": "Vilkikas nepriskirtas",
-      "subtitle": "Kai vadovas priskirs jums vilkiką, jis atsiras čia."
-    },
-    "dispatcher": "Vadovas",
-    "unknownUser": "Nežinomas",
-    "notes": {
-      "title": "Užrašai ({{count}})",
-      "placeholder": "Pridėkite užrašą, matomą vadovui…",
-      "empty": "Užrašų dar nėra. Pridėkite viršuje.",
-      "saveError": "Nepavyko išsaugoti užrašo. Bandykite dar kartą.",
-      "deleteTitle": "Ištrinti užrašą",
-      "deleteBody": "Ištrinti šį užrašą?"
-    }
+    "memberCount_one": "{{count}} vairuotojas",
+    "memberCount_few": "{{count}} vairuotojai",
+    "memberCount_many": "{{count}} vairuotojo",
+    "memberCount_other": "{{count}} vairuotojų"
+  },
+  "home": {
+    "myTrucksSub": "Jūsų autoparkas ir reisai",
+    "managersSub": "Jūsų vadovų komanda"
+  },
+  "info": {
+    "notes": "Pastabos",
+    "noNotes": "Pastabų nėra",
+    "addNotePlaceholder": "Pridėti pastabą…",
+    "deleteNote": "Ištrinti pastabą?",
+    "driver": "Vairuotojas",
+    "manager": "Vadovas",
+    "noDriver": "Be vairuotojo",
+    "noManager": "Be vadovo"
+  },
+  "login": {
+    "title": "IS Fleet · Vadovas",
+    "subtitle": "Prisijunkite prie savo paskyros",
+    "email": "El. paštas",
+    "password": "Slaptažodis",
+    "phone": "Telefonas",
+    "submit": "Prisijungti",
+    "forgot": "Pamiršote slaptažodį?",
+    "invalidCredentials": "Neteisingas el. paštas arba slaptažodis",
+    "genericError": "Prisijungimo klaida",
+    "networkError": "Nėra ryšio su serveriu. Bandykite dar kartą.",
+    "driverNotAllowed": "Ši programa skirta tik vadovams. Prisijunkite su vadovo paskyra."
   },
   "manager": {
     "noManager": "Vadovas dar nepriskirtas.",
@@ -271,47 +198,74 @@
       "submit": "Pateikti"
     }
   },
+  "managers": {
+    "addManager": "Naujas vadovas",
+    "inviteHint": "Vadovas gaus el. laišką su slaptažodžiu nurodytu adresu."
+  },
+  "myTrucks": {
+    "empty": {
+      "title": "Nėra vilkikų",
+      "subtitle": "Jums dar nepriskirtas nė vienas vilkikas."
+    },
+    "noDriver": "Be vairuotojo"
+  },
   "nav": {
     "items": {
-      "trip": "Reisas",
-      "trips": "Reisai",
-      "truck": "Mano vilkikas",
-      "documents": "Dokumentai",
       "chat": "Pokalbiai",
-      "alarm": "Žadintuvas"
+      "trips": "Reisai",
+      "trucks": "Vilkikai",
+      "drivers": "Vairuotojai",
+      "managers": "Vadovai",
+      "myTrucks": "Mano vilkikai",
+      "documents": "Dokumentai",
+      "account": "Paskyra",
+      "settings": "Nustatymai"
     },
     "manager": "Vadovas",
     "groups": "Grupės",
-    "noUnread": "Nėra neperskaitytų",
-    "chatFallback": "Pokalbiai",
+    "notifications": "Pranešimai",
     "driverFallback": "Vairuotojas",
-    "openSettings": "Atverti nustatymus",
-    "toggleTheme": "Keisti temą",
-    "messageManager": "Rašyti vadovui",
+    "chatFallback": "Pokalbis",
     "fileAttachment": "📎 Failas"
   },
-  "push": {
-    "noticeTitle": "Pranešimas"
+  "notifications": {
+    "allCaughtUp": "Viskas perskaityta",
+    "noUnread": "Nėra neperskaitytų",
+    "unreadCount": "Neperskaityta: {{count}}"
   },
-  "status": {
-    "ONLINE": "Prisijungęs",
-    "BUSY": "Netrukdyti",
-    "AWAY": "Išėjęs",
-    "SLEEP": "Miegu",
-    "VACATION": "Ilsiuosi",
-    "OFFLINE": "Ne programoje"
+  "people": {
+    "myTeam": "Mano komanda",
+    "allManagers": "Visi vadovai",
+    "teamEmpty": "Jūsų komandoje nėra kitų vadovų",
+    "teamlead": "Komandos vadovas",
+    "trucks": "Vilkikai",
+    "activate": "Aktyvuoti",
+    "deactivate": "Deaktyvuoti",
+    "call": "Skambinti",
+    "message": "Rašyti",
+    "ratings": {
+      "title": "Įvertinimas",
+      "rateTitle": "Įvertinti vairuotoją",
+      "current": "Jūsų įvertinimas",
+      "none": "Nėra įvertinimų",
+      "submit": "Siųsti",
+      "update": "Atnaujinti",
+      "anonymous": "Anonimiškai",
+      "commentPlaceholder": "Komentaras (nebūtina)",
+      "unknown": "—"
+    }
   },
   "presence": {
     "pickStatus": "Pasirinkite būseną",
+    "howLong": "Kiek laiko?",
+    "noLimit": "Be apribojimų",
     "sleepEllipsis": "Miegu…",
     "vacationEllipsis": "Ilsiuosi…",
-    "howLong": "Kiek laiko?",
-    "noLimit": "Neribotai",
     "updateError": "Nepavyko atnaujinti būsenos.",
     "sleepPresets": {
       "min30": "30 min",
       "hours2": "2 valandos",
-      "shortRest": "9 valandų (trumpas poilsis)",
+      "shortRest": "9 valandos (trumpas poilsis)",
       "regularRest": "11 valandų (reguliarus poilsis)"
     },
     "vacationPresets": {
@@ -320,5 +274,173 @@
       "week1": "Savaitė",
       "weeks2": "2 savaitės"
     }
+  },
+  "push": {
+    "noticeTitle": "Pranešimas"
+  },
+  "settings": {
+    "name": {
+      "title": "Vardas",
+      "first": "Vardas",
+      "firstPlaceholder": "Jūsų vardas",
+      "last": "Pavardė (nebūtina)",
+      "lastPlaceholder": "Jūsų pavardė"
+    },
+    "avatar": {
+      "title": "Profilio nuotrauka",
+      "change": "Keisti",
+      "remove": "Pašalinti"
+    },
+    "language": {
+      "title": "Kalba",
+      "pick": "Pasirinkite kalbą"
+    },
+    "status": {
+      "title": "Būsena"
+    },
+    "theme": {
+      "title": "Tema",
+      "system": "Sistemos",
+      "light": "Šviesi",
+      "dark": "Tamsi"
+    },
+    "saveChanges": "Išsaugoti pakeitimus",
+    "saved": "Išsaugota ✓",
+    "logout": "Atsijungti",
+    "logoutConfirm": {
+      "title": "Atsijungti?",
+      "body": "Tikrai atsijungti?"
+    },
+    "accessDenied": {
+      "description": "Šie nustatymai skirti tik komandų vadovams / administratoriams."
+    },
+    "company": {
+      "title": "Įmonė",
+      "name": "Įmonė",
+      "settings": "Įmonės nustatymai",
+      "director": "Direktorius",
+      "accounting": "Buhalterija",
+      "hr": "Personalas (HR)",
+      "emails": "Tarnybiniai el. paštai"
+    },
+    "driverFallback": "Vadovas",
+    "errors": {
+      "saveProfile": "Nepavyko išsaugoti pakeitimų.",
+      "uploadAvatar": "Nepavyko įkelti nuotraukos.",
+      "deleteAvatar": "Nepavyko ištrinti nuotraukos.",
+      "photoPermTitle": "Prieiga prie nuotraukų",
+      "photoPermBody": "Leiskite prieigą prie galerijos, kad pasirinktumėte profilio nuotrauką."
+    }
+  },
+  "status": {
+    "ONLINE": "prisijungęs",
+    "BUSY": "netrukdyti",
+    "AWAY": "pasitraukęs",
+    "SLEEP": "miega",
+    "VACATION": "atostogos",
+    "OFFLINE": "neprisijungęs"
+  },
+  "stopRow": {
+    "name": "Sustojimo pavadinimas (pvz. Muitinė)",
+    "address": "Adresas",
+    "coords": "Koord.",
+    "date": "Data",
+    "from": "nuo",
+    "to": "iki",
+    "changeType": "Keisti tipą"
+  },
+  "sys": {
+    "driverAssigned": "Vairuotojas {{name}} priskirtas vilkikui {{plate}}",
+    "managerAssigned": "Vadovas {{name}} priskirtas vilkikui {{plate}}"
+  },
+  "trip": {
+    "chatLabel": "Reiso pokalbis",
+    "docsTitle": "Reiso dokumentai",
+    "attachSheet": {
+      "title": "Pridėti"
+    },
+    "online": "prisijungęs",
+    "connecting": "jungiamasi…",
+    "stops": {
+      "route": "Maršrutas",
+      "loading": "Pakrovimas",
+      "unloading": "Iškrovimas",
+      "waypoint": "Papildomas sustojimas"
+    },
+    "waypointPreset": {
+      "customs": "Muitinė",
+      "parking": "Stovėjimas",
+      "fuel": "Degalinė"
+    }
+  },
+  "tripChat": {
+    "inactive": "Jūs nebe šio reiso vadovas — pokalbis tik skaitymui",
+    "noTrip": {
+      "title": "Nėra aktyvaus reiso",
+      "subtitle": "Pokalbis atsiras, kai vilkikui bus priskirtas reisas."
+    }
+  },
+  "tripStatus": {
+    "ASSIGNED": "Priskirtas",
+    "ACCEPTED": "Priimtas",
+    "ON_WAY": "Kelyje",
+    "ON_SITE": "Vietoje",
+    "LOADED": "Pakrautas",
+    "DELIVERED": "Pristatytas",
+    "pick": "Reiso būsena"
+  },
+  "trips": {
+    "searchPlaceholder": "Ieškoti: užsakymo nr., numeris, vairuotojas…"
+  },
+  "truck": {
+    "driverLabel": "Vairuotojas",
+    "tabs": {
+      "chat": "Pokalbiai",
+      "trips": "Reisai",
+      "documents": "Dokumentai",
+      "alarm": "Žadintuvas",
+      "info": "Info"
+    }
+  },
+  "truckPanel": {
+    "newTrip": {
+      "title": "Naujas reisas",
+      "editTitle": "Redaguoti reisą",
+      "button": "Naujas",
+      "addStop": "Pridėti sustojimą",
+      "driverLabel": "Vairuotojas",
+      "selectDriver": "Pasirinkite vairuotoją",
+      "orderLabel": "Užsakymo nr.",
+      "notesLabel": "Pastabos",
+      "tripNameLabel": "Reiso pavadinimas",
+      "tripNamePlaceholder": "pvz. Lvivas → Krokuva",
+      "tripFallbackName": "Naujas reisas"
+    },
+    "trips": {
+      "empty": "Reisų dar nėra",
+      "noStops": "Nėra sustojimų",
+      "searchPlaceholder": "Ieškoti reiso…",
+      "sectionActive": "Aktyvūs",
+      "sectionQueued": "Eilėje",
+      "sectionDone": "Atlikti"
+    },
+    "documents": {
+      "allTrips": "Visi reisai ({{count}})",
+      "filterTitle": "Filtruoti pagal reisą",
+      "noAttachments": "Nėra dokumentų",
+      "noTrips": "Pirma sukurkite reisą",
+      "searchPlaceholder": "Ieškoti: pavadinimas, data, nr…",
+      "uploadTo": "Įkelti į reisą"
+    }
+  },
+  "truckStatus": {
+    "ON_TRIP": "Kelyje",
+    "REPAIR": "Remontas",
+    "AVAILABLE": "Laisvas"
+  },
+  "trucks": {
+    "take": "Paimti vilkiką",
+    "release": "Atlaisvinti vilkiką",
+    "searchPlaceholder": "Ieškoti pagal numerį ar vairuotoją…"
   }
 }

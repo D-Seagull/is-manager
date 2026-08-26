@@ -26,24 +26,32 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeMode, type ThemeMode } from '@/hooks/use-theme';
 import {
   AppLanguage,
+  UILocale,
   UserStatus,
   deleteAvatar,
   updateMe,
   uploadAvatar,
 } from '@/lib/auth-api';
 import { fullName, initials } from '@/lib/format';
+import { setAppLanguage } from '@/lib/i18n';
 import { useAuthStore, useUser } from '@/store/auth';
 
-const LANGUAGE_LABELS: Partial<Record<AppLanguage, string>> = {
+// Keyed by UILocale — the UI-language preference, the only enum with German.
+const LANGUAGE_LABELS: Record<UILocale, string> = {
   EN: 'English',
   UK: 'Українська',
   PL: 'Polski',
   LT: 'Lietuvių',
+  DE: 'Deutsch',
   RU: 'Русский',
 };
 
+// UILocale values that are also valid chat-translation `Language` values — so
+// picking one keeps the manager's chat language in step. German is UI-only.
+const CHAT_LANGS: AppLanguage[] = ['EN', 'UK', 'PL', 'LT', 'RU'];
+
 export default function AccountScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
   const user = useUser();
@@ -52,8 +60,10 @@ export default function AccountScreen() {
 
   const [firstName, setFirstName] = useState(user?.firstName ?? '');
   const [lastName, setLastName] = useState(user?.lastName ?? '');
-  const [language, setLanguage] = useState<AppLanguage>(
-    (user?.language as AppLanguage | undefined) ?? 'EN',
+  // Reflects the LIVE app language (device locale, or an explicit pick), not the
+  // server value — the picker below applies + persists changes itself.
+  const [uiLocale, setUiLocale] = useState<UILocale>(
+    () => (i18n.language.toUpperCase() as UILocale),
   );
   const [savingProfile, setSavingProfile] = useState(false);
   const [avatarBusy, setAvatarBusy] = useState<'upload' | 'delete' | null>(null);
@@ -76,15 +86,33 @@ export default function AccountScreen() {
     if (!user) return;
     setFirstName(user.firstName ?? '');
     setLastName(user.lastName ?? '');
-    setLanguage((user.language as AppLanguage | undefined) ?? 'EN');
   }, [user]);
 
+  // Language is applied + persisted by the picker itself, so it is intentionally
+  // NOT part of the profile save/dirty check.
   const isProfileDirty =
     firstName.trim() !== (user?.firstName ?? '') ||
-    (lastName.trim() || null) !== (user?.lastName ?? null) ||
-    language !== ((user?.language as AppLanguage | undefined) ?? 'EN');
+    (lastName.trim() || null) !== (user?.lastName ?? null);
   const canSaveProfile =
     firstName.trim().length >= 1 && isProfileDirty && !savingProfile;
+
+  // Apply an explicit language pick immediately (live UI + local persistence via
+  // setAppLanguage) and persist it to the server for web/cross-device parity.
+  // German is UI-only, so `language` (chat auto-translation) is kept in step
+  // only for locales that are also valid chat languages.
+  const handlePickLanguage = (value: UILocale) => {
+    setUiLocale(value);
+    setLangPickerOpen(false);
+    setAppLanguage(value);
+    void updateMe({
+      uiLocale: value,
+      ...(CHAT_LANGS.includes(value as AppLanguage)
+        ? { language: value as AppLanguage }
+        : {}),
+    })
+      .then(setUser)
+      .catch((err) => console.warn('[account] language persist failed', err));
+  };
 
   const handleSaveProfile = async () => {
     if (!canSaveProfile) return;
@@ -93,7 +121,6 @@ export default function AccountScreen() {
       const me = await updateMe({
         firstName: firstName.trim(),
         lastName: lastName.trim() || null,
-        language,
       });
       setUser(me);
       setSavedHint(true);
@@ -289,7 +316,7 @@ export default function AccountScreen() {
           >
             <Ionicons name="language-outline" size={18} color={c.foreground} />
             <Text style={[styles.rowText, { color: c.foreground }]}>
-              {LANGUAGE_LABELS[language] ?? 'English'}
+              {LANGUAGE_LABELS[uiLocale] ?? 'English'}
             </Text>
             <Ionicons name="chevron-forward" size={18} color={c.mutedForeground} />
           </Pressable>
@@ -395,15 +422,12 @@ export default function AccountScreen() {
             <Text style={[styles.modalTitle, { color: c.foreground }]}>
               {t('settings.language.pick', 'Оберіть мову')}
             </Text>
-            {(Object.entries(LANGUAGE_LABELS) as [AppLanguage, string][]).map(([value, label]) => {
-              const selected = value === language;
+            {(Object.entries(LANGUAGE_LABELS) as [UILocale, string][]).map(([value, label]) => {
+              const selected = value === uiLocale;
               return (
                 <Pressable
                   key={value}
-                  onPress={() => {
-                    setLanguage(value);
-                    setLangPickerOpen(false);
-                  }}
+                  onPress={() => handlePickLanguage(value)}
                   style={({ pressed }) => [
                     styles.modalItem,
                     { backgroundColor: selected || pressed ? c.muted : 'transparent' },

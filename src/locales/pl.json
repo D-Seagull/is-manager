@@ -1,70 +1,29 @@
 {
-  "common": {
-    "cancel": "Anuluj",
-    "delete": "Usuń",
-    "save": "Zapisz",
-    "reply": "Odpowiedz",
-    "copy": "Kopiuj",
-    "edit": "Edytuj",
-    "search": "Szukaj",
-    "upload": "Prześlij",
-    "noMatches": "Brak wyników.",
-    "loading": "Ładowanie…",
-    "messageDeleted": "Wiadomość usunięta",
-    "fileDeleted": "Plik usunięty",
-    "file": "Plik",
-    "error": "Błąd"
-  },
-  "chatDir": {
-    "searchPlaceholder": "Szukaj po imieniu, telefonie lub pojeździe…",
-    "otherContacts": "Inne kontakty",
-    "noConversations": "Brak rozmów.",
-    "teamlead": "Kierownik zespołu"
-  },
-  "groups": {
-    "empty": {
-      "title": "Brak grup",
-      "subtitle": "Grupa kierowców Twojej firmy pojawi się tutaj."
+  "alarm": {
+    "title": "Budziki",
+    "new": "Nowy",
+    "create": "Utwórz",
+    "empty": "Brak budzików",
+    "titlePlaceholder": "Tytuł",
+    "notePlaceholder": "Notatka (opcjonalnie)",
+    "linkToTrip": "Powiąż z aktywną trasą",
+    "restartIn": "Zrestartuj za",
+    "deleteConfirm": "Usunąć budzik?",
+    "toMe": "Do mnie",
+    "self": "Sobie",
+    "driverNone": "Kierowca",
+    "noDriverAlert": "Ciężarówka nie ma kierowcy",
+    "recurrence": {
+      "NONE": "Raz",
+      "DAILY": "Codziennie",
+      "WEEKLY": "Co tydzień"
     },
-    "memberCount_one": "{{count}} kierowca",
-    "memberCount_few": "{{count}} kierowcy",
-    "memberCount_many": "{{count}} kierowców",
-    "placeholderSubtitle": "Grupy tylko dla kierowców. Możesz dodawać innych kierowców jako członków."
-  },
-  "settings": {
-    "title": "Ustawienia",
-    "driverFallback": "Kierowca",
-    "avatar": {
-      "title": "Zdjęcie profilowe",
-      "change": "Zmień",
-      "remove": "Usuń"
-    },
-    "status": { "title": "Status" },
-    "name": {
-      "title": "Imię i nazwisko",
-      "first": "Imię",
-      "firstPlaceholder": "Jan",
-      "last": "Nazwisko (opcjonalnie)",
-      "lastPlaceholder": "Kowalski"
-    },
-    "language": {
-      "title": "Język",
-      "pick": "Wybierz język"
-    },
-    "saveChanges": "Zapisz zmiany",
-    "saved": "Zapisano zmiany ✓",
-    "logout": "Wyloguj się",
-    "logoutConfirm": {
-      "title": "Wylogowanie",
-      "body": "Na pewno się wylogować?",
-      "confirm": "Wyloguj"
-    },
-    "errors": {
-      "saveProfile": "Nie udało się zapisać zmian.",
-      "photoPermTitle": "Dostęp do zdjęć",
-      "photoPermBody": "Zezwól na dostęp do galerii, aby wybrać zdjęcie profilowe.",
-      "uploadAvatar": "Nie udało się przesłać zdjęcia.",
-      "deleteAvatar": "Nie udało się usunąć zdjęcia."
+    "offsets": {
+      "off5": "5 min",
+      "off15": "15 min",
+      "off30": "30 min",
+      "off60": "1 godz.",
+      "off120": "2 godz."
     }
   },
   "auth": {
@@ -88,167 +47,135 @@
       "invalidCode": "Nieprawidłowy kod."
     }
   },
-  "alarm": {
-    "myAlarms": "Moje budziki ({{count}})",
-    "new": "+ Nowy",
-    "reuseTitle": "Ponów za…",
-    "from": "od {{name}}",
-    "recurrence": {
-      "NONE": "Raz",
-      "DAILY": "Codziennie",
-      "WEEKLY": "Co tydzień"
-    },
-    "quickOffsets": {
-      "min5": "+5 min",
-      "min15": "+15 min",
-      "min30": "+30 min",
-      "hour1": "+1 godz",
-      "hour2": "+2 godz"
-    },
-    "form": {
-      "title": "Temat *",
-      "titlePlaceholder": "np. Zadzwoń do klienta",
-      "note": "Komentarz",
-      "notePlaceholder": "Szczegóły (opcjonalnie)",
-      "when": "Kiedy",
-      "recurrence": "Powtórz",
-      "submit": "Utwórz"
-    },
-    "picker": {
-      "pickDate": "Wybierz datę",
-      "pickTime": "Wybierz godzinę",
-      "done": "Gotowe"
-    },
-    "deleteConfirm": {
-      "title": "Usunąć budzik?"
-    },
-    "empty": {
-      "title": "Brak budzików",
-      "subtitle": "Naciśnij „+ Nowy”, aby ustawić przypomnienie."
-    },
-    "errors": {
-      "titleRequired": "Temat jest wymagany",
-      "createFailed": "Nie udało się utworzyć budzika"
-    }
-  },
-  "sys": {
-    "driverAssigned": "Kierowca {{name}} przydzielony do ciężarówki {{plate}}",
-    "managerAssigned": "Menedżer {{name}} przydzielony do ciężarówki {{plate}}"
+  "broadcast": {
+    "title": "Wiadomość do kierowców",
+    "subtitle": "Wiadomość otrzymają kierowcy wszystkich Twoich ciężarówek.",
+    "subjectPlaceholder": "Temat (opcjonalnie)",
+    "messagePlaceholder": "Treść wiadomości…",
+    "sendButton": "Wyślij",
+    "sentTitle": "Wysłano",
+    "sentBody": "Wiadomość otrzymało {{count}} kierowców.",
+    "sendError": "Nie udało się wysłać wiadomości.",
+    "templates": "Szablony",
+    "saveTemplate": "Zapisz szablon",
+    "noTemplates": "Brak zapisanych szablonów",
+    "defaultTemplateName": "Szablon",
+    "templateError": "Nie udało się zapisać szablonu."
   },
   "chat": {
-    "typingOne": "pisze",
-    "typingMany": "piszą",
-    "editingMessage": "Edycja wiadomości",
-    "replyTo": "Odpowiedź: {{name}}",
-    "unknownSender": "Nieznany",
-    "deleted": "Usunięto",
-    "editedShort": "(edyt.)",
     "messagePlaceholder": "Wiadomość…",
     "editPlaceholder": "Edytuj wiadomość…",
-    "emptyChat": "Brak wiadomości. Rozpocznij rozmowę.",
-    "groupFallback": "Grupa",
+    "editingMessage": "Edycja wiadomości",
+    "editedShort": "(edyt.)",
+    "replyTo": "Odpowiedź do {{name}}",
+    "typing": "{{name}} pisze…",
+    "unknownSender": "Nieznany",
     "groupChat": "Czat grupowy",
-    "groupDocsTitle": "Dokumenty grupy"
-  },
-  "trip": {
-    "noActiveTrip": {
-      "title": "Brak aktywnej trasy",
-      "subtitle": "Gdy menedżer przydzieli trasę, pojawi się tutaj. Pociągnij w dół, aby odświeżyć."
-    },
-    "chatLabel": "Czat trasy",
-    "nextTripLabel": "Następny: {{title}}",
-    "nextTripHint": "Stanie się aktywna po zakończeniu bieżącej",
-    "nextAssigned": {
-      "title": "Przydzielono Ci następne zlecenie",
-      "loadingAt": "Załadunek: {{address}}"
-    },
-    "online": "online",
-    "connecting": "łączenie…",
-    "newCount_one": "{{count}} nowa",
-    "newCount_few": "{{count}} nowe",
-    "newCount_many": "{{count}} nowych",
-    "readOnlyNotice": "Nie jesteś już członkiem tego czatu — tylko do odczytu.",
-    "docsTitle": "Dokumenty trasy",
-    "attachSheet": { "title": "Załącz" },
-    "stops": {
-      "loading": "Załadunek",
-      "unloading": "Rozładunek"
+    "groupDocsTitle": "Dokumenty grupy",
+    "groupFallback": "Grupa",
+    "archive": {
+      "title": "Poprzednie czaty",
+      "titleSession": "Zarchiwizowana rozmowa",
+      "banner": "Poprzednie czaty: {{count}}",
+      "view": "Zobacz",
+      "noSessions": "Brak zarchiwizowanych rozmów",
+      "noMessages": "Brak wiadomości",
+      "reason": {
+        "DRIVER_CHANGED": "Zmiana kierowcy",
+        "MANAGER_CHANGED": "Zmiana menedżera",
+        "TRIP_COMPLETED": "Trasa zakończona",
+        "LEGACY_RESET": "Reset"
+      }
     }
   },
-  "tripStatus": {
-    "ASSIGNED": "Przydzielona",
-    "ACCEPTED": "Zaakceptowana",
-    "ON_WAY": "W drodze",
-    "ON_SITE": "Na miejscu",
-    "LOADED": "Załadowana",
-    "DELIVERED": "Dostarczona"
+  "chatDir": {
+    "searchPlaceholder": "Szukaj: imię, telefon lub ciężarówka…",
+    "noConversations": "Brak rozmów.",
+    "otherContacts": "Inne kontakty",
+    "teamlead": "Lider zespołu"
   },
-  "trips": {
-    "searchPlaceholder": "Szukaj po trasie, nr zamówienia, adresie…",
-    "active": "Aktywna",
-    "next": "Nadchodzące",
-    "nextTag": "Następny",
-    "done": "Zakończone",
-    "empty": {
-      "title": "Brak tras",
-      "subtitle": "Przydzielone ci trasy pojawią się tutaj."
-    },
-    "noMatches": {
-      "title": "Brak wyników",
-      "subtitle": "Spróbuj innego wyszukiwania."
-    }
+  "common": {
+    "cancel": "Anuluj",
+    "copy": "Kopiuj",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "empty": "Pusto",
+    "error": "Błąd",
+    "file": "Plik",
+    "fileDeleted": "Plik usunięty",
+    "messageDeleted": "Wiadomość usunięta",
+    "noMatches": "Brak wyników.",
+    "reply": "Odpowiedz",
+    "save": "Zapisz",
+    "search": "Szukaj…",
+    "soon": "Wkrótce",
+    "upload": "Prześlij"
   },
   "documents": {
-    "active": "Aktywna",
-    "searchPlaceholder": "Nr trasy, data lub kod pocztowy…",
-    "noTruck": {
-      "subtitle": "Dokumenty są powiązane z ciężarówką. Gdy menedżer ją przypisze, pojawią się tutaj."
+    "empty": "Brak dokumentów",
+    "nothingHere": "Nic tu jeszcze nie ma.",
+    "cannotOpen": "Nie można otworzyć",
+    "uploadFailed": "Błąd przesyłania",
+    "tabs": {
+      "all": "Wszystkie",
+      "documents": "Dokumenty",
+      "files": "Pliki",
+      "photos": "Zdjęcia"
     },
-    "empty": {
-      "title": "Brak dokumentów",
-      "subtitleActive": "Naciśnij „Prześlij”, aby dodać zdjęcia lub pliki do bieżącej trasy.",
-      "subtitleInactive": "Gdy będziesz mieć trasę z przesłanymi plikami, pojawią się tutaj."
-    },
-    "nothingHere": "Tu jeszcze nic nie ma.",
     "uploadSheet": {
-      "title": "Przesyłanie",
       "subtitle": "Wybierz źródło",
       "camera": "Aparat",
       "gallery": "Galeria",
       "file": "Plik"
-    },
-    "uploadFailed": "Przesyłanie nie powiodło się",
-    "cannotOpen": "Nie można otworzyć",
-    "deleteConfirm": {
-      "title": "Usunąć?",
-      "body": "{{name}} zostanie trwale usunięty."
-    },
-    "tabs": {
-      "all": "Wszystko",
-      "photos": "Zdjęcia",
-      "documents": "Dokumenty"
     }
   },
-  "truck": {
-    "status": {
-      "AVAILABLE": "Dostępna",
-      "ON_TRIP": "W trasie",
-      "REPAIR": "Naprawa"
+  "drivers": {
+    "addDriver": "Nowy kierowca",
+    "inviteHint": "Kierowca loguje się numerem telefonu za pomocą kodu SMS."
+  },
+  "forgot": {
+    "title": "Odzyskiwanie hasła",
+    "subtitle": "Podaj e-mail — wyślemy link do zresetowania hasła.",
+    "submit": "Wyślij",
+    "sent": "Jeśli taki e-mail istnieje, wysłaliśmy wiadomość z instrukcjami.",
+    "back": "← Powrót do logowania"
+  },
+  "groups": {
+    "empty": {
+      "title": "Brak grup",
+      "subtitle": "Grupa kierowców Twojej firmy pojawi się tutaj."
     },
-    "noTruck": {
-      "title": "Nie przypisano ciężarówki",
-      "subtitle": "Gdy menedżer przypisze ci ciężarówkę, pojawi się tutaj."
-    },
-    "dispatcher": "Menedżer",
-    "unknownUser": "Nieznany",
-    "notes": {
-      "title": "Notatki ({{count}})",
-      "placeholder": "Dodaj notatkę widoczną dla menedżera…",
-      "empty": "Brak notatek. Dodaj powyżej.",
-      "saveError": "Nie udało się zapisać notatki. Spróbuj ponownie.",
-      "deleteTitle": "Usuń notatkę",
-      "deleteBody": "Usunąć tę notatkę?"
-    }
+    "memberCount_one": "{{count}} kierowca",
+    "memberCount_few": "{{count}} kierowcy",
+    "memberCount_many": "{{count}} kierowców",
+    "memberCount_other": "{{count}} kierowcy"
+  },
+  "home": {
+    "myTrucksSub": "Twoja flota i trasy",
+    "managersSub": "Twój zespół menedżerów"
+  },
+  "info": {
+    "notes": "Notatki",
+    "noNotes": "Brak notatek",
+    "addNotePlaceholder": "Dodaj notatkę…",
+    "deleteNote": "Usunąć notatkę?",
+    "driver": "Kierowca",
+    "manager": "Menedżer",
+    "noDriver": "Bez kierowcy",
+    "noManager": "Bez menedżera"
+  },
+  "login": {
+    "title": "IS Fleet · Menedżer",
+    "subtitle": "Zaloguj się na swoje konto",
+    "email": "E-mail",
+    "password": "Hasło",
+    "phone": "Telefon",
+    "submit": "Zaloguj się",
+    "forgot": "Nie pamiętasz hasła?",
+    "invalidCredentials": "Nieprawidłowy e-mail lub hasło",
+    "genericError": "Błąd logowania",
+    "networkError": "Brak połączenia z serwerem. Spróbuj ponownie.",
+    "driverNotAllowed": "Ta aplikacja jest tylko dla menedżerów. Zaloguj się na konto menedżera."
   },
   "manager": {
     "noManager": "Nie przypisano jeszcze menedżera.",
@@ -271,42 +198,69 @@
       "submit": "Wyślij"
     }
   },
+  "managers": {
+    "addManager": "Nowy menedżer",
+    "inviteHint": "Menedżer otrzyma e-mail z hasłem na podany adres."
+  },
+  "myTrucks": {
+    "empty": {
+      "title": "Brak ciężarówek",
+      "subtitle": "Nie przypisano Ci jeszcze żadnej ciężarówki."
+    },
+    "noDriver": "Bez kierowcy"
+  },
   "nav": {
     "items": {
-      "trip": "Trasa",
-      "trips": "Trasy",
-      "truck": "Moja ciężarówka",
-      "documents": "Dokumenty",
       "chat": "Czat",
-      "alarm": "Budzik"
+      "trips": "Trasy",
+      "trucks": "Ciężarówki",
+      "drivers": "Kierowcy",
+      "managers": "Menedżerowie",
+      "myTrucks": "Moje ciężarówki",
+      "documents": "Dokumenty",
+      "account": "Konto",
+      "settings": "Ustawienia"
     },
     "manager": "Menedżer",
     "groups": "Grupy",
-    "noUnread": "Brak nieprzeczytanych",
-    "chatFallback": "Czat",
+    "notifications": "Powiadomienia",
     "driverFallback": "Kierowca",
-    "openSettings": "Otwórz ustawienia",
-    "toggleTheme": "Przełącz motyw",
-    "messageManager": "Napisz do menedżera",
+    "chatFallback": "Czat",
     "fileAttachment": "📎 Plik"
   },
-  "push": {
-    "noticeTitle": "Powiadomienie"
+  "notifications": {
+    "allCaughtUp": "Wszystko przeczytane",
+    "noUnread": "Brak nieprzeczytanych",
+    "unreadCount": "Nieprzeczytane: {{count}}"
   },
-  "status": {
-    "ONLINE": "Dostępny",
-    "BUSY": "Nie przeszkadzać",
-    "AWAY": "Poza miejscem",
-    "SLEEP": "Śpię",
-    "VACATION": "Odpoczywam",
-    "OFFLINE": "Poza aplikacją"
+  "people": {
+    "myTeam": "Mój zespół",
+    "allManagers": "Wszyscy menedżerowie",
+    "teamEmpty": "W Twoim zespole nie ma innych menedżerów",
+    "teamlead": "Lider zespołu",
+    "trucks": "Ciężarówki",
+    "activate": "Aktywuj",
+    "deactivate": "Dezaktywuj",
+    "call": "Zadzwoń",
+    "message": "Napisz",
+    "ratings": {
+      "title": "Ocena",
+      "rateTitle": "Oceń kierowcę",
+      "current": "Twoja ocena",
+      "none": "Brak ocen",
+      "submit": "Wyślij",
+      "update": "Zaktualizuj",
+      "anonymous": "Anonimowo",
+      "commentPlaceholder": "Komentarz (opcjonalnie)",
+      "unknown": "—"
+    }
   },
   "presence": {
     "pickStatus": "Wybierz status",
-    "sleepEllipsis": "Śpię…",
-    "vacationEllipsis": "Odpoczywam…",
     "howLong": "Na jak długo?",
     "noLimit": "Bez ograniczeń",
+    "sleepEllipsis": "Śpię…",
+    "vacationEllipsis": "Odpoczywam…",
     "updateError": "Nie udało się zaktualizować statusu.",
     "sleepPresets": {
       "min30": "30 min",
@@ -320,5 +274,173 @@
       "week1": "Tydzień",
       "weeks2": "2 tygodnie"
     }
+  },
+  "push": {
+    "noticeTitle": "Powiadomienie"
+  },
+  "settings": {
+    "name": {
+      "title": "Imię",
+      "first": "Imię",
+      "firstPlaceholder": "Twoje imię",
+      "last": "Nazwisko (opcjonalnie)",
+      "lastPlaceholder": "Twoje nazwisko"
+    },
+    "avatar": {
+      "title": "Zdjęcie profilowe",
+      "change": "Zmień",
+      "remove": "Usuń"
+    },
+    "language": {
+      "title": "Język",
+      "pick": "Wybierz język"
+    },
+    "status": {
+      "title": "Status"
+    },
+    "theme": {
+      "title": "Motyw",
+      "system": "Systemowy",
+      "light": "Jasny",
+      "dark": "Ciemny"
+    },
+    "saveChanges": "Zapisz zmiany",
+    "saved": "Zapisano ✓",
+    "logout": "Wyloguj się",
+    "logoutConfirm": {
+      "title": "Wylogować?",
+      "body": "Na pewno się wylogować?"
+    },
+    "accessDenied": {
+      "description": "Te ustawienia są dostępne tylko dla liderów zespołu / administratorów."
+    },
+    "company": {
+      "title": "Firma",
+      "name": "Firma",
+      "settings": "Ustawienia firmy",
+      "director": "Dyrektor",
+      "accounting": "Księgowość",
+      "hr": "Kadry (HR)",
+      "emails": "E-maile służbowe"
+    },
+    "driverFallback": "Menedżer",
+    "errors": {
+      "saveProfile": "Nie udało się zapisać zmian.",
+      "uploadAvatar": "Nie udało się przesłać zdjęcia.",
+      "deleteAvatar": "Nie udało się usunąć zdjęcia.",
+      "photoPermTitle": "Dostęp do zdjęć",
+      "photoPermBody": "Zezwól na dostęp do galerii, aby wybrać zdjęcie profilowe."
+    }
+  },
+  "status": {
+    "ONLINE": "online",
+    "BUSY": "nie przeszkadzać",
+    "AWAY": "poza miejscem",
+    "SLEEP": "śpi",
+    "VACATION": "urlop",
+    "OFFLINE": "poza aplikacją"
+  },
+  "stopRow": {
+    "name": "Nazwa punktu (np. Odprawa celna)",
+    "address": "Adres",
+    "coords": "Współrz.",
+    "date": "Data",
+    "from": "od",
+    "to": "do",
+    "changeType": "Zmień typ"
+  },
+  "sys": {
+    "driverAssigned": "Kierowca {{name}} przydzielony do ciężarówki {{plate}}",
+    "managerAssigned": "Menedżer {{name}} przydzielony do ciężarówki {{plate}}"
+  },
+  "trip": {
+    "chatLabel": "Czat trasy",
+    "docsTitle": "Dokumenty trasy",
+    "attachSheet": {
+      "title": "Załącz"
+    },
+    "online": "online",
+    "connecting": "łączenie…",
+    "stops": {
+      "route": "Trasa",
+      "loading": "Załadunek",
+      "unloading": "Rozładunek",
+      "waypoint": "Przystanek"
+    },
+    "waypointPreset": {
+      "customs": "Odprawa celna",
+      "parking": "Parking",
+      "fuel": "Tankowanie"
+    }
+  },
+  "tripChat": {
+    "inactive": "Nie jesteś już menedżerem tej trasy — czat tylko do odczytu",
+    "noTrip": {
+      "title": "Brak aktywnej trasy",
+      "subtitle": "Czat pojawi się, gdy ciężarówce zostanie przypisana trasa."
+    }
+  },
+  "tripStatus": {
+    "ASSIGNED": "Przypisany",
+    "ACCEPTED": "Zaakceptowany",
+    "ON_WAY": "W drodze",
+    "ON_SITE": "Na miejscu",
+    "LOADED": "Załadowany",
+    "DELIVERED": "Dostarczony",
+    "pick": "Status trasy"
+  },
+  "trips": {
+    "searchPlaceholder": "Szukaj: nr zamówienia, numer, kierowca…"
+  },
+  "truck": {
+    "driverLabel": "Kierowca",
+    "tabs": {
+      "chat": "Czat",
+      "trips": "Trasy",
+      "documents": "Dokumenty",
+      "alarm": "Budzik",
+      "info": "Info"
+    }
+  },
+  "truckPanel": {
+    "newTrip": {
+      "title": "Nowa trasa",
+      "editTitle": "Edytuj trasę",
+      "button": "Nowa",
+      "addStop": "Dodaj przystanek",
+      "driverLabel": "Kierowca",
+      "selectDriver": "Wybierz kierowcę",
+      "orderLabel": "Nr zamówienia",
+      "notesLabel": "Notatki",
+      "tripNameLabel": "Nazwa trasy",
+      "tripNamePlaceholder": "np. Lwów → Kraków",
+      "tripFallbackName": "Nowa trasa"
+    },
+    "trips": {
+      "empty": "Brak tras",
+      "noStops": "Brak przystanków",
+      "searchPlaceholder": "Szukaj trasy…",
+      "sectionActive": "Aktywne",
+      "sectionQueued": "W kolejce",
+      "sectionDone": "Zakończone"
+    },
+    "documents": {
+      "allTrips": "Wszystkie trasy ({{count}})",
+      "filterTitle": "Filtruj wg trasy",
+      "noAttachments": "Brak dokumentów",
+      "noTrips": "Najpierw utwórz trasę",
+      "searchPlaceholder": "Szukaj: nazwa, data, nr…",
+      "uploadTo": "Prześlij do trasy"
+    }
+  },
+  "truckStatus": {
+    "ON_TRIP": "W trasie",
+    "REPAIR": "Naprawa",
+    "AVAILABLE": "Wolna"
+  },
+  "trucks": {
+    "take": "Weź ciężarówkę",
+    "release": "Zwolnij ciężarówkę",
+    "searchPlaceholder": "Szukaj po numerze lub kierowcy…"
   }
 }

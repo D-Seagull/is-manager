@@ -1,70 +1,29 @@
 {
-  "common": {
-    "cancel": "Скасувати",
-    "delete": "Видалити",
-    "save": "Зберегти",
-    "reply": "Відповісти",
-    "copy": "Копіювати",
-    "edit": "Редагувати",
-    "search": "Пошук",
-    "upload": "Завантажити",
-    "noMatches": "Нічого не знайдено.",
-    "loading": "Завантаження…",
-    "messageDeleted": "Повідомлення видалено",
-    "fileDeleted": "Файл видалено",
-    "file": "Файл",
-    "error": "Помилка"
-  },
-  "chatDir": {
-    "searchPlaceholder": "Пошук за іменем, телефоном чи авто…",
-    "otherContacts": "Інші контакти",
-    "noConversations": "Розмов ще немає.",
-    "teamlead": "Тімлід"
-  },
-  "groups": {
-    "empty": {
-      "title": "Груп ще немає",
-      "subtitle": "Група водіїв вашої компанії з'явиться тут."
+  "alarm": {
+    "title": "Будильники",
+    "new": "Новий",
+    "create": "Створити",
+    "empty": "Будильників немає",
+    "titlePlaceholder": "Заголовок",
+    "notePlaceholder": "Нотатка (необов'язково)",
+    "linkToTrip": "Прив'язати до активного рейсу",
+    "restartIn": "Перезапустити через",
+    "deleteConfirm": "Видалити будильник?",
+    "toMe": "Мені",
+    "self": "Собі",
+    "driverNone": "Водій",
+    "noDriverAlert": "У машини немає водія",
+    "recurrence": {
+      "NONE": "Без",
+      "DAILY": "Щодня",
+      "WEEKLY": "Щотижня"
     },
-    "memberCount_one": "{{count}} водій",
-    "memberCount_few": "{{count}} водії",
-    "memberCount_many": "{{count}} водіїв",
-    "placeholderSubtitle": "Групи лише для водіїв. Можна додавати інших водіїв як учасників."
-  },
-  "settings": {
-    "title": "Налаштування",
-    "driverFallback": "Водій",
-    "avatar": {
-      "title": "Фото профілю",
-      "change": "Змінити",
-      "remove": "Прибрати"
-    },
-    "status": { "title": "Статус" },
-    "name": {
-      "title": "Імʼя та прізвище",
-      "first": "Імʼя",
-      "firstPlaceholder": "Іван",
-      "last": "Прізвище (необовʼязково)",
-      "lastPlaceholder": "Петренко"
-    },
-    "language": {
-      "title": "Мова",
-      "pick": "Виберіть мову"
-    },
-    "saveChanges": "Зберегти зміни",
-    "saved": "Зміни збережено ✓",
-    "logout": "Вийти з акаунту",
-    "logoutConfirm": {
-      "title": "Вихід з акаунту",
-      "body": "Точно вийти?",
-      "confirm": "Вийти"
-    },
-    "errors": {
-      "saveProfile": "Не вдалось зберегти зміни.",
-      "photoPermTitle": "Доступ до фото",
-      "photoPermBody": "Дозволь доступ до галереї щоб обрати фото профілю.",
-      "uploadAvatar": "Не вдалось завантажити фото.",
-      "deleteAvatar": "Не вдалось видалити фото."
+    "offsets": {
+      "off5": "5 хв",
+      "off15": "15 хв",
+      "off30": "30 хв",
+      "off60": "1 год",
+      "off120": "2 год"
     }
   },
   "auth": {
@@ -88,167 +47,135 @@
       "invalidCode": "Невірний код."
     }
   },
-  "alarm": {
-    "myAlarms": "Мої будильники ({{count}})",
-    "new": "+ Новий",
-    "reuseTitle": "Перезапустити через…",
-    "from": "від {{name}}",
-    "recurrence": {
-      "NONE": "Один раз",
-      "DAILY": "Щодня",
-      "WEEKLY": "Щотижня"
-    },
-    "quickOffsets": {
-      "min5": "+5 хв",
-      "min15": "+15 хв",
-      "min30": "+30 хв",
-      "hour1": "+1 год",
-      "hour2": "+2 год"
-    },
-    "form": {
-      "title": "Тема *",
-      "titlePlaceholder": "напр. Зателефонувати клієнту",
-      "note": "Коментар",
-      "notePlaceholder": "Деталі (необов'язково)",
-      "when": "Коли",
-      "recurrence": "Повтор",
-      "submit": "Створити"
-    },
-    "picker": {
-      "pickDate": "Оберіть дату",
-      "pickTime": "Оберіть час",
-      "done": "Готово"
-    },
-    "deleteConfirm": {
-      "title": "Видалити будильник?"
-    },
-    "empty": {
-      "title": "Немає будильників",
-      "subtitle": "Натисни «+ Новий», щоб встановити нагадування."
-    },
-    "errors": {
-      "titleRequired": "Тема обов'язкова",
-      "createFailed": "Не вдалось створити будильник"
-    }
-  },
-  "sys": {
-    "driverAssigned": "До вантажівки {{plate}} призначений водій {{name}}",
-    "managerAssigned": "До вантажівки {{plate}} призначений менеджер {{name}}"
+  "broadcast": {
+    "title": "Розсилка водіям",
+    "subtitle": "Повідомлення отримають водії всіх ваших машин.",
+    "subjectPlaceholder": "Тема (необов'язково)",
+    "messagePlaceholder": "Текст повідомлення…",
+    "sendButton": "Надіслати",
+    "sentTitle": "Надіслано",
+    "sentBody": "Повідомлення отримали {{count}} водіїв.",
+    "sendError": "Не вдалося надіслати розсилку.",
+    "templates": "Шаблони",
+    "saveTemplate": "Зберегти шаблон",
+    "noTemplates": "Немає збережених шаблонів",
+    "defaultTemplateName": "Шаблон",
+    "templateError": "Не вдалося зберегти шаблон."
   },
   "chat": {
-    "typingOne": "набирає",
-    "typingMany": "набирають",
-    "editingMessage": "Редагування повідомлення",
-    "replyTo": "Відповідь: {{name}}",
-    "unknownSender": "Невідомо",
-    "deleted": "Видалено",
-    "editedShort": "(ред.)",
     "messagePlaceholder": "Повідомлення…",
-    "editPlaceholder": "Редагуйте повідомлення…",
-    "emptyChat": "Повідомлень ще немає. Почніть розмову.",
-    "groupFallback": "Група",
+    "editPlaceholder": "Редагувати…",
+    "editingMessage": "Редагування",
+    "editedShort": "ред.",
+    "replyTo": "Відповідь {{name}}",
+    "typing": "{{name}} друкує…",
+    "unknownSender": "невідомо",
     "groupChat": "Груповий чат",
-    "groupDocsTitle": "Документи групи"
-  },
-  "trip": {
-    "noActiveTrip": {
-      "title": "Немає активного рейсу",
-      "subtitle": "Коли менеджер призначить рейс, він з'явиться тут. Потягни вниз, щоб оновити."
-    },
-    "chatLabel": "Чат рейсу",
-    "nextTripLabel": "Наступний: {{title}}",
-    "nextTripHint": "Стане активним після завершення поточного",
-    "nextAssigned": {
-      "title": "Вам призначено наступне замовлення",
-      "loadingAt": "Завантаження: {{address}}"
-    },
-    "online": "онлайн",
-    "connecting": "під'єднання…",
-    "newCount_one": "{{count}} нове",
-    "newCount_few": "{{count}} нові",
-    "newCount_many": "{{count}} нових",
-    "readOnlyNotice": "Ви більше не учасник цього чату — перегляд тільки для читання.",
-    "docsTitle": "Документи рейсу",
-    "attachSheet": { "title": "Прикріпити" },
-    "stops": {
-      "loading": "Завантаження",
-      "unloading": "Розвантаження"
+    "groupDocsTitle": "Документи групи",
+    "groupFallback": "Група",
+    "archive": {
+      "title": "Попередні чати",
+      "titleSession": "Архівна розмова",
+      "banner": "Попередні чати: {{count}}",
+      "view": "Переглянути",
+      "noSessions": "Немає архівних розмов",
+      "noMessages": "Повідомлень немає",
+      "reason": {
+        "DRIVER_CHANGED": "Зміна водія",
+        "MANAGER_CHANGED": "Зміна менеджера",
+        "TRIP_COMPLETED": "Рейс завершено",
+        "LEGACY_RESET": "Скидання"
+      }
     }
   },
-  "tripStatus": {
-    "ASSIGNED": "Призначено",
-    "ACCEPTED": "Прийнято",
-    "ON_WAY": "В дорозі",
-    "ON_SITE": "На місці",
-    "LOADED": "Завантажено",
-    "DELIVERED": "Доставлено"
+  "chatDir": {
+    "searchPlaceholder": "Пошук: ім'я, телефон або машина…",
+    "noConversations": "Розмов ще немає.",
+    "otherContacts": "Інші контакти",
+    "teamlead": "Тімлід"
   },
-  "trips": {
-    "searchPlaceholder": "Пошук за маршрутом, № замовлення, адресою…",
-    "active": "Активний",
-    "next": "Наступні",
-    "nextTag": "Наступний",
-    "done": "Завершені",
-    "empty": {
-      "title": "Рейсів ще немає",
-      "subtitle": "Призначені тобі рейси з'являться тут."
-    },
-    "noMatches": {
-      "title": "Нічого не знайдено",
-      "subtitle": "Спробуй інший запит."
-    }
+  "common": {
+    "cancel": "Скасувати",
+    "copy": "Копіювати",
+    "delete": "Видалити",
+    "edit": "Редагувати",
+    "empty": "Порожньо",
+    "error": "Помилка",
+    "file": "Файл",
+    "fileDeleted": "Файл видалено",
+    "messageDeleted": "Повідомлення видалено",
+    "noMatches": "Нічого не знайдено",
+    "reply": "Відповісти",
+    "save": "Зберегти",
+    "search": "Пошук…",
+    "soon": "Скоро",
+    "upload": "Завантажити"
   },
   "documents": {
-    "active": "Активний",
-    "searchPlaceholder": "№ рейсу, дата або індекс…",
-    "noTruck": {
-      "subtitle": "Документи прив'язані до вантажівки. Щойно менеджер її призначить, вони з'являться тут."
-    },
-    "empty": {
-      "title": "Документів ще немає",
-      "subtitleActive": "Натисни «Завантажити», щоб додати фото чи файли для поточного рейсу.",
-      "subtitleInactive": "Коли з'явиться рейс із завантаженими файлами, вони будуть тут."
-    },
+    "empty": "Документів немає",
     "nothingHere": "Тут поки порожньо.",
+    "cannotOpen": "Не вдалося відкрити",
+    "uploadFailed": "Помилка завантаження",
+    "tabs": {
+      "all": "Усі",
+      "documents": "Документи",
+      "files": "Файли",
+      "photos": "Фото"
+    },
     "uploadSheet": {
-      "title": "Завантаження",
       "subtitle": "Оберіть джерело",
       "camera": "Камера",
       "gallery": "Галерея",
       "file": "Файл"
-    },
-    "uploadFailed": "Не вдалось завантажити",
-    "cannotOpen": "Не вдалось відкрити",
-    "deleteConfirm": {
-      "title": "Видалити?",
-      "body": "{{name}} буде видалено назавжди."
-    },
-    "tabs": {
-      "all": "Усі",
-      "photos": "Фото",
-      "documents": "Документи"
     }
   },
-  "truck": {
-    "status": {
-      "AVAILABLE": "Вільна",
-      "ON_TRIP": "В рейсі",
-      "REPAIR": "Ремонт"
+  "drivers": {
+    "addDriver": "Новий водій",
+    "inviteHint": "Водій входитиме за номером телефону через код із SMS."
+  },
+  "forgot": {
+    "title": "Відновлення пароля",
+    "subtitle": "Введіть email — надішлемо посилання для скидання пароля.",
+    "submit": "Надіслати",
+    "sent": "Якщо такий email існує, ми надіслали лист із інструкціями.",
+    "back": "← Назад до входу"
+  },
+  "groups": {
+    "empty": {
+      "title": "Груп ще немає",
+      "subtitle": "Тут з'явиться група водіїв вашої компанії."
     },
-    "noTruck": {
-      "title": "Вантажівку не призначено",
-      "subtitle": "Коли менеджер призначить тобі вантажівку, вона з'явиться тут."
-    },
-    "dispatcher": "Менеджер",
-    "unknownUser": "Невідомо",
-    "notes": {
-      "title": "Нотатки ({{count}})",
-      "placeholder": "Додати нотатку (видно менеджеру)…",
-      "empty": "Нотаток ще немає. Додай вище.",
-      "saveError": "Не вдалось зберегти нотатку. Спробуй ще раз.",
-      "deleteTitle": "Видалити нотатку",
-      "deleteBody": "Видалити цю нотатку?"
-    }
+    "memberCount_one": "{{count}} водій",
+    "memberCount_few": "{{count}} водії",
+    "memberCount_many": "{{count}} водіїв",
+    "memberCount_other": "{{count}} водія"
+  },
+  "home": {
+    "myTrucksSub": "Ваш флот і рейси",
+    "managersSub": "Ваша команда менеджерів"
+  },
+  "info": {
+    "notes": "Нотатки",
+    "noNotes": "Нотаток немає",
+    "addNotePlaceholder": "Додати нотатку…",
+    "deleteNote": "Видалити нотатку?",
+    "driver": "Водій",
+    "manager": "Менеджер",
+    "noDriver": "Без водія",
+    "noManager": "Без менеджера"
+  },
+  "login": {
+    "title": "IS Fleet · Менеджер",
+    "subtitle": "Увійдіть у свій акаунт",
+    "email": "Email",
+    "password": "Пароль",
+    "phone": "Телефон",
+    "submit": "Увійти",
+    "forgot": "Забули пароль?",
+    "invalidCredentials": "Невірний email або пароль",
+    "genericError": "Помилка входу",
+    "networkError": "Немає зв’язку із сервером. Спробуйте ще раз.",
+    "driverNotAllowed": "Цей застосунок лише для менеджерів. Увійдіть під акаунтом менеджера."
   },
   "manager": {
     "noManager": "Менеджера ще не призначено.",
@@ -271,42 +198,69 @@
       "submit": "Надіслати"
     }
   },
+  "managers": {
+    "addManager": "Новий менеджер",
+    "inviteHint": "Менеджер отримає лист із паролем на вказаний email."
+  },
+  "myTrucks": {
+    "empty": {
+      "title": "Немає вантажівок",
+      "subtitle": "За вами ще не закріплено жодної машини."
+    },
+    "noDriver": "Без водія"
+  },
   "nav": {
     "items": {
-      "trip": "Рейс",
-      "trips": "Рейси",
-      "truck": "Моя вантажівка",
-      "documents": "Документи",
       "chat": "Чат",
-      "alarm": "Будильник"
+      "trips": "Рейси",
+      "trucks": "Вантажівки",
+      "drivers": "Водії",
+      "managers": "Менеджери",
+      "myTrucks": "Мої вантажівки",
+      "documents": "Документи",
+      "account": "Акаунт",
+      "settings": "Налаштування"
     },
     "manager": "Менеджер",
     "groups": "Групи",
-    "noUnread": "Немає непрочитаних",
-    "chatFallback": "Чат",
+    "notifications": "Сповіщення",
     "driverFallback": "Водій",
-    "openSettings": "Відкрити налаштування",
-    "toggleTheme": "Змінити тему",
-    "messageManager": "Написати менеджеру",
+    "chatFallback": "Чат",
     "fileAttachment": "📎 Файл"
   },
-  "push": {
-    "noticeTitle": "Сповіщення"
+  "notifications": {
+    "allCaughtUp": "Усе прочитано",
+    "noUnread": "Немає непрочитаних",
+    "unreadCount": "Непрочитані: {{count}}"
   },
-  "status": {
-    "ONLINE": "Online",
-    "BUSY": "Не турбувати",
-    "AWAY": "Не на місці",
-    "SLEEP": "Сплю",
-    "VACATION": "Відпочиваю",
-    "OFFLINE": "Не в додатку"
+  "people": {
+    "myTeam": "Моя команда",
+    "allManagers": "Усі менеджери",
+    "teamEmpty": "У вашій команді немає інших менеджерів",
+    "teamlead": "Тімлід",
+    "trucks": "Вантажівки",
+    "activate": "Активувати",
+    "deactivate": "Деактивувати",
+    "call": "Дзвінок",
+    "message": "Написати",
+    "ratings": {
+      "title": "Рейтинг",
+      "rateTitle": "Оцінити водія",
+      "current": "Ваша оцінка",
+      "none": "Немає оцінок",
+      "submit": "Надіслати",
+      "update": "Оновити",
+      "anonymous": "Анонімно",
+      "commentPlaceholder": "Коментар (необов'язково)",
+      "unknown": "—"
+    }
   },
   "presence": {
     "pickStatus": "Виберіть статус",
-    "sleepEllipsis": "Сплю…",
-    "vacationEllipsis": "Відпочиваю…",
     "howLong": "На скільки?",
     "noLimit": "Без обмеження",
+    "sleepEllipsis": "Сплю…",
+    "vacationEllipsis": "Відпочиваю…",
     "updateError": "Не вдалось оновити статус.",
     "sleepPresets": {
       "min30": "30 хв",
@@ -320,5 +274,173 @@
       "week1": "Тиждень",
       "weeks2": "2 тижні"
     }
+  },
+  "push": {
+    "noticeTitle": "Сповіщення"
+  },
+  "settings": {
+    "name": {
+      "title": "Ім'я",
+      "first": "Ім'я",
+      "firstPlaceholder": "Ваше ім'я",
+      "last": "Прізвище (необов'язково)",
+      "lastPlaceholder": "Ваше прізвище"
+    },
+    "avatar": {
+      "title": "Фото",
+      "change": "Змінити",
+      "remove": "Прибрати"
+    },
+    "language": {
+      "title": "Мова",
+      "pick": "Оберіть мову"
+    },
+    "status": {
+      "title": "Статус"
+    },
+    "theme": {
+      "title": "Тема",
+      "system": "Система",
+      "light": "Світла",
+      "dark": "Темна"
+    },
+    "saveChanges": "Зберегти",
+    "saved": "Збережено",
+    "logout": "Вийти",
+    "logoutConfirm": {
+      "title": "Вийти?",
+      "body": "Ви впевнені, що хочете вийти?"
+    },
+    "accessDenied": {
+      "description": "Ці налаштування доступні лише тімліду / адміну."
+    },
+    "company": {
+      "title": "Компанія",
+      "name": "Компанія",
+      "settings": "Налаштування компанії",
+      "director": "Директор",
+      "accounting": "Бухгалтерія",
+      "hr": "Кадри (HR)",
+      "emails": "Службові email"
+    },
+    "driverFallback": "Менеджер",
+    "errors": {
+      "saveProfile": "Не вдалося зберегти",
+      "uploadAvatar": "Не вдалося завантажити фото",
+      "deleteAvatar": "Не вдалося видалити фото",
+      "photoPermTitle": "Немає доступу",
+      "photoPermBody": "Дозвольте доступ до фото в налаштуваннях."
+    }
+  },
+  "status": {
+    "ONLINE": "онлайн",
+    "BUSY": "зайнятий",
+    "AWAY": "відійшов",
+    "SLEEP": "сон",
+    "VACATION": "відпустка",
+    "OFFLINE": "офлайн"
+  },
+  "stopRow": {
+    "name": "Назва точки (напр. Митниця)",
+    "address": "Адреса",
+    "coords": "Коорд.",
+    "date": "Дата",
+    "from": "з",
+    "to": "до",
+    "changeType": "Змінити тип"
+  },
+  "sys": {
+    "driverAssigned": "До вантажівки {{plate}} призначений водій {{name}}",
+    "managerAssigned": "До вантажівки {{plate}} призначений менеджер {{name}}"
+  },
+  "trip": {
+    "chatLabel": "Чат рейсу",
+    "docsTitle": "Документи рейсу",
+    "attachSheet": {
+      "title": "Вкладення"
+    },
+    "online": "онлайн",
+    "connecting": "з'єднання…",
+    "stops": {
+      "route": "Маршрут",
+      "loading": "Завантаження",
+      "unloading": "Розвантаження",
+      "waypoint": "Додаткова зупинка"
+    },
+    "waypointPreset": {
+      "customs": "Митниця",
+      "parking": "Паркінг",
+      "fuel": "Заправка"
+    }
+  },
+  "tripChat": {
+    "inactive": "Ви більше не менеджер цього рейсу — чат лише для перегляду",
+    "noTrip": {
+      "title": "Немає активного рейсу",
+      "subtitle": "Чат з'явиться, коли машині призначать рейс."
+    }
+  },
+  "tripStatus": {
+    "ASSIGNED": "Призначено",
+    "ACCEPTED": "Прийнято",
+    "ON_WAY": "У дорозі",
+    "ON_SITE": "На місці",
+    "LOADED": "Завантажено",
+    "DELIVERED": "Доставлено",
+    "pick": "Статус рейсу"
+  },
+  "trips": {
+    "searchPlaceholder": "Пошук: № замовлення, номер, водій…"
+  },
+  "truck": {
+    "driverLabel": "Водій",
+    "tabs": {
+      "chat": "Чат",
+      "trips": "Рейси",
+      "documents": "Документи",
+      "alarm": "Будильник",
+      "info": "Інфо"
+    }
+  },
+  "truckPanel": {
+    "newTrip": {
+      "title": "Новий рейс",
+      "editTitle": "Редагувати рейс",
+      "button": "Новий",
+      "addStop": "Додати зупинку",
+      "driverLabel": "Водій",
+      "selectDriver": "Оберіть водія",
+      "orderLabel": "№ замовлення",
+      "notesLabel": "Нотатки",
+      "tripNameLabel": "Назва рейсу",
+      "tripNamePlaceholder": "Напр. Львів → Краків",
+      "tripFallbackName": "Новий рейс"
+    },
+    "trips": {
+      "empty": "Рейсів ще немає",
+      "noStops": "Немає зупинок",
+      "searchPlaceholder": "Пошук рейсу…",
+      "sectionActive": "Актуальні",
+      "sectionQueued": "В черзі",
+      "sectionDone": "Зроблені"
+    },
+    "documents": {
+      "allTrips": "Усі рейси ({{count}})",
+      "filterTitle": "Фільтр за рейсом",
+      "noAttachments": "Немає документів",
+      "noTrips": "Спершу створіть рейс",
+      "searchPlaceholder": "Пошук: назва, дата, №…",
+      "uploadTo": "Завантажити в рейс"
+    }
+  },
+  "truckStatus": {
+    "ON_TRIP": "У рейсі",
+    "REPAIR": "Ремонт",
+    "AVAILABLE": "Вільна"
+  },
+  "trucks": {
+    "take": "Взяти вантажівку",
+    "release": "Звільнити вантажівку",
+    "searchPlaceholder": "Пошук за номером або водієм…"
   }
 }
