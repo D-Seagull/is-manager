@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AlarmTab } from '@/components/alarm-tab';
 import { DocumentsTab } from '@/components/documents-tab';
+import { NotificationsBell } from '@/components/notifications-bell';
 import { InfoTab } from '@/components/info-tab';
 import { ScreenPlaceholder } from '@/components/screen-placeholder';
 import { TripChat } from '@/components/trip-chat';
@@ -73,6 +74,7 @@ export default function TruckDetailScreen() {
             </Text>
           ) : null}
         </View>
+        <NotificationsBell />
         <Pressable
           onPress={() => setNewTripOpen(true)}
           hitSlop={10}

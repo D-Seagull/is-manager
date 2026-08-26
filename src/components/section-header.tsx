@@ -1,10 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { NotificationsBell } from '@/components/notifications-bell';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
@@ -23,7 +23,6 @@ export function SectionHeader({
 }) {
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
-  const { t } = useTranslation();
 
   return (
     <View
@@ -49,14 +48,7 @@ export function SectionHeader({
       </Text>
       <View style={styles.right}>
         {right}
-        <Pressable
-          onPress={() => Alert.alert(t('nav.notifications', 'Сповіщення'), t('common.soon', 'Скоро'))}
-          hitSlop={10}
-          style={styles.bellBtn}
-          accessibilityLabel={t('nav.notifications', 'Сповіщення')}
-        >
-          <Ionicons name="notifications-outline" size={22} color={c.mutedForeground} />
-        </Pressable>
+        <NotificationsBell />
       </View>
     </View>
   );
@@ -74,5 +66,4 @@ const styles = StyleSheet.create({
   menuBtn: { padding: 4 },
   title: { flex: 1, fontSize: 18, fontWeight: '700' },
   right: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs },
-  bellBtn: { padding: 4 },
 });

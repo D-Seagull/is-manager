@@ -2,10 +2,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatAvatar } from '@/components/chat-avatar';
+import { NotificationsBell } from '@/components/notifications-bell';
 import { PresenceStatusSheet } from '@/components/presence-status-sheet';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -111,13 +112,9 @@ export default function HomeScreen() {
         <Pressable onPress={toggleTheme} hitSlop={10} style={styles.bell} accessibilityLabel={t('settings.theme.title', 'Тема')}>
           <Ionicons name={themeResolved === 'dark' ? 'sunny-outline' : 'moon-outline'} size={23} color={c.mutedForeground} />
         </Pressable>
-        <Pressable
-          onPress={() => Alert.alert(t('nav.notifications', 'Сповіщення'), t('common.soon', 'Скоро'))}
-          hitSlop={10}
-          style={styles.bell}
-        >
-          <Ionicons name="notifications-outline" size={24} color={c.mutedForeground} />
-        </Pressable>
+        <View style={styles.bell}>
+          <NotificationsBell color={c.mutedForeground} />
+        </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll}>

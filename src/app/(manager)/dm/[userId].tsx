@@ -29,6 +29,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
 import { ChatAvatar } from '@/components/chat-avatar';
+import { NotificationsBell } from '@/components/notifications-bell';
 import { StatusDot } from '@/components/status-dot';
 import { MessageActionsSheet, type MessageActions } from '@/components/message-actions-sheet';
 import { MessageQuote } from '@/components/message-quote';
@@ -347,6 +348,7 @@ export default function DmScreen() {
             {liveDocs.length}
           </Text>
         </Pressable>
+        <NotificationsBell />
       </View>
 
       {/* Messages */}
