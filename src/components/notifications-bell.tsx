@@ -11,6 +11,7 @@ import { useConversations } from '@/hooks/use-direct-messages';
 import { useGroupUnread } from '@/hooks/use-groups';
 import { useTripUnread } from '@/hooks/use-notifications';
 import { fullName } from '@/lib/format';
+import { systemMessageText } from '@/lib/system-message';
 
 /**
  * Дзеркалить веб `UnreadBell`: агрегує непрочитане рейсів + DM + груп у бейдж,
@@ -78,7 +79,7 @@ export function NotificationsBell({ color }: { color?: string }) {
                     </View>
                     {it.latestMessage ? (
                       <Text style={{ fontSize: 12, color: c.mutedForeground, marginTop: 2 }} numberOfLines={1}>
-                        <Text style={{ color: c.foreground }}>{it.latestMessage.senderName}: </Text>{it.latestMessage.content}
+                        <Text style={{ color: c.foreground }}>{it.latestMessage.senderName}: </Text>{systemMessageText(it.latestMessage.content, t)}
                       </Text>
                     ) : null}
                   </Pressable>

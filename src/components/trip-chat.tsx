@@ -39,6 +39,7 @@ import { ChatMessage, useTripChat } from '@/hooks/use-trip-chat';
 import { DriverDocument } from '@/lib/documents-api';
 import { fullName } from '@/lib/format';
 import { formatTime } from '@/lib/format-date';
+import { systemMessageText } from '@/lib/system-message';
 import { useUser } from '@/store/auth';
 
 const EDIT_WINDOW_MS = 15 * 60 * 1000;
@@ -410,7 +411,7 @@ function MsgBubble({ msg, isOwn, myId, onLongPress }: { msg: ChatMessage; isOwn:
   if (msg.isSystem) {
     return (
       <View style={styles.systemRow}>
-        <Text style={[styles.systemText, { color: c.mutedForeground }]}>{msg.content}</Text>
+        <Text style={[styles.systemText, { color: c.mutedForeground }]}>{systemMessageText(msg.content, t)}</Text>
       </View>
     );
   }

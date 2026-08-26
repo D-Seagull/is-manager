@@ -15,6 +15,7 @@ import {
 } from '@/hooks/use-trip-archive';
 import { fullName } from '@/lib/format';
 import { formatDateTime } from '@/lib/format-date';
+import { systemMessageText } from '@/lib/system-message';
 
 const REASON_FALLBACK: Record<SessionEndReason, string> = {
   DRIVER_CHANGED: 'Зміна водія',
@@ -139,6 +140,15 @@ function ArchivedMessages({
       keyExtractor={(m) => m.id}
       contentContainerStyle={{ padding: Spacing.md, gap: 6 }}
       renderItem={({ item: m }) => {
+        if (m.isSystem) {
+          return (
+            <View style={{ alignSelf: 'center', maxWidth: '90%', paddingVertical: 2 }}>
+              <Text style={{ fontSize: 12, color: c.mutedForeground, textAlign: 'center' }}>
+                {systemMessageText(m.content, t)}
+              </Text>
+            </View>
+          );
+        }
         const mine = m.senderId === myId;
         return (
           <View style={{ maxWidth: '82%', alignSelf: mine ? 'flex-end' : 'flex-start' }}>
