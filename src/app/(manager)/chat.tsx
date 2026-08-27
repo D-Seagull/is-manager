@@ -34,11 +34,20 @@ import { useUser } from '@/store/auth';
 const DIR_PAGE = 20;
 type Tab = 'managers' | 'groups' | 'drivers';
 
+// Remember the last-opened tab for the session so returning from a DM (which
+// remounts this screen) lands back on the tab you left — e.g. exit a driver
+// chat → stay on "Drivers", not reset to "Managers".
+let lastChatTab: Tab = 'managers';
+
 export default function ChatScreen() {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
-  const [tab, setTab] = useState<Tab>('managers');
+  const [tab, setTabState] = useState<Tab>(lastChatTab);
+  const setTab = (next: Tab) => {
+    lastChatTab = next;
+    setTabState(next);
+  };
 
   const { data: conversations, refetch: refetchConvs } = useConversations();
   const { data: groups, refetch: refetchGroups } = useGroups();
