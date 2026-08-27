@@ -330,6 +330,11 @@
       "deleteAvatar": "Nie udało się usunąć zdjęcia.",
       "photoPermTitle": "Dostęp do zdjęć",
       "photoPermBody": "Zezwól na dostęp do galerii, aby wybrać zdjęcie profilowe."
+    },
+    "notifications": {
+      "title": "Powiadomienia",
+      "sound": "Dźwięk",
+      "vibration": "Wibracja"
     }
   },
   "status": {

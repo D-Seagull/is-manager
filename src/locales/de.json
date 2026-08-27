@@ -327,6 +327,11 @@
       "deleteAvatar": "Foto konnte nicht gelöscht werden.",
       "photoPermTitle": "Fotozugriff",
       "photoPermBody": "Erlauben Sie den Galeriezugriff, um ein Profilfoto auszuwählen."
+    },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "sound": "Ton",
+      "vibration": "Vibration"
     }
   },
   "status": {

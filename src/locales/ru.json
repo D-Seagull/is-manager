@@ -330,6 +330,11 @@
       "deleteAvatar": "Не удалось удалить фото",
       "photoPermTitle": "Нет доступа",
       "photoPermBody": "Разрешите доступ к фото в настройках."
+    },
+    "notifications": {
+      "title": "Уведомления",
+      "sound": "Звук",
+      "vibration": "Вибрация"
     }
   },
   "status": {

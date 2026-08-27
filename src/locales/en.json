@@ -327,6 +327,11 @@
       "deleteAvatar": "Couldn't delete photo.",
       "photoPermTitle": "Photo access",
       "photoPermBody": "Allow gallery access to pick a profile photo."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "sound": "Sound",
+      "vibration": "Vibration"
     }
   },
   "status": {

@@ -12,6 +12,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   View,
@@ -34,6 +35,7 @@ import {
 } from '@/lib/auth-api';
 import { fullName, initials } from '@/lib/format';
 import { setAppLanguage } from '@/lib/i18n';
+import { useAlertPrefs } from '@/store/alert-prefs';
 import { useAuthStore, useUser } from '@/store/auth';
 
 // Keyed by UILocale — the UI-language preference, the only enum with German.
@@ -72,6 +74,12 @@ export default function AccountScreen() {
   const [statusPickerOpen, setStatusPickerOpen] = useState(false);
 
   const currentStatus = (user?.status as UserStatus | undefined) ?? 'ONLINE';
+
+  // Notification feedback toggles — persisted per device, applied instantly.
+  const sound = useAlertPrefs((s) => s.sound);
+  const vibration = useAlertPrefs((s) => s.vibration);
+  const setSound = useAlertPrefs((s) => s.setSound);
+  const setVibration = useAlertPrefs((s) => s.setVibration);
   // Teamleads/admins also get company-level settings here (managers: profile only).
   const elevated = user?.role === 'TEAMLEAD' || user?.role === 'ADMIN';
 
@@ -368,6 +376,26 @@ export default function AccountScreen() {
                 </Pressable>
               );
             })}
+          </View>
+        </SectionCard>
+
+        {/* Notifications — sound / vibration on incoming messages. */}
+        <SectionCard colors={c} title={t('settings.notifications.title', 'Сповіщення')}>
+          <View style={{ gap: Spacing.sm }}>
+            <View style={[styles.row, { backgroundColor: c.card, borderColor: c.border }]}>
+              <Ionicons name="volume-medium-outline" size={18} color={c.foreground} />
+              <Text style={[styles.rowText, { color: c.foreground }]}>
+                {t('settings.notifications.sound', 'Звук')}
+              </Text>
+              <Switch value={sound} onValueChange={setSound} trackColor={{ true: c.primary }} />
+            </View>
+            <View style={[styles.row, { backgroundColor: c.card, borderColor: c.border }]}>
+              <Ionicons name="phone-portrait-outline" size={18} color={c.foreground} />
+              <Text style={[styles.rowText, { color: c.foreground }]}>
+                {t('settings.notifications.vibration', 'Вібрація')}
+              </Text>
+              <Switch value={vibration} onValueChange={setVibration} trackColor={{ true: c.primary }} />
+            </View>
           </View>
         </SectionCard>
 

@@ -1,6 +1,7 @@
 import { Redirect, Stack } from 'expo-router';
 
 import { useAppStatePresence } from '@/hooks/use-app-state-presence';
+import { useChatAlerts } from '@/hooks/use-chat-alerts';
 import { useDmUnreadSync } from '@/hooks/use-direct-messages';
 import { useFleetSync } from '@/hooks/use-fleet-sync';
 import { useTripUnreadSync } from '@/hooks/use-notifications';
@@ -15,6 +16,7 @@ export default function ManagerLayout() {
   // Global live sync — always active while authenticated so statuses, unread
   // badges and presence update everywhere instantly (no reload).
   useDmUnreadSync();
+  useChatAlerts();
   usePresenceSync();
   useUserStatusSync();
   useFleetSync();

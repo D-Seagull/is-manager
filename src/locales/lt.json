@@ -330,6 +330,11 @@
       "deleteAvatar": "Nepavyko ištrinti nuotraukos.",
       "photoPermTitle": "Prieiga prie nuotraukų",
       "photoPermBody": "Leiskite prieigą prie galerijos, kad pasirinktumėte profilio nuotrauką."
+    },
+    "notifications": {
+      "title": "Pranešimai",
+      "sound": "Garsas",
+      "vibration": "Vibracija"
     }
   },
   "status": {
