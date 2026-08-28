@@ -32,6 +32,7 @@ import { ChatAvatar } from '@/components/chat-avatar';
 import { NotificationsBell } from '@/components/notifications-bell';
 import { StatusDot } from '@/components/status-dot';
 import { MessageActionsSheet, type MessageActions } from '@/components/message-actions-sheet';
+import { UserCardSheet } from '@/components/user-card-sheet';
 import { MessageQuote } from '@/components/message-quote';
 import { MessageReactionsCluster } from '@/components/message-reactions';
 import { Colors, Radius, Spacing } from '@/constants/theme';
@@ -183,6 +184,7 @@ export default function DmScreen() {
 
   // ─── Jump to a replied-to message/document ─────────────────────────
   const [highlightId, setHighlightId] = useState<string | null>(null);
+  const [cardOpen, setCardOpen] = useState(false);
   const scrollToMessage = (targetId?: string | null) => {
     if (!targetId) return;
     const index = data.findIndex((it) => it.data.id === targetId);
@@ -323,20 +325,27 @@ export default function DmScreen() {
         >
           <Ionicons name="chevron-back" size={26} color={c.foreground} />
         </Pressable>
-        <View style={{ width: 36, height: 36 }}>
-          <ChatAvatar user={peer} size={36} />
-          <View style={{ position: 'absolute', right: -2, bottom: -2 }}>
-            <StatusDot user={peer} size={11} ring={c.card} />
+        {/* Tap the peer's avatar/name → mini profile card */}
+        <Pressable
+          onPress={() => peerId && setCardOpen(true)}
+          hitSlop={6}
+          style={styles.headerPeer}
+        >
+          <View style={{ width: 36, height: 36 }}>
+            <ChatAvatar user={peer} size={36} />
+            <View style={{ position: 'absolute', right: -2, bottom: -2 }}>
+              <StatusDot user={peer} size={11} ring={c.card} />
+            </View>
           </View>
-        </View>
-        <View style={styles.headerText}>
-          <Text style={[styles.headerName, { color: c.foreground }]} numberOfLines={1}>
-            {peerName}
-          </Text>
-          <Text style={[styles.headerRole, { color: c.mutedForeground }]} numberOfLines={1}>
-            {peer?.role?.toLowerCase()}
-          </Text>
-        </View>
+          <View style={styles.headerText}>
+            <Text style={[styles.headerName, { color: c.foreground }]} numberOfLines={1}>
+              {peerName}
+            </Text>
+            <Text style={[styles.headerRole, { color: c.mutedForeground }]} numberOfLines={1}>
+              {peer?.role?.toLowerCase()}
+            </Text>
+          </View>
+        </Pressable>
         {/* Quick access to all attachments — same pill as the Trip chat */}
         <Pressable
           onPress={() => setFolderOpen(true)}
@@ -504,6 +513,9 @@ export default function DmScreen() {
         onClose={() => setEmojiOpen(false)}
         onEmojiSelected={(e) => setText((prev) => prev + e.emoji)}
       />
+
+      {/* Tap the peer header → mini profile card */}
+      <UserCardSheet userId={cardOpen ? peerId : null} onClose={() => setCardOpen(false)} />
 
       {/* Long-press menu */}
       <MessageActionsSheet
@@ -1054,6 +1066,7 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   backBtn: { padding: 4 },
+  headerPeer: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10, minWidth: 0 },
   headerText: { flex: 1, minWidth: 0 },
   headerName: { fontSize: 15, fontWeight: '600' },
   headerRole: { fontSize: 12, marginTop: 1, textTransform: 'capitalize' },

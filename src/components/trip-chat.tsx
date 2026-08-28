@@ -25,6 +25,7 @@ import EmojiPicker from 'rn-emoji-keyboard';
 
 import { ChatBackground } from '@/components/chat-background';
 import { MessageActionsSheet, type MessageActions } from '@/components/message-actions-sheet';
+import { UserCardSheet } from '@/components/user-card-sheet';
 import { MessageQuote } from '@/components/message-quote';
 import { MessageReactionsCluster } from '@/components/message-reactions';
 import { ScreenPlaceholder } from '@/components/screen-placeholder';
@@ -82,6 +83,7 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
   const [editing, setEditing] = useState<EditingState | null>(null);
   const [viewerUri, setViewerUri] = useState<string | null>(null);
   const [sheetFor, setSheetFor] = useState<ChatMessage | null>(null);
+  const [cardUserId, setCardUserId] = useState<string | null>(null);
   const [docSheetFor, setDocSheetFor] = useState<DriverDocument | null>(null);
 
   const data = useMemo<TimelineItem[]>(() => {
@@ -247,6 +249,7 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
                 isOwn={item.data.senderId === myId}
                 myId={myId}
                 onLongPress={() => setSheetFor(item.data)}
+                onOpenUser={setCardUserId}
               />
             ) : (
               <DocBubble
@@ -325,6 +328,9 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
         uploading={uploadDocs.isPending}
       />
 
+      {/* Tap a sender's name → mini profile card */}
+      <UserCardSheet userId={cardUserId} onClose={() => setCardUserId(null)} />
+
       <MessageActionsSheet
         visible={!!sheetFor}
         onClose={() => setSheetFor(null)}
@@ -402,7 +408,7 @@ function Banner({ kind, target, onCancel }: { kind: 'reply' | 'edit'; target: Re
   );
 }
 
-function MsgBubble({ msg, isOwn, myId, onLongPress }: { msg: ChatMessage; isOwn: boolean; myId: string; onLongPress: () => void }) {
+function MsgBubble({ msg, isOwn, myId, onLongPress, onOpenUser }: { msg: ChatMessage; isOwn: boolean; myId: string; onLongPress: () => void; onOpenUser: (userId: string) => void }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const isDeleted = !!msg.deletedAt;
@@ -423,7 +429,11 @@ function MsgBubble({ msg, isOwn, myId, onLongPress }: { msg: ChatMessage; isOwn:
 
   return (
     <View style={[styles.outerCol, isOwn && styles.outerColOwn]}>
-      {!isOwn && !isDeleted && <Text style={[styles.senderName, { color: c.primary }]} numberOfLines={1}>{senderName}</Text>}
+      {!isOwn && !isDeleted && (
+        <Pressable onPress={() => msg.sender?.id && onOpenUser(msg.sender.id)} hitSlop={4}>
+          <Text style={[styles.senderName, { color: c.primary }]} numberOfLines={1}>{senderName}</Text>
+        </Pressable>
+      )}
       <View style={styles.bubbleRow}>
         {isOwn && sidekick}
         <Pressable
