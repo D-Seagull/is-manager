@@ -20,11 +20,10 @@ import { useAuthStore } from '@/store/auth';
 // Sleep presets — EU rest-break convention (9 h short rest, 11 h regular
 // rest) plus a tighter "power nap" and an indefinite mode for end-of-day.
 // `key` resolves to the i18n label under presence.sleepPresets.*
+// Managers don't have the driver's 9h/11h rest windows — short breaks only.
 const SLEEP_PRESETS: { key: string; hours: number }[] = [
   { key: 'min30', hours: 0.5 },
   { key: 'hours2', hours: 2 },
-  { key: 'shortRest', hours: 9 },
-  { key: 'regularRest', hours: 11 },
 ];
 
 // Vacation presets — day-based, since rest stretches across more than
