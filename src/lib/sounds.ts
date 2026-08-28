@@ -5,10 +5,10 @@ import { AudioPlayer, createAudioPlayer, setAudioModeAsync } from 'expo-audio';
  * One AudioPlayer per asset is created lazily and reused — creating a new
  * player for every event leaks memory and adds latency.
  *
- * IMPORTANT: iOS silent switch defaults to muting AmbientSound — without
- * `playsInSilentMode: true` the chime is inaudible whenever the user has
- * the ringer off (which is a lot of drivers most of the time). We set this
- * once on first use; it sticks for the whole app session.
+ * Unlike the driver app, the manager chime RESPECTS the iOS silent switch
+ * (`playsInSilentMode: false`) — a manager who flips their phone to silent
+ * expects it to stay quiet. Users can also turn the chime off entirely from
+ * Settings (the Sound toggle). We set the audio mode once on first use.
  */
 const players: Record<string, AudioPlayer | null> = {};
 let audioModeReady: Promise<void> | null = null;
@@ -16,9 +16,8 @@ let audioModeReady: Promise<void> | null = null;
 function ensureAudioMode(): Promise<void> {
   if (audioModeReady) return audioModeReady;
   audioModeReady = setAudioModeAsync({
-    playsInSilentMode: true,
-    // Lets the alarm chime keep playing while the app is backgrounded.
-    shouldPlayInBackground: true,
+    // Honour the iOS ring/silent switch — no chime when the phone is silenced.
+    playsInSilentMode: false,
     // Don't fight other apps' audio — chime over them briefly, then yield.
     interruptionMode: 'mixWithOthers',
   }).catch((e) => {
