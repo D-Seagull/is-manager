@@ -31,6 +31,29 @@ const REFRESH_KEY = 'auth_refresh';
 
 const isWeb = Platform.OS === 'web';
 
+// Refresh tokens are single-use (rotated on every refresh). If two callers race
+// (e.g. the socket reconnect handshake AND an api 401 retry, both firing after
+// a 15-min idle), the second would send an already-rotated token and kill the
+// session. Dedupe: everyone awaits the same in-flight refresh.
+let refreshInFlight: Promise<string | null> | null = null;
+
+// Decode the JWT `exp` (seconds) to tell if the access token is still good.
+// Treats an undecodable token as stale so we refresh rather than send garbage.
+function accessTokenFresh(token: string | null): boolean {
+  if (!token) return false;
+  try {
+    const part = token.split('.')[1];
+    const b64 = part.replace(/-/g, '+').replace(/_/g, '/');
+    const pad = b64.length % 4 ? '='.repeat(4 - (b64.length % 4)) : '';
+    const json = globalThis.atob(b64 + pad);
+    const exp = (JSON.parse(json) as { exp?: number }).exp;
+    // Fresh only if it survives the next 60s — leaves room for the handshake.
+    return !!exp && exp * 1000 - Date.now() > 60_000;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Hybrid persisted storage: the sensitive access + refresh tokens live in the
  * OS keychain / keystore (expo-secure-store), while the non-sensitive user
@@ -175,21 +198,31 @@ export const useAuthStore = create<AuthState>()(
       },
 
       refresh: async () => {
-        const rt = get().refreshToken;
-        if (!rt) return null;
-        try {
-          const { user, token, refreshToken } = await refreshTokens(rt);
-          if (user.role === 'DRIVER') {
+        // Coalesce concurrent refreshes onto one in-flight request so the
+        // single-use refresh token is rotated exactly once.
+        if (refreshInFlight) return refreshInFlight;
+        refreshInFlight = (async () => {
+          const rt = get().refreshToken;
+          if (!rt) return null;
+          try {
+            const { user, token, refreshToken } = await refreshTokens(rt);
+            if (user.role === 'DRIVER') {
+              set({ user: null, token: null, refreshToken: null });
+              return null;
+            }
+            set({ user, token, refreshToken });
+            return token;
+          } catch {
+            // Refresh token rejected (expired / revoked / already rotated) —
+            // the session is dead; clear it so the app bounces to login.
             set({ user: null, token: null, refreshToken: null });
             return null;
           }
-          set({ user, token, refreshToken });
-          return token;
-        } catch {
-          // Refresh token rejected (expired / revoked / already rotated) —
-          // the session is dead; clear it so the app bounces to login.
-          set({ user: null, token: null, refreshToken: null });
-          return null;
+        })();
+        try {
+          return await refreshInFlight;
+        } finally {
+          refreshInFlight = null;
         }
       },
 
@@ -229,9 +262,17 @@ configureApiAuth({
   onUnauthorized: () => useAuthStore.getState().logout(),
 });
 
-// Feed the socket the current access token on every (re)connect, so a token
-// rotated by a silent refresh is used on the next handshake.
-configureSocketAuth(() => useAuthStore.getState().token);
+// Feed the socket a VALID access token on every (re)connect. After a ~15-min
+// idle the token has expired, so a plain reconnect would hand the gateway a
+// dead token ("connected without valid token" → sendMessage rejected). Refresh
+// first when it's stale, then hand over the fresh one.
+configureSocketAuth(async () => {
+  const s = useAuthStore.getState();
+  if (accessTokenFresh(s.token)) return s.token;
+  if (!s.refreshToken) return s.token;
+  await s.refresh();
+  return useAuthStore.getState().token;
+});
 
 // Selectors
 export const useUser = () => useAuthStore((s) => s.user);
