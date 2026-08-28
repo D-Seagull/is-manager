@@ -8,6 +8,7 @@ import { useFleetSync } from '@/hooks/use-fleet-sync';
 import { useTripUnreadSync } from '@/hooks/use-notifications';
 import { usePresenceSync } from '@/hooks/use-presence';
 import { usePushNotifications } from '@/hooks/use-push-notifications';
+import { useSyncPushLanguage } from '@/hooks/use-sync-push-language';
 import { useUserStatusSync } from '@/hooks/use-user-status-sync';
 import { useAuthStore } from '@/store/auth';
 
@@ -25,6 +26,7 @@ export default function ManagerLayout() {
   useAppStatePresence();
   useTripUnreadSync();
   usePushNotifications();
+  useSyncPushLanguage();
 
   // Bounce to login once we know there's no session.
   if (isHydrated && !token) {
