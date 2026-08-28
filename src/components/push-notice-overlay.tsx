@@ -28,18 +28,6 @@ interface Notice {
   data?: Record<string, unknown>;
 }
 
-// Push payloads the backend sends that concern a manager. `MESSAGE` is trip
-// chat; DM/group message types are added when their backend push lands.
-type PushType =
-  | 'ALARM'
-  | 'MESSAGE'
-  | 'MANAGER_ASSIGNED_TRUCK'
-  | 'MANAGER_REMOVED_TRUCK'
-  | 'TRUCK_REASSIGNED'
-  | 'MANAGER_ASSIGNED_TRIP'
-  | 'TRIP_STATUS'
-  | 'TEST';
-
 /**
  * Shows a centered dismissible modal on a foreground push, refreshes the
  * relevant caches on receive/tap, and navigates to the right screen when the
@@ -72,20 +60,14 @@ export function PushNoticeOverlay() {
       qc.invalidateQueries({ queryKey: ['trip-unread'] });
     };
 
-    // Route a background-banner tap to the most relevant screen.
+    // Route a background-banner tap to the most relevant screen. Most manager
+    // pushes carry a truckId (truck/trip/status/manager-change) → open the truck
+    // panel; DM/group messages carry userId/groupId instead.
     const navigate = (data?: Record<string, unknown>) => {
-      const type = data?.type as PushType | undefined;
       const truckId = typeof data?.truckId === 'string' ? data.truckId : null;
       const userId = typeof data?.userId === 'string' ? data.userId : null;
       const groupId = typeof data?.groupId === 'string' ? data.groupId : null;
-      if (
-        truckId &&
-        (type === 'MANAGER_ASSIGNED_TRUCK' ||
-          type === 'TRUCK_REASSIGNED' ||
-          type === 'MANAGER_ASSIGNED_TRIP' ||
-          type === 'TRIP_STATUS' ||
-          type === 'MESSAGE')
-      ) {
+      if (truckId) {
         router.push(`/(manager)/truck/${truckId}` as never);
       } else if (userId) {
         router.push(`/(manager)/dm/${userId}` as never);
