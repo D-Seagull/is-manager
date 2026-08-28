@@ -87,9 +87,14 @@ export function PushNoticeOverlay() {
       refresh();
 
       if (payload?.type === 'ALARM') playAlarmSound();
-      // Chat messages (trip / group) already arrive via the socket and show
-      // in-app — don't interrupt with a modal.
-      if (payload?.type === 'MESSAGE' || payload?.type === 'GROUP_MESSAGE') return;
+      // Chat messages (trip / group / DM) already arrive via the socket and
+      // show in-app — don't interrupt with a modal.
+      if (
+        payload?.type === 'MESSAGE' ||
+        payload?.type === 'GROUP_MESSAGE' ||
+        payload?.type === 'DM_MESSAGE'
+      )
+        return;
 
       setNotice({ title: title ?? t('push.noticeTitle', 'Сповіщення'), body: body ?? '', data: payload });
     });
