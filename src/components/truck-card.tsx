@@ -9,6 +9,7 @@ import { TRIP_STATUS_COLORS } from '@/constants/trip-status';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { type MyTruck, useUpdateTruck } from '@/hooks/use-my-trucks';
+import { useTripUnread } from '@/hooks/use-notifications';
 import { fullName } from '@/lib/format';
 import { useUser } from '@/store/auth';
 
@@ -25,6 +26,11 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
 
   const activeTrip = truck.trips?.[0];
   const driver = truck.currentDriver;
+
+  // Unread trip-chat messages for this truck (active trip) → red marker.
+  const { data: tripUnread } = useTripUnread();
+  const unread =
+    tripUnread?.items.find((i) => i.truckId === truck.id)?.activeTripUnread ?? 0;
 
   // Primary badge: active trip status if present (тільки /trucks/my), else the
   // truck's own status (загальний список /trucks).
@@ -61,6 +67,11 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
         <View style={[styles.badge, { backgroundColor: badge.bg }]}>
           <Text style={[styles.badgeText, { color: badge.fg }]}>{badge.label}</Text>
         </View>
+        {unread > 0 && (
+          <View style={[styles.unreadBadge, { backgroundColor: c.destructive }]}>
+            <Text style={styles.unreadText}>{unread > 99 ? '99+' : unread}</Text>
+          </View>
+        )}
         <Ionicons name="chevron-forward" size={16} color={c.mutedForeground} />
       </View>
 
@@ -150,6 +161,16 @@ const styles = StyleSheet.create({
   badge: { marginLeft: 'auto', borderRadius: 8, paddingHorizontal: Spacing.sm, paddingVertical: 4 },
   takeBtn: { position: 'absolute', right: Spacing.md, bottom: Spacing.md, width: 34, height: 34, borderRadius: 17, borderWidth: StyleSheet.hairlineWidth, alignItems: 'center', justifyContent: 'center' },
   badgeText: { fontSize: 11, fontWeight: '700' },
+  unreadBadge: {
+    minWidth: 20,
+    height: 20,
+    borderRadius: 10,
+    paddingHorizontal: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 6,
+  },
+  unreadText: { color: '#fff', fontSize: 11, fontWeight: '700' },
   driverRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   driverAvatar: { width: 34, height: 34 },
   dotWrap: { position: 'absolute', right: -2, bottom: -2 },

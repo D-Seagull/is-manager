@@ -17,6 +17,7 @@ import { TripsTab } from '@/components/trips-tab';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useTruck } from '@/hooks/use-my-trucks';
+import { useTripUnread } from '@/hooks/use-notifications';
 import { fullName } from '@/lib/format';
 
 type Tab = 'chat' | 'trips' | 'documents' | 'alarm' | 'info';
@@ -48,6 +49,11 @@ export default function TruckDetailScreen() {
   const { data: truck, isLoading: truckLoading } = useTruck(truckId);
   const activeTripId = truck?.trips?.[0]?.id ?? null;
   const driverName = fullName(truck?.currentDriver);
+
+  // Unread trip-chat marker for the Chat tab.
+  const { data: tripUnread } = useTripUnread();
+  const chatUnread =
+    tripUnread?.items.find((i) => i.truckId === truckId)?.activeTripUnread ?? 0;
   const [newTripOpen, setNewTripOpen] = useState(false);
   // A trip picked from the Trips tab opens its chat; falls back to the active trip.
   const [selectedTripId, setSelectedTripId] = useState<string | null>(null);
@@ -92,7 +98,12 @@ export default function TruckDetailScreen() {
           const color = active ? c.primary : c.mutedForeground;
           return (
             <Pressable key={x.key} onPress={() => setTab(x.key)} style={styles.tabBtn}>
-              <Ionicons name={x.icon} size={22} color={color} />
+              <View>
+                <Ionicons name={x.icon} size={22} color={color} />
+                {x.key === 'chat' && chatUnread > 0 && (
+                  <View style={[styles.tabDot, { backgroundColor: c.destructive, borderColor: c.card }]} />
+                )}
+              </View>
               <Text style={[styles.tabLabel, { color, fontWeight: active ? '700' : '500' }]}>
                 {t(x.labelKey, x.fallback)}
               </Text>
@@ -172,6 +183,15 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.sm,
   },
   tabBtn: { flex: 1, alignItems: 'center', gap: 3, paddingTop: 2 },
+  tabDot: {
+    position: 'absolute',
+    top: -2,
+    right: -5,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    borderWidth: 1.5,
+  },
   tabLabel: { fontSize: 10 },
   tabUnderline: { height: 2, width: '70%', marginTop: 4, borderTopLeftRadius: 2, borderTopRightRadius: 2 },
 });
