@@ -37,13 +37,12 @@ import { useTripDocuments, useUploadDocuments } from '@/hooks/use-documents';
 import { useTripChatArchive } from '@/hooks/use-trip-archive';
 import { useTrip } from '@/hooks/use-trip';
 import { ChatMessage, useTripChat } from '@/hooks/use-trip-chat';
+import { EDIT_WINDOW_MS } from '@/lib/constants';
 import { DriverDocument } from '@/lib/documents-api';
 import { fullName } from '@/lib/format';
 import { formatTime } from '@/lib/format-date';
 import { systemMessageText } from '@/lib/system-message';
 import { useUser } from '@/store/auth';
-
-const EDIT_WINDOW_MS = 15 * 60 * 1000;
 
 type ReplyTarget = {
   id: string;
@@ -255,6 +254,7 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
               <DocBubble
                 doc={item.data}
                 isOwn={item.data.uploadedBy === myId}
+                myId={myId}
                 onOpen={() => openDoc(item.data)}
                 onLongPress={() => setDocSheetFor(item.data)}
               />
@@ -462,25 +462,32 @@ function MsgBubble({ msg, isOwn, myId, onLongPress, onOpenUser }: { msg: ChatMes
   );
 }
 
-function DocBubble({ doc, isOwn, onOpen, onLongPress }: { doc: DriverDocument; isOwn: boolean; onOpen: () => void; onLongPress: () => void }) {
+function DocBubble({ doc, isOwn, myId, onOpen, onLongPress }: { doc: DriverDocument; isOwn: boolean; myId: string; onOpen: () => void; onLongPress: () => void }) {
   const c = Colors[useColorScheme() ?? 'light'];
   const isPhoto = doc.fileType === 'PHOTO';
   const time = formatTime(doc.createdAt, { hour: '2-digit', minute: '2-digit' });
   const senderName = fullName(doc.uploader) || doc.uploader?.role || '';
+  const sidekick = (
+    <MessageReactionsCluster type="TRIP_DOC" targetId={doc.id} reactions={doc.reactions ?? []} currentUserId={myId} />
+  );
 
   return (
     <View style={[styles.outerCol, isOwn && styles.outerColOwn]}>
       {!isOwn && <Text style={[styles.senderName, { color: c.primary }]} numberOfLines={1}>{senderName}</Text>}
-      <Pressable onPress={onOpen} onLongPress={onLongPress} delayLongPress={400} style={[styles.docBubble, { backgroundColor: isOwn ? c.primary : c.muted }]}>
-        {isPhoto ? (
-          <Image source={{ uri: doc.signedUrl }} style={styles.docThumb} />
-        ) : (
-          <View style={styles.docFileRow}>
-            <Ionicons name="document-text" size={22} color={isOwn ? c.primaryForeground : c.foreground} />
-            <Text style={[styles.docFileName, { color: isOwn ? c.primaryForeground : c.foreground }]} numberOfLines={2}>{doc.fileName}</Text>
-          </View>
-        )}
-      </Pressable>
+      <View style={[styles.bubbleRow, styles.bubbleRowDoc]}>
+        {isOwn && sidekick}
+        <Pressable onPress={onOpen} onLongPress={onLongPress} delayLongPress={400} style={[styles.docBubble, { backgroundColor: isOwn ? c.primary : c.muted }]}>
+          {isPhoto ? (
+            <Image source={{ uri: doc.signedUrl }} style={styles.docThumb} />
+          ) : (
+            <View style={styles.docFileRow}>
+              <Ionicons name="document-text" size={22} color={isOwn ? c.primaryForeground : c.foreground} />
+              <Text style={[styles.docFileName, { color: isOwn ? c.primaryForeground : c.foreground }]} numberOfLines={2}>{doc.fileName}</Text>
+            </View>
+          )}
+        </Pressable>
+        {!isOwn && sidekick}
+      </View>
       <View style={[styles.meta, isOwn && styles.metaOwn]}>
         <Text style={[styles.metaText, { color: c.mutedForeground }]}>{time}</Text>
       </View>
@@ -588,6 +595,9 @@ const styles = StyleSheet.create({
   outerColOwn: { alignSelf: 'flex-end' },
   senderName: { fontSize: 11, fontWeight: '700', marginBottom: 2, marginLeft: 4 },
   bubbleRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  // Attachments vary in height; pin the reaction to the bottom edge so the gap
+  // reads the same for tall photos and short file cards.
+  bubbleRowDoc: { alignItems: 'flex-end' },
   bubble: { borderRadius: Radius.lg, paddingHorizontal: 12, paddingVertical: 8, maxWidth: '100%' },
   bubbleDeleted: { backgroundColor: 'rgba(128,128,128,0.15)', paddingHorizontal: 10, paddingVertical: 4 },
   bubbleText: { lineHeight: 18 },

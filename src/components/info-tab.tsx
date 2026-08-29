@@ -119,7 +119,8 @@ export function InfoTab({ truck, activeTripId }: { truck: MyTruck; activeTripId?
         ) : (
           <View style={{ marginTop: Spacing.sm, gap: Spacing.sm }}>
             {notes.map((n) => {
-              const canDelete = n.user.id === user?.id;
+              // Anyone in the company can delete a truck note, not just its author.
+              const canDelete = !!user;
               return (
                 <View key={n.id} style={[styles.note, { borderTopColor: c.border }]}>
                   <View style={{ flex: 1, minWidth: 0 }}>

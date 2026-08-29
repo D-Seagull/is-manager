@@ -4,6 +4,7 @@ import { PushNoticeOverlay } from '@/components/push-notice-overlay';
 import { useAppStatePresence } from '@/hooks/use-app-state-presence';
 import { useChatAlerts } from '@/hooks/use-chat-alerts';
 import { useDmUnreadSync } from '@/hooks/use-direct-messages';
+import { useGroupUnreadSync } from '@/hooks/use-groups';
 import { useFleetSync } from '@/hooks/use-fleet-sync';
 import { useTripUnreadSync } from '@/hooks/use-notifications';
 import { usePresenceSync } from '@/hooks/use-presence';
@@ -19,6 +20,7 @@ export default function ManagerLayout() {
   // Global live sync — always active while authenticated so statuses, unread
   // badges and presence update everywhere instantly (no reload).
   useDmUnreadSync();
+  useGroupUnreadSync();
   useChatAlerts();
   usePresenceSync();
   useUserStatusSync();

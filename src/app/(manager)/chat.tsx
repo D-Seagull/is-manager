@@ -29,6 +29,7 @@ import {
 } from '@/hooks/use-groups';
 import { type UserStatus } from '@/lib/auth-api';
 import { fullName } from '@/lib/format';
+import { roleBadgeIcon } from '@/lib/roles';
 import { useUser } from '@/store/auth';
 
 const DIR_PAGE = 20;
@@ -308,7 +309,7 @@ function DirectoryRow({ user }: { user: CompanyUser }) {
         <ChatAvatar user={user} size={44} />
         {isManagerTier && (
           <View style={[styles.managerBadge, { backgroundColor: c.primary }]}>
-            <Ionicons name="headset-outline" size={9} color={c.primaryForeground} />
+            <Ionicons name={roleBadgeIcon(user.role)} size={9} color={c.primaryForeground} />
           </View>
         )}
         <View style={styles.presenceDot}>
@@ -356,7 +357,7 @@ function ConversationRow({ conv }: { conv: Conversation }) {
         <ChatAvatar user={conv.user} size={44} />
         {isManagerTier && (
           <View style={[styles.managerBadge, { backgroundColor: c.primary }]}>
-            <Ionicons name="headset-outline" size={9} color={c.primaryForeground} />
+            <Ionicons name={roleBadgeIcon(conv.user.role)} size={9} color={c.primaryForeground} />
           </View>
         )}
         <View style={styles.presenceDot}>

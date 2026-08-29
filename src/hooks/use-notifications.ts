@@ -39,8 +39,12 @@ export function useTripUnreadSync() {
     const socket = getSocket();
     const bump = () => qc.invalidateQueries({ queryKey: ['trip-unread'] });
     socket.on('tripUnreadChanged', bump);
+    // Catch up after any (re)connect — events that arrived while the app was
+    // backgrounded / the socket was down are missed, so refetch on reconnect.
+    socket.on('connect', bump);
     return () => {
       socket.off('tripUnreadChanged', bump);
+      socket.off('connect', bump);
     };
   }, [qc]);
 }

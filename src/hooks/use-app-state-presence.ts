@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
-import { getSocket } from '@/lib/socket';
+import { ensureSocketAlive, getSocket } from '@/lib/socket';
 
 /**
  * Тримає сокет живим при поверненні з фону та каже серверу про foreground/
@@ -39,6 +39,30 @@ export function useAppStatePresence() {
     emit(AppState.currentState);
     const sub = AppState.addEventListener('change', emit);
 
+    // Foreground watchdog — a socket can freeze WITHOUT any app-state change
+    // (left open on a desk, brief network drop). While foregrounded, poll the
+    // socket's liveness and force a reconnect if the packet stream went quiet,
+    // so realtime never silently dies until a manual reload.
+    let watchdog: ReturnType<typeof setInterval> | null = null;
+    const startWatchdog = () => {
+      if (watchdog) return;
+      watchdog = setInterval(() => {
+        if (AppState.currentState === 'active') ensureSocketAlive();
+      }, 15_000);
+    };
+    const stopWatchdog = () => {
+      if (watchdog) {
+        clearInterval(watchdog);
+        watchdog = null;
+      }
+    };
+    const onAppStateWatch = (state: AppStateStatus) => {
+      if (state === 'active') startWatchdog();
+      else stopWatchdog();
+    };
+    if (AppState.currentState === 'active') startWatchdog();
+    const watchSub = AppState.addEventListener('change', onAppStateWatch);
+
     // На кожен (ре)конект серверний прапорець active скидається в true — якщо ми
     // реконектнулись у фоні, треба чесно повідомити реальний стан.
     const sock = getSocket();
@@ -47,6 +71,8 @@ export function useAppStatePresence() {
 
     return () => {
       sub.remove();
+      watchSub.remove();
+      stopWatchdog();
       sock.off('connect', onConnect);
     };
   }, []);

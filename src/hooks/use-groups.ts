@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { api } from '@/lib/api';
+import { getSocket } from '@/lib/socket';
+import { useAuthStore } from '@/store/auth';
 
 // History page size — matches the backend default `take` for group messages.
 const GROUP_PAGE_SIZE = 50;
@@ -162,6 +164,37 @@ export function useGroupUnread() {
       return res.data;
     },
   });
+}
+
+/**
+ * Call once globally (in the manager layout) so the group unread badge + bell
+ * stay live even when no group screen is open — invalidates the unread summary
+ * on any incoming group message/document. The backend joins every group room on
+ * connect, so `new_group_message` reaches us app-wide.
+ */
+export function useGroupUnreadSync() {
+  const queryClient = useQueryClient();
+  const token = useAuthStore((s) => s.token);
+
+  useEffect(() => {
+    if (!token) return;
+    const socket = getSocket(token);
+    const invalidate = () => {
+      void queryClient.invalidateQueries({ queryKey: groupKeys.unread });
+    };
+    socket.on('new_group_message', invalidate);
+    socket.on('new_group_document', invalidate);
+    socket.on('group_messages_read', invalidate);
+    // Catch up after any (re)connect — events missed while the app was
+    // backgrounded / the socket was down would otherwise only show on reload.
+    socket.on('connect', invalidate);
+    return () => {
+      socket.off('new_group_message', invalidate);
+      socket.off('new_group_document', invalidate);
+      socket.off('group_messages_read', invalidate);
+      socket.off('connect', invalidate);
+    };
+  }, [queryClient, token]);
 }
 
 export function useGroup(id: string) {

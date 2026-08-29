@@ -54,11 +54,10 @@ import {
   type DirectMessage,
 } from '@/hooks/use-direct-messages';
 import { useReactionsSocketSync } from '@/hooks/use-message-reactions';
+import { EDIT_WINDOW_MS } from '@/lib/constants';
 import { formatDate, formatTime } from '@/lib/format-date';
 import { getSocket } from '@/lib/socket';
 import { useUser } from '@/store/auth';
-
-const EDIT_WINDOW_MS = 15 * 60 * 1000;
 
 type ReplyTarget = {
   id: string;
@@ -404,6 +403,7 @@ export default function DmScreen() {
               <DocBubble
                 doc={item.data}
                 isOwn={item.data.uploadedBy === myId}
+                myId={myId}
                 highlighted={item.data.id === highlightId}
                 onOpen={() => openDoc(item.data)}
                 onLongPress={() => setDocSheetFor(item.data)}
@@ -822,12 +822,14 @@ function MessageBubble({
 function DocBubble({
   doc,
   isOwn,
+  myId,
   highlighted,
   onOpen,
   onLongPress,
 }: {
   doc: ConversationDocumentFull;
   isOwn: boolean;
+  myId: string;
   highlighted?: boolean;
   onOpen: () => void;
   onLongPress: () => void;
@@ -851,41 +853,49 @@ function DocBubble({
     );
   }
 
+  const sidekick = (
+    <MessageReactionsCluster type="DM_DOC" targetId={doc.id} reactions={doc.reactions ?? []} currentUserId={myId} />
+  );
+
   return (
     <View style={[styles.outerCol, isOwn && styles.outerColOwn]}>
-      <Pressable
-        onPress={onOpen}
-        onLongPress={onLongPress}
-        delayLongPress={400}
-        style={[
-          styles.docBubble,
-          { backgroundColor: isOwn ? c.primary : c.muted },
-          highlighted && { borderWidth: 2, borderColor: c.primary },
-        ]}
-      >
-        {isPhoto ? (
-          <Image source={{ uri: doc.signedUrl }} style={styles.docThumb} />
-        ) : (
-          <View style={styles.docFileRow}>
-            <Ionicons
-              name="document-text"
-              size={22}
-              color={isOwn ? c.primaryForeground : c.foreground}
-            />
-            <Text
-              style={[styles.docFileName, { color: isOwn ? c.primaryForeground : c.foreground }]}
-              numberOfLines={2}
-            >
-              {doc.fileName}
+      <View style={[styles.bubbleRow, styles.bubbleRowDoc]}>
+        {isOwn && sidekick}
+        <Pressable
+          onPress={onOpen}
+          onLongPress={onLongPress}
+          delayLongPress={400}
+          style={[
+            styles.docBubble,
+            { backgroundColor: isOwn ? c.primary : c.muted },
+            highlighted && { borderWidth: 2, borderColor: c.primary },
+          ]}
+        >
+          {isPhoto ? (
+            <Image source={{ uri: doc.signedUrl }} style={styles.docThumb} />
+          ) : (
+            <View style={styles.docFileRow}>
+              <Ionicons
+                name="document-text"
+                size={22}
+                color={isOwn ? c.primaryForeground : c.foreground}
+              />
+              <Text
+                style={[styles.docFileName, { color: isOwn ? c.primaryForeground : c.foreground }]}
+                numberOfLines={2}
+              >
+                {doc.fileName}
+              </Text>
+            </View>
+          )}
+          {doc.caption ? (
+            <Text style={[styles.docCaption, { color: isOwn ? c.primaryForeground : c.foreground }]}>
+              {doc.caption}
             </Text>
-          </View>
-        )}
-        {doc.caption ? (
-          <Text style={[styles.docCaption, { color: isOwn ? c.primaryForeground : c.foreground }]}>
-            {doc.caption}
-          </Text>
-        ) : null}
-      </Pressable>
+          ) : null}
+        </Pressable>
+        {!isOwn && sidekick}
+      </View>
       <View style={[styles.meta, isOwn && styles.metaOwn]}>
         <Text style={[styles.metaText, { color: c.mutedForeground }]}>{time}</Text>
       </View>
@@ -1163,6 +1173,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
   },
+  // Attachments vary in height; pin the reaction to the bottom edge so the gap
+  // reads the same for tall photos and short file cards.
+  bubbleRowDoc: { alignItems: 'flex-end' },
   barWrap: { marginTop: 3 },
   barWrapOwn: { alignItems: 'flex-end' },
 
