@@ -3,7 +3,7 @@ import * as Clipboard from 'expo-clipboard';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import * as WebBrowser from 'expo-web-browser';
-import { useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
@@ -148,17 +148,25 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
     ]);
   };
 
-  const openDoc = async (doc: DriverDocument) => {
-    if (doc.fileType === 'PHOTO') {
-      setViewerUri(doc.signedUrl);
-      return;
-    }
-    try {
-      await WebBrowser.openBrowserAsync(doc.signedUrl);
-    } catch (e) {
-      Alert.alert(t('documents.cannotOpen', 'Не вдалося відкрити'), (e as Error).message);
-    }
-  };
+  const openDoc = useCallback(
+    async (doc: DriverDocument) => {
+      if (doc.fileType === 'PHOTO') {
+        setViewerUri(doc.signedUrl);
+        return;
+      }
+      try {
+        await WebBrowser.openBrowserAsync(doc.signedUrl);
+      } catch (e) {
+        Alert.alert(t('documents.cannotOpen', 'Не вдалося відкрити'), (e as Error).message);
+      }
+    },
+    [t],
+  );
+
+  // Stable per-list callbacks so the memoized bubbles below don't re-render on
+  // every parent update (typing, presence ticks, new messages).
+  const handleMsgLongPress = useCallback((m: ChatMessage) => setSheetFor(m), []);
+  const handleDocLongPress = useCallback((d: DriverDocument) => setDocSheetFor(d), []);
 
   const handleSend = () => {
     if (!isActiveParticipant) return;
@@ -224,6 +232,10 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
         <FlatList
           data={data}
           keyExtractor={(it) => `${it.kind}:${it.data.id}`}
+          initialNumToRender={12}
+          maxToRenderPerBatch={10}
+          windowSize={11}
+          removeClippedSubviews
           inverted
           contentContainerStyle={{ paddingVertical: Spacing.sm }}
           keyboardShouldPersistTaps="handled"
@@ -247,7 +259,7 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
                 msg={item.data}
                 isOwn={item.data.senderId === myId}
                 myId={myId}
-                onLongPress={() => setSheetFor(item.data)}
+                onLongPress={handleMsgLongPress}
                 onOpenUser={setCardUserId}
               />
             ) : (
@@ -255,8 +267,8 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
                 doc={item.data}
                 isOwn={item.data.uploadedBy === myId}
                 myId={myId}
-                onOpen={() => openDoc(item.data)}
-                onLongPress={() => setDocSheetFor(item.data)}
+                onOpen={openDoc}
+                onLongPress={handleDocLongPress}
               />
             )
           }
@@ -408,7 +420,7 @@ function Banner({ kind, target, onCancel }: { kind: 'reply' | 'edit'; target: Re
   );
 }
 
-function MsgBubble({ msg, isOwn, myId, onLongPress, onOpenUser }: { msg: ChatMessage; isOwn: boolean; myId: string; onLongPress: () => void; onOpenUser: (userId: string) => void }) {
+const MsgBubble = memo(function MsgBubble({ msg, isOwn, myId, onLongPress, onOpenUser }: { msg: ChatMessage; isOwn: boolean; myId: string; onLongPress: (m: ChatMessage) => void; onOpenUser: (userId: string) => void }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const isDeleted = !!msg.deletedAt;
@@ -437,7 +449,7 @@ function MsgBubble({ msg, isOwn, myId, onLongPress, onOpenUser }: { msg: ChatMes
       <View style={styles.bubbleRow}>
         {isOwn && sidekick}
         <Pressable
-          onLongPress={onLongPress}
+          onLongPress={() => onLongPress(msg)}
           delayLongPress={400}
           style={[styles.bubble, isDeleted ? styles.bubbleDeleted : isOwn ? { backgroundColor: c.primary } : { backgroundColor: c.muted }]}
         >
@@ -460,9 +472,9 @@ function MsgBubble({ msg, isOwn, myId, onLongPress, onOpenUser }: { msg: ChatMes
       </View>
     </View>
   );
-}
+});
 
-function DocBubble({ doc, isOwn, myId, onOpen, onLongPress }: { doc: DriverDocument; isOwn: boolean; myId: string; onOpen: () => void; onLongPress: () => void }) {
+const DocBubble = memo(function DocBubble({ doc, isOwn, myId, onOpen, onLongPress }: { doc: DriverDocument; isOwn: boolean; myId: string; onOpen: (d: DriverDocument) => void; onLongPress: (d: DriverDocument) => void }) {
   const c = Colors[useColorScheme() ?? 'light'];
   const isPhoto = doc.fileType === 'PHOTO';
   const time = formatTime(doc.createdAt, { hour: '2-digit', minute: '2-digit' });
@@ -476,7 +488,7 @@ function DocBubble({ doc, isOwn, myId, onOpen, onLongPress }: { doc: DriverDocum
       {!isOwn && <Text style={[styles.senderName, { color: c.primary }]} numberOfLines={1}>{senderName}</Text>}
       <View style={[styles.bubbleRow, styles.bubbleRowDoc]}>
         {isOwn && sidekick}
-        <Pressable onPress={onOpen} onLongPress={onLongPress} delayLongPress={400} style={[styles.docBubble, { backgroundColor: isOwn ? c.primary : c.muted }]}>
+        <Pressable onPress={() => onOpen(doc)} onLongPress={() => onLongPress(doc)} delayLongPress={400} style={[styles.docBubble, { backgroundColor: isOwn ? c.primary : c.muted }]}>
           {isPhoto ? (
             <Image source={{ uri: doc.signedUrl }} style={styles.docThumb} />
           ) : (
@@ -493,7 +505,7 @@ function DocBubble({ doc, isOwn, myId, onOpen, onLongPress }: { doc: DriverDocum
       </View>
     </View>
   );
-}
+});
 
 type DocTab = 'ALL' | 'PHOTO' | 'DOCUMENT';
 
