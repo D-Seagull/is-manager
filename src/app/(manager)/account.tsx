@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Alert,
-  Image,
   Modal,
   Platform,
   Pressable,
@@ -17,6 +16,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { Image as ExpoImage } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PresenceStatusSheet } from '@/components/presence-status-sheet';
@@ -219,7 +219,7 @@ export default function AccountScreen() {
           <View style={styles.avatarRow}>
             <View style={[styles.avatarWrap, { backgroundColor: c.muted }]}>
               {user?.avatar ? (
-                <Image source={{ uri: user.avatar }} style={styles.avatarImg} />
+                <ExpoImage source={{ uri: user.avatar }} style={styles.avatarImg} contentFit="cover" cachePolicy="memory-disk" />
               ) : (
                 <Text style={[styles.avatarText, { color: c.mutedForeground }]}>
                   {initials(user)}
