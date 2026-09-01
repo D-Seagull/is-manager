@@ -93,6 +93,26 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
     return items.sort((a, b) => b.ts - a.ts);
   }, [chat.messages, documents]);
 
+  const openDoc = useCallback(
+    async (doc: DriverDocument) => {
+      if (doc.fileType === 'PHOTO') {
+        setViewerUri(doc.signedUrl);
+        return;
+      }
+      try {
+        await WebBrowser.openBrowserAsync(doc.signedUrl);
+      } catch (e) {
+        Alert.alert(t('documents.cannotOpen', 'Не вдалося відкрити'), (e as Error).message);
+      }
+    },
+    [t],
+  );
+
+  // Stable per-list callbacks so the memoized bubbles below don't re-render on
+  // every parent update (typing, presence ticks, new messages).
+  const handleMsgLongPress = useCallback((m: ChatMessage) => setSheetFor(m), []);
+  const handleDocLongPress = useCallback((d: DriverDocument) => setDocSheetFor(d), []);
+
   if (!tripId) {
     // Поки трак/рейс ще вантажиться — показуємо лоадер, а не «немає рейсу»
     // (інакше на повільному з'єднанні блимає хибне повідомлення).
@@ -147,26 +167,6 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
       { text: t('common.cancel', 'Скасувати'), style: 'cancel' },
     ]);
   };
-
-  const openDoc = useCallback(
-    async (doc: DriverDocument) => {
-      if (doc.fileType === 'PHOTO') {
-        setViewerUri(doc.signedUrl);
-        return;
-      }
-      try {
-        await WebBrowser.openBrowserAsync(doc.signedUrl);
-      } catch (e) {
-        Alert.alert(t('documents.cannotOpen', 'Не вдалося відкрити'), (e as Error).message);
-      }
-    },
-    [t],
-  );
-
-  // Stable per-list callbacks so the memoized bubbles below don't re-render on
-  // every parent update (typing, presence ticks, new messages).
-  const handleMsgLongPress = useCallback((m: ChatMessage) => setSheetFor(m), []);
-  const handleDocLongPress = useCallback((d: DriverDocument) => setDocSheetFor(d), []);
 
   const handleSend = () => {
     if (!isActiveParticipant) return;
