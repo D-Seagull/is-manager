@@ -105,7 +105,7 @@ function BugReportButton({ colors: c }: { colors: ThemeColors }) {
   return (
     <>
       <Pressable onPress={() => setOpen(true)} hitSlop={10} style={styles.slot}>
-        <Ionicons name="bug-outline" size={22} color="#c96b6b" />
+        <Ionicons name="bug-outline" size={22} color="#ef4444" />
       </Pressable>
 
       <Modal
