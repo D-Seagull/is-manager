@@ -2,15 +2,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatAvatar } from '@/components/chat-avatar';
-import { NotificationsBell } from '@/components/notifications-bell';
+import { HeaderActions } from '@/components/header-actions';
 import { PresenceStatusSheet } from '@/components/presence-status-sheet';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useThemeMode } from '@/hooks/use-theme';
 import { useConversations } from '@/hooks/use-direct-messages';
 import { useGroupUnread } from '@/hooks/use-groups';
 import { useMyTrucks } from '@/hooks/use-my-trucks';
@@ -38,9 +37,9 @@ type Hero = {
 
 export default function HomeScreen() {
   const { t } = useTranslation();
-  const c = Colors[useColorScheme() ?? 'light'];
+  const scheme = useColorScheme() ?? 'light';
+  const c = Colors[scheme];
   const insets = useSafeAreaInsets();
-  const { resolved: themeResolved, toggle: toggleTheme } = useThemeMode();
   const user = useUser();
   const role = user?.role;
 
@@ -107,14 +106,18 @@ export default function HomeScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: c.background, paddingTop: insets.top }]}>
-      {/* Slim top bar — theme toggle + notifications (right). */}
+      {/* Slim top bar — brand logo (left) + bug report, notifications, theme. */}
       <View style={styles.topbar}>
-        <Pressable onPress={toggleTheme} hitSlop={10} style={styles.bell} accessibilityLabel={t('settings.theme.title', 'Тема')}>
-          <Ionicons name={themeResolved === 'dark' ? 'sunny-outline' : 'moon-outline'} size={23} color={c.mutedForeground} />
-        </Pressable>
-        <View style={styles.bell}>
-          <NotificationsBell color={c.mutedForeground} />
-        </View>
+        <Image
+          source={
+            scheme === 'dark'
+              ? require('../../assets/images/is_logo__white.png')
+              : require('../../assets/images/IS_logo.png')
+          }
+          style={styles.brandLogo}
+          resizeMode="contain"
+        />
+        <HeaderActions colors={c} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll}>
@@ -234,14 +237,14 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   topbar: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     alignItems: 'center',
     gap: Spacing.md,
     paddingHorizontal: Spacing.md,
     paddingTop: Spacing.xs,
     paddingBottom: Spacing.xs,
   },
-  bell: { padding: 4 },
+  brandLogo: { height: 34, aspectRatio: 612 / 408 },
   scroll: { paddingHorizontal: Spacing.md, paddingBottom: Spacing.lg, gap: Spacing.md },
 
   hero: {
