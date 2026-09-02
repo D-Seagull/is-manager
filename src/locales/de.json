@@ -444,5 +444,18 @@
     "take": "Lkw übernehmen",
     "release": "Lkw freigeben",
     "searchPlaceholder": "Nach Kennzeichen oder Fahrer suchen…"
+  },
+  "bugReport": {
+    "title": "Problem melden",
+    "subtitle": "Beschreiben Sie, was schiefgelaufen ist. Sie können einen Screenshot anhängen.",
+    "placeholder": "Was ist passiert?",
+    "attach": "Screenshot anhängen",
+    "send": "Senden",
+    "sent": "Danke! Ihr Bericht wurde gesendet.",
+    "sentTitle": "Fertig",
+    "error": "Konnte nicht gesendet werden. Versuchen Sie es erneut.",
+    "errorTitle": "Fehler",
+    "permissionTitle": "Kein Zugriff",
+    "permissionBody": "Erlauben Sie den Galeriezugriff, um einen Screenshot anzuhängen."
   }
 }

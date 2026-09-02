@@ -7,7 +7,10 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  Keyboard,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -55,6 +58,9 @@ function BugReportButton({ colors: c }: { colors: ThemeColors }) {
   const [shots, setShots] = useState<BugScreenshot[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
+  // A screenshot alone is enough — words are optional.
+  const canSend = description.trim().length > 0 || shots.length > 0;
+
   const reset = () => {
     setDescription('');
     setShots([]);
@@ -90,7 +96,7 @@ function BugReportButton({ colors: c }: { colors: ThemeColors }) {
     setShots((prev) => prev.filter((_, idx) => idx !== i));
 
   const submit = async () => {
-    if (!description.trim() || submitting) return;
+    if (!canSend || submitting) return;
     setSubmitting(true);
     try {
       await reportBug(description.trim(), shots, pathname);
@@ -114,10 +120,14 @@ function BugReportButton({ colors: c }: { colors: ThemeColors }) {
         animationType="fade"
         onRequestClose={close}
       >
-        <Pressable style={styles.backdrop} onPress={close}>
+        <KeyboardAvoidingView
+          style={styles.kav}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+          <Pressable style={styles.backdrop} onPress={close}>
           <Pressable
             style={[styles.card, { backgroundColor: c.card, borderColor: c.border }]}
-            onPress={(e) => e.stopPropagation()}
+            onPress={() => Keyboard.dismiss()}
           >
             <Text style={[styles.title, { color: c.foreground }]}>
               {t('bugReport.title')}
@@ -172,12 +182,12 @@ function BugReportButton({ colors: c }: { colors: ThemeColors }) {
 
               <Pressable
                 onPress={submit}
-                disabled={!description.trim() || submitting}
+                disabled={!canSend || submitting}
                 style={({ pressed }) => [
                   styles.sendBtn,
                   {
-                    backgroundColor: description.trim() ? c.primary : c.muted,
-                    opacity: pressed && description.trim() ? 0.85 : 1,
+                    backgroundColor: canSend ? c.primary : c.muted,
+                    opacity: pressed && canSend ? 0.85 : 1,
                   },
                 ]}
               >
@@ -187,7 +197,7 @@ function BugReportButton({ colors: c }: { colors: ThemeColors }) {
                   <Text
                     style={[
                       styles.sendText,
-                      { color: description.trim() ? c.primaryForeground : c.mutedForeground },
+                      { color: canSend ? c.primaryForeground : c.mutedForeground },
                     ]}
                   >
                     {t('bugReport.send')}
@@ -196,13 +206,15 @@ function BugReportButton({ colors: c }: { colors: ThemeColors }) {
               </Pressable>
             </View>
           </Pressable>
-        </Pressable>
+          </Pressable>
+        </KeyboardAvoidingView>
       </Modal>
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  kav: { flex: 1 },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs },
   slot: {
     width: 34,

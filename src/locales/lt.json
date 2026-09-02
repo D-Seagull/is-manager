@@ -447,5 +447,18 @@
     "take": "Paimti vilkiką",
     "release": "Atlaisvinti vilkiką",
     "searchPlaceholder": "Ieškoti pagal numerį ar vairuotoją…"
+  },
+  "bugReport": {
+    "title": "Pranešti apie problemą",
+    "subtitle": "Aprašykite, kas nutiko. Galite pridėti ekrano nuotrauką.",
+    "placeholder": "Kas nutiko?",
+    "attach": "Pridėti nuotrauką",
+    "send": "Siųsti",
+    "sent": "Ačiū! Pranešimas išsiųstas.",
+    "sentTitle": "Atlikta",
+    "error": "Nepavyko išsiųsti. Bandykite dar kartą.",
+    "errorTitle": "Klaida",
+    "permissionTitle": "Nėra prieigos",
+    "permissionBody": "Leiskite prieigą prie galerijos, kad pridėtumėte nuotrauką."
   }
 }

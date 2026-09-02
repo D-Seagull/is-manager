@@ -447,5 +447,18 @@
     "take": "Weź ciężarówkę",
     "release": "Zwolnij ciężarówkę",
     "searchPlaceholder": "Szukaj po numerze lub kierowcy…"
+  },
+  "bugReport": {
+    "title": "Zgłoś problem",
+    "subtitle": "Opisz, co poszło nie tak. Możesz dołączyć zrzut ekranu.",
+    "placeholder": "Co się stało?",
+    "attach": "Dodaj zrzut",
+    "send": "Wyślij",
+    "sent": "Dziękujemy! Zgłoszenie wysłane.",
+    "sentTitle": "Gotowe",
+    "error": "Nie udało się wysłać. Spróbuj ponownie.",
+    "errorTitle": "Błąd",
+    "permissionTitle": "Brak dostępu",
+    "permissionBody": "Zezwól na dostęp do galerii, aby dołączyć zrzut."
   }
 }
