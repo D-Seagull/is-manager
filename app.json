@@ -7,7 +7,6 @@
     "icon": "./src/assets/images/IS-managerapp-img.png",
     "scheme": "ismanager",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.dseadull.ismanager",
@@ -25,7 +24,6 @@
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./src/assets/images/IS-managerapp-img.png"
       },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "android.permission.RECORD_AUDIO",
