@@ -180,11 +180,16 @@ function DmTab({ kind }: { kind: 'manager' | 'driver' }) {
 
   const filteredConvs = [...(conversations ?? [])]
     .filter((cv) => convInKind(cv.user.role))
-    .sort(
-      (a, b) =>
+    .sort((a, b) => {
+      // Unread first so chats with new messages never get lost in a long list.
+      const aUnread = a.unreadCount > 0 ? 0 : 1;
+      const bUnread = b.unreadCount > 0 ? 0 : 1;
+      if (aUnread !== bUnread) return aUnread - bUnread;
+      return (
         new Date(b.lastMessage.createdAt).getTime() -
-        new Date(a.lastMessage.createdAt).getTime(),
-    )
+        new Date(a.lastMessage.createdAt).getTime()
+      );
+    })
     .filter((cv) =>
       matches(
         fullName(cv.user).toLowerCase(),
@@ -433,9 +438,16 @@ function GroupsTab({
     );
   }
 
+  // Groups with unread first, then their existing order.
+  const sortedGroups = [...groups].sort(
+    (a, b) =>
+      ((unreadByGroup.get(a.id) ?? 0) > 0 ? 0 : 1) -
+      ((unreadByGroup.get(b.id) ?? 0) > 0 ? 0 : 1),
+  );
+
   return (
     <FlatList
-      data={groups}
+      data={sortedGroups}
       keyExtractor={(g) => g.id}
       renderItem={({ item }) => (
         <GroupRow group={item} unread={unreadByGroup.get(item.id) ?? 0} />

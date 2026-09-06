@@ -11,17 +11,30 @@ import { TruckCard } from '@/components/truck-card';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMyTrucks } from '@/hooks/use-my-trucks';
+import { useTripUnread } from '@/hooks/use-notifications';
 
 export default function MyTrucksScreen() {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const { data: trucks, isLoading, refetch } = useMyTrucks();
+  const { data: tripUnread } = useTripUnread();
   const [broadcastOpen, setBroadcastOpen] = useState(false);
 
   const isFocused = useIsFocused();
   useEffect(() => {
     if (isFocused) void refetch();
   }, [isFocused, refetch]);
+
+  // Trucks whose trip chat has unread messages float to the top, so new
+  // activity isn't lost in a long fleet — the rest keep their order.
+  const unreadByTruck = new Map(
+    (tripUnread?.items ?? []).map((i) => [i.truckId, i.totalUnread]),
+  );
+  const sortedTrucks = [...(trucks ?? [])].sort(
+    (a, b) =>
+      ((unreadByTruck.get(a.id) ?? 0) > 0 ? 0 : 1) -
+      ((unreadByTruck.get(b.id) ?? 0) > 0 ? 0 : 1),
+  );
 
   return (
     <View style={[styles.root, { backgroundColor: c.background }]}>
@@ -51,7 +64,7 @@ export default function MyTrucksScreen() {
         />
       ) : (
         <FlatList
-          data={trucks}
+          data={sortedTrucks}
           keyExtractor={(tr) => tr.id}
           contentContainerStyle={styles.list}
           renderItem={({ item }) => <TruckCard truck={item} />}
