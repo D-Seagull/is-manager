@@ -333,6 +333,13 @@
       "title": "Benachrichtigungen",
       "sound": "Ton",
       "vibration": "Vibration"
+    },
+    "deleteAccount": "Konto löschen",
+    "deleteAccountConfirm": {
+      "title": "Konto löschen?",
+      "body": "Dies kann nicht rückgängig gemacht werden. Ihre persönlichen Daten werden gelöscht und eine Anmeldung ist dauerhaft nicht mehr möglich. Fahrten und Unterhaltungen bleiben anonymisiert in der Firmenhistorie.",
+      "confirm": "Endgültig löschen",
+      "error": "Konto konnte nicht gelöscht werden"
     }
   },
   "status": {

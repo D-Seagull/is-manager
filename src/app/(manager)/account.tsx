@@ -29,6 +29,7 @@ import {
   AppLanguage,
   UILocale,
   UserStatus,
+  deleteAccount,
   deleteAvatar,
   updateMe,
   uploadAvatar,
@@ -72,6 +73,7 @@ export default function AccountScreen() {
   const [langPickerOpen, setLangPickerOpen] = useState(false);
   const [savedHint, setSavedHint] = useState(false);
   const [statusPickerOpen, setStatusPickerOpen] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
   const currentStatus = (user?.status as UserStatus | undefined) ?? 'ONLINE';
 
@@ -196,6 +198,43 @@ export default function AccountScreen() {
       [
         { text: t('common.cancel', 'Скасувати'), style: 'cancel' },
         { text: t('settings.logout', 'Вийти'), style: 'destructive', onPress: logout },
+      ],
+    );
+  };
+
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      t('settings.deleteAccountConfirm.title', 'Видалити акаунт?'),
+      t(
+        'settings.deleteAccountConfirm.body',
+        'Цю дію не можна скасувати. Ваші особисті дані буде стерто, а вхід стане неможливим назавжди.',
+      ),
+      [
+        { text: t('common.cancel', 'Скасувати'), style: 'cancel' },
+        {
+          text: t('settings.deleteAccountConfirm.confirm', 'Видалити назавжди'),
+          style: 'destructive',
+          onPress: async () => {
+            setDeletingAccount(true);
+            try {
+              await deleteAccount();
+              // The token dies with the request — drop the session rather than
+              // leaving the app on a screen that can no longer fetch anything.
+              logout();
+            } catch (err: any) {
+              // The server refuses on one business rule (last admin standing) —
+              // show its message rather than a generic failure.
+              const msg =
+                err?.response?.data?.message ??
+                t('settings.deleteAccountConfirm.error', 'Не вдалося видалити акаунт');
+              Alert.alert(
+                t('settings.deleteAccountConfirm.error', 'Не вдалося видалити акаунт'),
+                Array.isArray(msg) ? msg[0] : String(msg),
+              );
+              setDeletingAccount(false);
+            }
+          },
+        },
       ],
     );
   };
@@ -431,6 +470,27 @@ export default function AccountScreen() {
             {t('settings.logout', 'Вийти')}
           </Text>
         </Pressable>
+
+        {/* Account erasure. Store policy requires an in-app path to it, but it
+            is a rare, irreversible action — so it sits below logout as plain
+            muted text rather than competing with the real controls. */}
+        <Pressable
+          onPress={handleDeleteAccount}
+          disabled={deletingAccount}
+          hitSlop={8}
+          style={({ pressed }) => [
+            styles.deleteAccountBtn,
+            { opacity: pressed || deletingAccount ? 0.6 : 1 },
+          ]}
+        >
+          {deletingAccount ? (
+            <ActivityIndicator size="small" color={c.mutedForeground} />
+          ) : (
+            <Text style={[styles.deleteAccountText, { color: c.mutedForeground }]}>
+              {t('settings.deleteAccount', 'Видалити акаунт')}
+            </Text>
+          )}
+        </Pressable>
       </ScrollView>
 
       <PresenceStatusSheet open={statusPickerOpen} onClose={() => setStatusPickerOpen(false)} />
@@ -585,6 +645,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   logoutText: { fontSize: 15, fontWeight: '700' },
+  deleteAccountBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: Spacing.md,
+    minHeight: 44,
+  },
+  deleteAccountText: {
+    fontSize: 13,
+    fontWeight: '500',
+    textDecorationLine: 'underline',
+  },
   modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modalSheet: { borderTopLeftRadius: Radius.lg, borderTopRightRadius: Radius.lg, padding: Spacing.md },
   modalTitle: {
