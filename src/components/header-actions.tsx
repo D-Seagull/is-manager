@@ -21,6 +21,7 @@ import {
 import { Radius, Spacing, ThemeColors } from '@/constants/theme';
 import { useThemeMode } from '@/hooks/use-theme';
 import { reportBug, type BugScreenshot } from '@/lib/bug-report-api';
+import { useUser } from '@/store/auth';
 import { NotificationsBell } from './notifications-bell';
 
 const MAX_SCREENSHOTS = 5;
@@ -31,13 +32,18 @@ const MAX_SCREENSHOTS = 5;
  */
 export function HeaderActions({ colors: c }: { colors: ThemeColors }) {
   const { resolved, toggle } = useThemeMode();
+  // Admins get a stripped header — no manager-oriented bug report or trip
+  // notifications bell, just the theme toggle.
+  const isAdmin = useUser()?.role === 'ADMIN';
 
   return (
     <View style={styles.row}>
-      <BugReportButton colors={c} />
-      <View style={styles.slot}>
-        <NotificationsBell color={c.mutedForeground} />
-      </View>
+      {!isAdmin && <BugReportButton colors={c} />}
+      {!isAdmin && (
+        <View style={styles.slot}>
+          <NotificationsBell color={c.mutedForeground} />
+        </View>
+      )}
       <Pressable onPress={toggle} hitSlop={10} style={styles.slot}>
         <Ionicons
           name={resolved === 'dark' ? 'sunny-outline' : 'moon-outline'}

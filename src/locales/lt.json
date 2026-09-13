@@ -152,7 +152,8 @@
   },
   "home": {
     "myTrucksSub": "Jūsų autoparkas ir reisai",
-    "managersSub": "Jūsų vadovų komanda"
+    "managersSub": "Jūsų vadovų komanda",
+    "adminSub": "Įmonės ir klaidų pranešimai"
   },
   "info": {
     "notes": "Pastabos",
@@ -460,5 +461,104 @@
     "errorTitle": "Klaida",
     "permissionTitle": "Nėra prieigos",
     "permissionBody": "Leiskite prieigą prie galerijos, kad pridėtumėte nuotrauką."
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Administravimas",
+      "errorStats": "Nepavyko įkelti statistikos",
+      "kpiCompanies": "Įmonės",
+      "kpiCompaniesSub": "{{active}} aktyvių · {{deactivated}} išj.",
+      "kpiUsers": "Naudotojai",
+      "kpiUsersSub": "{{drivers}} vairuotojų · {{managers}} vadybininkų",
+      "kpiOnline": "Prisijungę",
+      "kpiOnlineSub": "{{drivers}} vairuotojų · {{managers}} vadybininkų",
+      "kpiActiveTrips": "Aktyvūs reisai",
+      "kpiActiveTripsSub": "Šiuo metu vykdomi",
+      "recentTitle": "Naujausios įmonės",
+      "usersCount": "{{count}} naudotojų",
+      "empty": "Įmonių dar nėra",
+      "awaitingTeamlead": "Laukiama vadovo",
+      "statusActive": "Aktyvi",
+      "statusDeactivated": "Deaktyvuota",
+      "onlineNowTitle": "Dabar prisijungę",
+      "onlineNowEmpty": "Šiuo metu niekas neprisijungęs",
+      "onlineSearchPlaceholder": "Ieškoti naudotojo…",
+      "onlineNoResults": "Nieko nerasta pagal „{{query}}“"
+    },
+    "companies": {
+      "title": "Įmonės",
+      "searchPlaceholder": "Ieškoti įmonės…",
+      "noResults": "Nieko nerasta pagal „{{query}}“",
+      "emptyHint": "Įmonių dar nėra",
+      "colUsers": "Naudotojai"
+    },
+    "newCompany": {
+      "dialogTitle": "Nauja įmonė",
+      "dialogDescription": "Kvietimas bus išsiųstas šiuo el. paštu.",
+      "companyLabel": "Įmonės pavadinimas",
+      "emailLabel": "El. paštas",
+      "submit": "Sukurti",
+      "error": "Nepavyko sukurti įmonės"
+    },
+    "detail": {
+      "title": "Įmonė",
+      "errorLoad": "Nepavyko įkelti įmonės",
+      "kpiUsers": "Naudotojai",
+      "kpiUsersSub": "{{drivers}} vair. · {{managers}} vad. · {{teamleads}} vadovai",
+      "kpiOnline": "Prisijungę",
+      "kpiOnlineSub": "{{drivers}} vairuotojų · {{managers}} vadybininkų",
+      "kpiTrucks": "Sunkvežimiai",
+      "kpiTrucksSub": "{{active}} aktyvių",
+      "kpiTrips": "Reisai",
+      "kpiTripsSub": "{{count}} šį mėnesį",
+      "registered": "Registruota {{date}}",
+      "resendInvite": "Siųsti kvietimą",
+      "deactivate": "Deaktyvuoti",
+      "deactivateConfirmTitle": "Deaktyvuoti įmonę?",
+      "deactivateConfirmBody": "Įmonė „{{name}}“ praras prieigą.",
+      "deactivateSuccess": "Įmonė deaktyvuota",
+      "deactivateError": "Klaida",
+      "resendPrompt": "Gavėjo el. paštas:",
+      "resendSuccess": "Kvietimas išsiųstas",
+      "resendFail": "Nepavyko išsiųsti",
+      "contactsTitle": "Kontaktai",
+      "contactDirector": "Direktorius",
+      "contactAccounting": "Buhalterija",
+      "contactHr": "Personalas",
+      "notSpecified": "nenurodyta",
+      "pushTitle": "Push aprėptis",
+      "pushOutOf": "{{withToken}} iš {{outOf}}",
+      "pushCaption": "Naudotojai su įjungtais pranešimais",
+      "usersTitle": "Naudotojai",
+      "usersEmpty": "Naudotojų nėra",
+      "reactivate": "Aktyvuoti",
+      "reactivateSuccess": "Įmonė aktyvuota",
+      "reactivateError": "Nepavyko aktyvuoti"
+    },
+    "bugReports": {
+      "title": "Klaidų pranešimai",
+      "error": "Įkelti nepavyko",
+      "empty": "Pranešimų nėra",
+      "filters": {
+        "all": "Visi",
+        "new": "Nauji",
+        "triaged": "Vykdoma",
+        "resolved": "Išspręsti"
+      },
+      "actions": {
+        "reopen": "Atidaryti vėl",
+        "triage": "Vykdyti",
+        "resolve": "Išspręsti",
+        "message": "Rašyti"
+      },
+      "reply": {
+        "title": "Atsakyti {{name}}",
+        "send": "Siųsti"
+      }
+    },
+    "menu": {
+      "dashboard": "Skydelis",
+      "dashboardSub": "Visų įmonių apžvalga"
+    }
   }
 }

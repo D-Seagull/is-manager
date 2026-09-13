@@ -152,7 +152,8 @@
   },
   "home": {
     "myTrucksSub": "Twoja flota i trasy",
-    "managersSub": "Twój zespół menedżerów"
+    "managersSub": "Twój zespół menedżerów",
+    "adminSub": "Firmy i zgłoszenia błędów"
   },
   "info": {
     "notes": "Notatki",
@@ -460,5 +461,104 @@
     "errorTitle": "Błąd",
     "permissionTitle": "Brak dostępu",
     "permissionBody": "Zezwól na dostęp do galerii, aby dołączyć zrzut."
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Panel administratora",
+      "errorStats": "Nie udało się załadować statystyk",
+      "kpiCompanies": "Firmy",
+      "kpiCompaniesSub": "{{active}} aktywnych · {{deactivated}} wył.",
+      "kpiUsers": "Użytkownicy",
+      "kpiUsersSub": "{{drivers}} kierowców · {{managers}} menedżerów",
+      "kpiOnline": "Online",
+      "kpiOnlineSub": "{{drivers}} kierowców · {{managers}} menedżerów",
+      "kpiActiveTrips": "Aktywne trasy",
+      "kpiActiveTripsSub": "Obecnie w toku",
+      "recentTitle": "Ostatnie firmy",
+      "usersCount": "{{count}} użytkowników",
+      "empty": "Brak firm",
+      "awaitingTeamlead": "Oczekuje na lidera",
+      "statusActive": "Aktywna",
+      "statusDeactivated": "Dezaktywowana",
+      "onlineNowTitle": "Teraz online",
+      "onlineNowEmpty": "Nikt nie jest teraz online",
+      "onlineSearchPlaceholder": "Szukaj użytkownika…",
+      "onlineNoResults": "Nic nie znaleziono dla „{{query}}”"
+    },
+    "companies": {
+      "title": "Firmy",
+      "searchPlaceholder": "Szukaj firmy…",
+      "noResults": "Nic nie znaleziono dla „{{query}}”",
+      "emptyHint": "Brak firm",
+      "colUsers": "Użytkownicy"
+    },
+    "newCompany": {
+      "dialogTitle": "Nowa firma",
+      "dialogDescription": "Zaproszenie zostanie wysłane na ten email.",
+      "companyLabel": "Nazwa firmy",
+      "emailLabel": "Email",
+      "submit": "Utwórz",
+      "error": "Nie udało się utworzyć firmy"
+    },
+    "detail": {
+      "title": "Firma",
+      "errorLoad": "Nie udało się załadować firmy",
+      "kpiUsers": "Użytkownicy",
+      "kpiUsersSub": "{{drivers}} kier. · {{managers}} men. · {{teamleads}} lid.",
+      "kpiOnline": "Online",
+      "kpiOnlineSub": "{{drivers}} kierowców · {{managers}} menedżerów",
+      "kpiTrucks": "Ciężarówki",
+      "kpiTrucksSub": "{{active}} aktywnych",
+      "kpiTrips": "Trasy",
+      "kpiTripsSub": "{{count}} w tym miesiącu",
+      "registered": "Zarejestrowano {{date}}",
+      "resendInvite": "Wyślij zaproszenie",
+      "deactivate": "Dezaktywuj",
+      "deactivateConfirmTitle": "Dezaktywować firmę?",
+      "deactivateConfirmBody": "Firma „{{name}}” straci dostęp.",
+      "deactivateSuccess": "Firma dezaktywowana",
+      "deactivateError": "Błąd",
+      "resendPrompt": "Email odbiorcy:",
+      "resendSuccess": "Zaproszenie wysłane",
+      "resendFail": "Nie udało się wysłać",
+      "contactsTitle": "Kontakty",
+      "contactDirector": "Dyrektor",
+      "contactAccounting": "Księgowość",
+      "contactHr": "HR",
+      "notSpecified": "nie podano",
+      "pushTitle": "Zasięg push",
+      "pushOutOf": "{{withToken}} z {{outOf}}",
+      "pushCaption": "Użytkownicy z włączonymi powiadomieniami",
+      "usersTitle": "Użytkownicy",
+      "usersEmpty": "Brak użytkowników",
+      "reactivate": "Aktywuj",
+      "reactivateSuccess": "Firma aktywowana",
+      "reactivateError": "Nie udało się aktywować"
+    },
+    "bugReports": {
+      "title": "Zgłoszenia błędów",
+      "error": "Błąd ładowania",
+      "empty": "Brak zgłoszeń",
+      "filters": {
+        "all": "Wszystkie",
+        "new": "Nowe",
+        "triaged": "W toku",
+        "resolved": "Rozwiązane"
+      },
+      "actions": {
+        "reopen": "Otwórz ponownie",
+        "triage": "Do obsługi",
+        "resolve": "Rozwiąż",
+        "message": "Napisz"
+      },
+      "reply": {
+        "title": "Odpowiedz {{name}}",
+        "send": "Wyślij"
+      }
+    },
+    "menu": {
+      "dashboard": "Panel",
+      "dashboardSub": "Przegląd wszystkich firm"
+    }
   }
 }

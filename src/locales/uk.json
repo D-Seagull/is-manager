@@ -152,7 +152,8 @@
   },
   "home": {
     "myTrucksSub": "Ваш флот і рейси",
-    "managersSub": "Ваша команда менеджерів"
+    "managersSub": "Ваша команда менеджерів",
+    "adminSub": "Компанії та баг-репорти"
   },
   "info": {
     "notes": "Нотатки",
@@ -460,5 +461,104 @@
     "errorTitle": "Помилка",
     "permissionTitle": "Немає доступу",
     "permissionBody": "Дозвольте доступ до галереї, щоб додати скрін."
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Адмінка",
+      "errorStats": "Не вдалося завантажити статистику",
+      "kpiCompanies": "Компанії",
+      "kpiCompaniesSub": "{{active}} активних · {{deactivated}} вимкнено",
+      "kpiUsers": "Користувачі",
+      "kpiUsersSub": "{{drivers}} водіїв · {{managers}} менеджерів",
+      "kpiOnline": "Онлайн",
+      "kpiOnlineSub": "{{drivers}} водіїв · {{managers}} менеджерів",
+      "kpiActiveTrips": "Активні рейси",
+      "kpiActiveTripsSub": "Зараз у роботі",
+      "recentTitle": "Останні компанії",
+      "usersCount": "{{count}} користувачів",
+      "empty": "Компаній ще немає",
+      "awaitingTeamlead": "Очікує тімліда",
+      "statusActive": "Активна",
+      "statusDeactivated": "Деактивована",
+      "onlineNowTitle": "Зараз онлайн",
+      "onlineNowEmpty": "Зараз нікого немає онлайн",
+      "onlineSearchPlaceholder": "Пошук користувача…",
+      "onlineNoResults": "Нічого не знайдено за запитом «{{query}}»"
+    },
+    "companies": {
+      "title": "Компанії",
+      "searchPlaceholder": "Пошук компанії…",
+      "noResults": "Нічого не знайдено за запитом «{{query}}»",
+      "emptyHint": "Компаній ще немає",
+      "colUsers": "Користувачів"
+    },
+    "newCompany": {
+      "dialogTitle": "Нова компанія",
+      "dialogDescription": "На вказаний email прийде запрошення.",
+      "companyLabel": "Назва компанії",
+      "emailLabel": "Email",
+      "submit": "Створити",
+      "error": "Не вдалося створити компанію"
+    },
+    "detail": {
+      "title": "Компанія",
+      "errorLoad": "Не вдалося завантажити компанію",
+      "kpiUsers": "Користувачі",
+      "kpiUsersSub": "{{drivers}} вод. · {{managers}} мен. · {{teamleads}} тімл.",
+      "kpiOnline": "Онлайн",
+      "kpiOnlineSub": "{{drivers}} водіїв · {{managers}} менеджерів",
+      "kpiTrucks": "Вантажівки",
+      "kpiTrucksSub": "{{active}} активних",
+      "kpiTrips": "Рейси",
+      "kpiTripsSub": "{{count}} за місяць",
+      "registered": "Зареєстровано {{date}}",
+      "resendInvite": "Надіслати інвайт",
+      "deactivate": "Деактивувати",
+      "deactivateConfirmTitle": "Деактивувати компанію?",
+      "deactivateConfirmBody": "Компанія «{{name}}» втратить доступ.",
+      "deactivateSuccess": "Компанію деактивовано",
+      "deactivateError": "Помилка",
+      "resendPrompt": "Email отримувача:",
+      "resendSuccess": "Інвайт надіслано",
+      "resendFail": "Не вдалося надіслати",
+      "contactsTitle": "Контакти",
+      "contactDirector": "Директор",
+      "contactAccounting": "Бухгалтерія",
+      "contactHr": "HR",
+      "notSpecified": "не вказано",
+      "pushTitle": "Push-покриття",
+      "pushOutOf": "{{withToken}} з {{outOf}}",
+      "pushCaption": "Користувачі з увімкненими сповіщеннями",
+      "usersTitle": "Користувачі",
+      "usersEmpty": "Немає користувачів",
+      "reactivate": "Активувати",
+      "reactivateSuccess": "Компанію активовано",
+      "reactivateError": "Не вдалося активувати"
+    },
+    "bugReports": {
+      "title": "Баг-репорти",
+      "error": "Помилка завантаження",
+      "empty": "Немає репортів",
+      "filters": {
+        "all": "Усі",
+        "new": "Нові",
+        "triaged": "В роботі",
+        "resolved": "Вирішені"
+      },
+      "actions": {
+        "reopen": "Відкрити знову",
+        "triage": "В роботу",
+        "resolve": "Вирішено",
+        "message": "Написати"
+      },
+      "reply": {
+        "title": "Відповісти {{name}}",
+        "send": "Надіслати"
+      }
+    },
+    "menu": {
+      "dashboard": "Дашборд",
+      "dashboardSub": "Огляд по всіх компаніях"
+    }
   }
 }

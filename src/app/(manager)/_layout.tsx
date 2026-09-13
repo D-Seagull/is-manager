@@ -1,6 +1,7 @@
 import { Redirect, Stack } from 'expo-router';
 
 import { PushNoticeOverlay } from '@/components/push-notice-overlay';
+import { useBugReportsSocketSync, useOnlineUsersSocketSync } from '@/hooks/use-admin';
 import { useAppStatePresence } from '@/hooks/use-app-state-presence';
 import { useChatAlerts } from '@/hooks/use-chat-alerts';
 import { useDmUnreadSync } from '@/hooks/use-direct-messages';
@@ -29,6 +30,10 @@ export default function ManagerLayout() {
   useTripUnreadSync();
   usePushNotifications();
   useSyncPushLanguage();
+  // Admin-only: keep the triage feed + menu NEW badge live (no-op for others).
+  useBugReportsSocketSync();
+  // Admin-only: keep the dashboard's online-now list live (no-op for others).
+  useOnlineUsersSocketSync();
 
   // Bounce to login once we know there's no session.
   if (isHydrated && !token) {
@@ -41,6 +46,11 @@ export default function ManagerLayout() {
     <>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
+        <Stack.Screen name="admin/index" />
+        <Stack.Screen name="admin/online" />
+        <Stack.Screen name="admin/companies" />
+        <Stack.Screen name="admin/company/[id]" />
+        <Stack.Screen name="admin/bug-reports" />
         <Stack.Screen name="chat" />
         <Stack.Screen name="trips" />
         <Stack.Screen name="trucks" />

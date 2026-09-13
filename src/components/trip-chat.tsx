@@ -197,7 +197,7 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
 
   return (
     <View style={styles.root}>
-      <ChatBackground />
+      <ChatBackground variant="trip" />
       <TripHeader tripId={tripId} />
       {/* Рядок «Чат рейсу»: статус зʼєднання + папка документів */}
       <View style={[styles.chatLabel, { backgroundColor: c.muted, borderBottomColor: c.border }]}>

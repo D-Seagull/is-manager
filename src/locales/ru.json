@@ -152,7 +152,8 @@
   },
   "home": {
     "myTrucksSub": "Ваш автопарк и рейсы",
-    "managersSub": "Ваша команда менеджеров"
+    "managersSub": "Ваша команда менеджеров",
+    "adminSub": "Компании и баг-репорты"
   },
   "info": {
     "notes": "Заметки",
@@ -460,5 +461,104 @@
     "errorTitle": "Ошибка",
     "permissionTitle": "Нет доступа",
     "permissionBody": "Разрешите доступ к галерее, чтобы приложить скрин."
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Админка",
+      "errorStats": "Не удалось загрузить статистику",
+      "kpiCompanies": "Компании",
+      "kpiCompaniesSub": "{{active}} активных · {{deactivated}} выкл.",
+      "kpiUsers": "Пользователи",
+      "kpiUsersSub": "{{drivers}} водителей · {{managers}} менеджеров",
+      "kpiOnline": "Онлайн",
+      "kpiOnlineSub": "{{drivers}} водителей · {{managers}} менеджеров",
+      "kpiActiveTrips": "Активные рейсы",
+      "kpiActiveTripsSub": "Сейчас в работе",
+      "recentTitle": "Последние компании",
+      "usersCount": "{{count}} пользователей",
+      "empty": "Компаний пока нет",
+      "awaitingTeamlead": "Ожидает тимлида",
+      "statusActive": "Активна",
+      "statusDeactivated": "Деактивирована",
+      "onlineNowTitle": "Сейчас онлайн",
+      "onlineNowEmpty": "Сейчас никого нет онлайн",
+      "onlineSearchPlaceholder": "Поиск пользователя…",
+      "onlineNoResults": "Ничего не найдено по запросу «{{query}}»"
+    },
+    "companies": {
+      "title": "Компании",
+      "searchPlaceholder": "Поиск компании…",
+      "noResults": "Ничего не найдено по запросу «{{query}}»",
+      "emptyHint": "Компаний пока нет",
+      "colUsers": "Пользователей"
+    },
+    "newCompany": {
+      "dialogTitle": "Новая компания",
+      "dialogDescription": "На указанный email придёт приглашение.",
+      "companyLabel": "Название компании",
+      "emailLabel": "Email",
+      "submit": "Создать",
+      "error": "Не удалось создать компанию"
+    },
+    "detail": {
+      "title": "Компания",
+      "errorLoad": "Не удалось загрузить компанию",
+      "kpiUsers": "Пользователи",
+      "kpiUsersSub": "{{drivers}} вод. · {{managers}} мен. · {{teamleads}} тимл.",
+      "kpiOnline": "Онлайн",
+      "kpiOnlineSub": "{{drivers}} водителей · {{managers}} менеджеров",
+      "kpiTrucks": "Грузовики",
+      "kpiTrucksSub": "{{active}} активных",
+      "kpiTrips": "Рейсы",
+      "kpiTripsSub": "{{count}} за месяц",
+      "registered": "Зарегистрирована {{date}}",
+      "resendInvite": "Отправить инвайт",
+      "deactivate": "Деактивировать",
+      "deactivateConfirmTitle": "Деактивировать компанию?",
+      "deactivateConfirmBody": "Компания «{{name}}» потеряет доступ.",
+      "deactivateSuccess": "Компания деактивирована",
+      "deactivateError": "Ошибка",
+      "resendPrompt": "Email получателя:",
+      "resendSuccess": "Инвайт отправлен",
+      "resendFail": "Не удалось отправить",
+      "contactsTitle": "Контакты",
+      "contactDirector": "Директор",
+      "contactAccounting": "Бухгалтерия",
+      "contactHr": "HR",
+      "notSpecified": "не указано",
+      "pushTitle": "Push-покрытие",
+      "pushOutOf": "{{withToken}} из {{outOf}}",
+      "pushCaption": "Пользователи с включёнными уведомлениями",
+      "usersTitle": "Пользователи",
+      "usersEmpty": "Нет пользователей",
+      "reactivate": "Активировать",
+      "reactivateSuccess": "Компания активирована",
+      "reactivateError": "Не удалось активировать"
+    },
+    "bugReports": {
+      "title": "Баг-репорты",
+      "error": "Ошибка загрузки",
+      "empty": "Нет репортов",
+      "filters": {
+        "all": "Все",
+        "new": "Новые",
+        "triaged": "В работе",
+        "resolved": "Решённые"
+      },
+      "actions": {
+        "reopen": "Открыть снова",
+        "triage": "В работу",
+        "resolve": "Решено",
+        "message": "Написать"
+      },
+      "reply": {
+        "title": "Ответить {{name}}",
+        "send": "Отправить"
+      }
+    },
+    "menu": {
+      "dashboard": "Дашборд",
+      "dashboardSub": "Обзор по всем компаниям"
+    }
   }
 }

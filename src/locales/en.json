@@ -150,7 +150,8 @@
   },
   "home": {
     "myTrucksSub": "Your fleet & trips",
-    "managersSub": "Your team of managers"
+    "managersSub": "Your team of managers",
+    "adminSub": "Companies & bug reports"
   },
   "info": {
     "notes": "Notes",
@@ -457,5 +458,104 @@
     "errorTitle": "Error",
     "permissionTitle": "No access",
     "permissionBody": "Allow gallery access to attach a screenshot."
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin",
+      "errorStats": "Failed to load stats",
+      "kpiCompanies": "Companies",
+      "kpiCompaniesSub": "{{active}} active · {{deactivated}} off",
+      "kpiUsers": "Users",
+      "kpiUsersSub": "{{drivers}} drivers · {{managers}} managers",
+      "kpiOnline": "Online",
+      "kpiOnlineSub": "{{drivers}} drivers · {{managers}} managers",
+      "kpiActiveTrips": "Active trips",
+      "kpiActiveTripsSub": "In progress now",
+      "recentTitle": "Recent companies",
+      "usersCount": "{{count}} users",
+      "empty": "No companies yet",
+      "awaitingTeamlead": "Awaiting team lead",
+      "statusActive": "Active",
+      "statusDeactivated": "Deactivated",
+      "onlineNowTitle": "Online now",
+      "onlineNowEmpty": "No one is online right now",
+      "onlineSearchPlaceholder": "Search user…",
+      "onlineNoResults": "Nothing found for “{{query}}”"
+    },
+    "companies": {
+      "title": "Companies",
+      "searchPlaceholder": "Search company…",
+      "noResults": "Nothing found for “{{query}}”",
+      "emptyHint": "No companies yet",
+      "colUsers": "Users"
+    },
+    "newCompany": {
+      "dialogTitle": "New company",
+      "dialogDescription": "An invite will be sent to this email.",
+      "companyLabel": "Company name",
+      "emailLabel": "Email",
+      "submit": "Create",
+      "error": "Failed to create company"
+    },
+    "detail": {
+      "title": "Company",
+      "errorLoad": "Failed to load company",
+      "kpiUsers": "Users",
+      "kpiUsersSub": "{{drivers}} drv · {{managers}} mgr · {{teamleads}} lead",
+      "kpiOnline": "Online",
+      "kpiOnlineSub": "{{drivers}} drivers · {{managers}} managers",
+      "kpiTrucks": "Trucks",
+      "kpiTrucksSub": "{{active}} active",
+      "kpiTrips": "Trips",
+      "kpiTripsSub": "{{count}} this month",
+      "registered": "Registered {{date}}",
+      "resendInvite": "Resend invite",
+      "deactivate": "Deactivate",
+      "deactivateConfirmTitle": "Deactivate company?",
+      "deactivateConfirmBody": "Company “{{name}}” will lose access.",
+      "deactivateSuccess": "Company deactivated",
+      "deactivateError": "Error",
+      "resendPrompt": "Recipient's email:",
+      "resendSuccess": "Invite sent",
+      "resendFail": "Failed to send",
+      "contactsTitle": "Contacts",
+      "contactDirector": "Director",
+      "contactAccounting": "Accounting",
+      "contactHr": "HR",
+      "notSpecified": "not specified",
+      "pushTitle": "Push coverage",
+      "pushOutOf": "{{withToken}} of {{outOf}}",
+      "pushCaption": "Users with notifications enabled",
+      "usersTitle": "Users",
+      "usersEmpty": "No users",
+      "reactivate": "Activate",
+      "reactivateSuccess": "Company activated",
+      "reactivateError": "Failed to activate"
+    },
+    "bugReports": {
+      "title": "Bug reports",
+      "error": "Failed to load",
+      "empty": "No reports",
+      "filters": {
+        "all": "All",
+        "new": "New",
+        "triaged": "Triaged",
+        "resolved": "Resolved"
+      },
+      "actions": {
+        "reopen": "Reopen",
+        "triage": "Triage",
+        "resolve": "Resolve",
+        "message": "Message"
+      },
+      "reply": {
+        "title": "Reply to {{name}}",
+        "send": "Send"
+      }
+    },
+    "menu": {
+      "dashboard": "Dashboard",
+      "dashboardSub": "Overview across all companies"
+    }
   }
 }

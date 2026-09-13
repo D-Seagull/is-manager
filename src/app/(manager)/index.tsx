@@ -8,11 +8,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChatAvatar } from '@/components/chat-avatar';
 import { HeaderActions } from '@/components/header-actions';
 import { PresenceStatusSheet } from '@/components/presence-status-sheet';
-import { Colors, Radius, Spacing } from '@/constants/theme';
+import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useConversations } from '@/hooks/use-direct-messages';
 import { useGroupUnread } from '@/hooks/use-groups';
 import { useMyTrucks } from '@/hooks/use-my-trucks';
+import { useNewBugCount } from '@/hooks/use-admin';
 import { fullName } from '@/lib/format';
 import { resolveDisplayStatus, STATUS_HEX } from '@/lib/status';
 import { useUser } from '@/store/auth';
@@ -33,6 +34,7 @@ type Hero = {
   color: string;
   href: string;
   sub: string;
+  badge?: number;
 };
 
 export default function HomeScreen() {
@@ -90,33 +92,61 @@ export default function HomeScreen() {
     href: '/(manager)/my-trucks',
     sub: t('home.myTrucksSub', 'Ваш флот і рейси'),
   };
-  const heroes: Hero[] = [
-    ...(elevated ? [managersHero] : []),
-    ...(showMyTrucks ? [myTrucksHero] : []),
-  ];
+  const isAdmin = role === 'ADMIN';
+  const newBugs = useNewBugCount(isAdmin);
+
+  // Admin sees ONLY the admin panel — the manager hub (chat/trips/trucks/…) is
+  // hidden. Hero = the dashboard; tiles = the panel sections (mirrors the web
+  // admin sidebar: Companies + Bug reports).
+  const dashboardHero: Hero = {
+    key: 'dashboard',
+    label: t('admin.menu.dashboard', 'Дашборд'),
+    icon: 'stats-chart-outline',
+    color: '#3B5BDB',
+    href: '/(manager)/admin',
+    sub: t('admin.menu.dashboardSub', 'Огляд по всіх компаніях'),
+  };
+
+  const heroes: Hero[] = isAdmin
+    ? [dashboardHero]
+    : [
+        ...(elevated ? [managersHero] : []),
+        ...(showMyTrucks ? [myTrucksHero] : []),
+      ];
 
   // Settings is hidden inside the Account screen (via the manager card), so it
   // is not a grid tile.
-  const tiles: Tile[] = [
-    { key: 'chat', label: t('nav.items.chat', 'Чат'), icon: 'chatbubbles-outline', color: CH.chat, href: '/(manager)/chat', badge: chatBadge },
-    { key: 'trips', label: t('nav.items.trips', 'Рейси'), icon: 'map-outline', color: CH.trips, href: '/(manager)/trips' },
-    { key: 'trucks', label: t('nav.items.trucks', 'Вантажівки'), icon: 'bus-outline', color: CH.trucks, href: '/(manager)/trucks' },
-    { key: 'drivers', label: t('nav.items.drivers', 'Водії'), icon: 'people-outline', color: CH.drivers, href: '/(manager)/drivers' },
-  ];
+  const tiles: Tile[] = isAdmin
+    ? [
+        { key: 'companies', label: t('admin.companies.title', 'Компанії'), icon: 'business-outline', color: CH.trucks, href: '/(manager)/admin/companies' },
+        { key: 'bugs', label: t('admin.bugReports.title', 'Баг-репорти'), icon: 'bug-outline', color: c.destructive, href: '/(manager)/admin/bug-reports', badge: newBugs },
+      ]
+    : [
+        { key: 'chat', label: t('nav.items.chat', 'Чат'), icon: 'chatbubbles-outline', color: CH.chat, href: '/(manager)/chat', badge: chatBadge },
+        { key: 'trips', label: t('nav.items.trips', 'Рейси'), icon: 'map-outline', color: CH.trips, href: '/(manager)/trips' },
+        { key: 'trucks', label: t('nav.items.trucks', 'Вантажівки'), icon: 'bus-outline', color: CH.trucks, href: '/(manager)/trucks' },
+        { key: 'drivers', label: t('nav.items.drivers', 'Водії'), icon: 'people-outline', color: CH.drivers, href: '/(manager)/drivers' },
+      ];
 
   return (
     <View style={[styles.root, { backgroundColor: c.background, paddingTop: insets.top }]}>
       {/* Slim top bar — brand logo (left) + bug report, notifications, theme. */}
       <View style={styles.topbar}>
-        <Image
-          source={
-            scheme === 'dark'
-              ? require('../../assets/images/is_logo__white.png')
-              : require('../../assets/images/IS_logo.png')
-          }
-          style={styles.brandLogo}
-          resizeMode="contain"
-        />
+        <Pressable
+          onPress={() => isAdmin && router.navigate('/(manager)/admin' as never)}
+          disabled={!isAdmin}
+          hitSlop={8}
+        >
+          <Image
+            source={
+              scheme === 'dark'
+                ? require('../../assets/images/is_logo__white.png')
+                : require('../../assets/images/IS_logo.png')
+            }
+            style={styles.brandLogo}
+            resizeMode="contain"
+          />
+        </Pressable>
         <HeaderActions colors={c} />
       </View>
 
@@ -138,6 +168,11 @@ export default function HomeScreen() {
               <Text style={[styles.heroTitle, { color: c.foreground }]}>{h.label}</Text>
               <Text style={[styles.heroSub, { color: c.mutedForeground }]}>{h.sub}</Text>
             </View>
+            {h.badge && h.badge > 0 ? (
+              <View style={[styles.heroBadge, { backgroundColor: c.destructive }]}>
+                <Text style={styles.badgeText}>{h.badge > 99 ? '99+' : h.badge}</Text>
+              </View>
+            ) : null}
             <Ionicons name="chevron-forward" size={20} color={c.mutedForeground} />
           </Pressable>
         ))}
@@ -264,6 +299,14 @@ const styles = StyleSheet.create({
   },
   heroTitle: { fontSize: 17, fontWeight: '700' },
   heroSub: { fontSize: 13, marginTop: 2 },
+  heroBadge: {
+    minWidth: 20,
+    height: 20,
+    borderRadius: 10,
+    paddingHorizontal: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
   tile: {

@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NotificationsBell } from '@/components/notifications-bell';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useUser } from '@/store/auth';
 
 /**
  * Shared header for the top-level section screens (Chat, Trips, Fleet…).
@@ -23,6 +24,8 @@ export function SectionHeader({
 }) {
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
+  // Admins don't use trip notifications — hide the bell on their screens.
+  const isAdmin = useUser()?.role === 'ADMIN';
 
   return (
     <View
@@ -48,7 +51,7 @@ export function SectionHeader({
       </Text>
       <View style={styles.right}>
         {right}
-        <NotificationsBell />
+        {!isAdmin && <NotificationsBell />}
       </View>
     </View>
   );

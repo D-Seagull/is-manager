@@ -150,7 +150,8 @@
   },
   "home": {
     "myTrucksSub": "Ihr Fuhrpark & Fahrten",
-    "managersSub": "Ihr Manager-Team"
+    "managersSub": "Ihr Manager-Team",
+    "adminSub": "Unternehmen & Fehlerberichte"
   },
   "info": {
     "notes": "Notizen",
@@ -457,5 +458,104 @@
     "errorTitle": "Fehler",
     "permissionTitle": "Kein Zugriff",
     "permissionBody": "Erlauben Sie den Galeriezugriff, um einen Screenshot anzuhängen."
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin",
+      "errorStats": "Statistik konnte nicht geladen werden",
+      "kpiCompanies": "Unternehmen",
+      "kpiCompaniesSub": "{{active}} aktiv · {{deactivated}} aus",
+      "kpiUsers": "Benutzer",
+      "kpiUsersSub": "{{drivers}} Fahrer · {{managers}} Manager",
+      "kpiOnline": "Online",
+      "kpiOnlineSub": "{{drivers}} Fahrer · {{managers}} Manager",
+      "kpiActiveTrips": "Aktive Fahrten",
+      "kpiActiveTripsSub": "Derzeit unterwegs",
+      "recentTitle": "Neueste Unternehmen",
+      "usersCount": "{{count}} Benutzer",
+      "empty": "Noch keine Unternehmen",
+      "awaitingTeamlead": "Wartet auf Teamleiter",
+      "statusActive": "Aktiv",
+      "statusDeactivated": "Deaktiviert",
+      "onlineNowTitle": "Jetzt online",
+      "onlineNowEmpty": "Derzeit ist niemand online",
+      "onlineSearchPlaceholder": "Benutzer suchen…",
+      "onlineNoResults": "Nichts gefunden für „{{query}}“"
+    },
+    "companies": {
+      "title": "Unternehmen",
+      "searchPlaceholder": "Unternehmen suchen…",
+      "noResults": "Nichts gefunden für „{{query}}“",
+      "emptyHint": "Noch keine Unternehmen",
+      "colUsers": "Benutzer"
+    },
+    "newCompany": {
+      "dialogTitle": "Neues Unternehmen",
+      "dialogDescription": "Eine Einladung wird an diese E-Mail gesendet.",
+      "companyLabel": "Firmenname",
+      "emailLabel": "E-Mail",
+      "submit": "Erstellen",
+      "error": "Unternehmen konnte nicht erstellt werden"
+    },
+    "detail": {
+      "title": "Unternehmen",
+      "errorLoad": "Unternehmen konnte nicht geladen werden",
+      "kpiUsers": "Benutzer",
+      "kpiUsersSub": "{{drivers}} Fhr · {{managers}} Mgr · {{teamleads}} Lead",
+      "kpiOnline": "Online",
+      "kpiOnlineSub": "{{drivers}} Fahrer · {{managers}} Manager",
+      "kpiTrucks": "LKWs",
+      "kpiTrucksSub": "{{active}} aktiv",
+      "kpiTrips": "Fahrten",
+      "kpiTripsSub": "{{count}} diesen Monat",
+      "registered": "Registriert am {{date}}",
+      "resendInvite": "Einladung senden",
+      "deactivate": "Deaktivieren",
+      "deactivateConfirmTitle": "Unternehmen deaktivieren?",
+      "deactivateConfirmBody": "Unternehmen „{{name}}“ verliert den Zugriff.",
+      "deactivateSuccess": "Unternehmen deaktiviert",
+      "deactivateError": "Fehler",
+      "resendPrompt": "E-Mail des Empfängers:",
+      "resendSuccess": "Einladung gesendet",
+      "resendFail": "Senden fehlgeschlagen",
+      "contactsTitle": "Kontakte",
+      "contactDirector": "Direktor",
+      "contactAccounting": "Buchhaltung",
+      "contactHr": "HR",
+      "notSpecified": "nicht angegeben",
+      "pushTitle": "Push-Abdeckung",
+      "pushOutOf": "{{withToken}} von {{outOf}}",
+      "pushCaption": "Benutzer mit aktivierten Benachrichtigungen",
+      "usersTitle": "Benutzer",
+      "usersEmpty": "Keine Benutzer",
+      "reactivate": "Aktivieren",
+      "reactivateSuccess": "Unternehmen aktiviert",
+      "reactivateError": "Aktivierung fehlgeschlagen"
+    },
+    "bugReports": {
+      "title": "Fehlerberichte",
+      "error": "Laden fehlgeschlagen",
+      "empty": "Keine Berichte",
+      "filters": {
+        "all": "Alle",
+        "new": "Neu",
+        "triaged": "In Bearbeitung",
+        "resolved": "Gelöst"
+      },
+      "actions": {
+        "reopen": "Wieder öffnen",
+        "triage": "Bearbeiten",
+        "resolve": "Lösen",
+        "message": "Nachricht"
+      },
+      "reply": {
+        "title": "Antworten an {{name}}",
+        "send": "Senden"
+      }
+    },
+    "menu": {
+      "dashboard": "Dashboard",
+      "dashboardSub": "Überblick über alle Unternehmen"
+    }
   }
 }
