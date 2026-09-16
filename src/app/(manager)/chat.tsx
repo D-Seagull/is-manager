@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   FlatList,
+  Alert,
   Pressable,
   StyleSheet,
   Text,
@@ -21,7 +22,7 @@ import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useCompanyUsers, type CompanyUser } from '@/hooks/use-company-users';
-import { useConversations, type Conversation } from '@/hooks/use-direct-messages';
+import { useConversations, type Conversation, useHideConversation } from '@/hooks/use-direct-messages';
 import {
   useGroups,
   useGroupUnread,
@@ -340,6 +341,25 @@ function DirectoryRow({ user }: { user: CompanyUser }) {
 
 function ConversationRow({ conv }: { conv: Conversation }) {
   const { t } = useTranslation();
+  const hideConversation = useHideConversation();
+
+  // Long-press to remove the thread from the list. Hidden for this user
+  // only — the other side keeps the history and notices nothing, and the
+  // conversation reappears the moment either of them writes again.
+  const confirmHide = () => {
+    Alert.alert(
+      t('chat.hideConfirm', 'Видалити чат?'),
+      t('chat.hideConfirmBody', 'Чат зникне з вашого списку. Співрозмовник цього не побачить, а листування повернеться після нового повідомлення.'),
+      [
+        { text: t('common.cancel', 'Скасувати'), style: 'cancel' },
+        {
+          text: t('common.delete', 'Видалити'),
+          style: 'destructive',
+          onPress: () => hideConversation.mutate(conv.user.id),
+        },
+      ],
+    );
+  };
   const c = Colors[useColorScheme() ?? 'light'];
   const hasUnread = conv.unreadCount > 0;
   const isManagerTier = conv.user.role !== 'DRIVER';
@@ -347,6 +367,8 @@ function ConversationRow({ conv }: { conv: Conversation }) {
   return (
     <Pressable
       onPress={() => router.push(`/(manager)/dm/${conv.user.id}` as never)}
+      onLongPress={confirmHide}
+      delayLongPress={450}
       style={({ pressed }) => [
         styles.row,
         {

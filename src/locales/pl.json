@@ -86,7 +86,9 @@
         "TRIP_COMPLETED": "Trasa zakończona",
         "LEGACY_RESET": "Reset"
       }
-    }
+    },
+    "hideConfirm": "Usunąć czat?",
+    "hideConfirmBody": "Czat zniknie z Twojej listy. Rozmówca tego nie zobaczy, a wróci po nowej wiadomości."
   },
   "chatDir": {
     "searchPlaceholder": "Szukaj: imię, telefon lub ciężarówka…",

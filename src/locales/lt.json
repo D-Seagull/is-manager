@@ -86,7 +86,9 @@
         "TRIP_COMPLETED": "Reisas baigtas",
         "LEGACY_RESET": "Atstatymas"
       }
-    }
+    },
+    "hideConfirm": "Ištrinti pokalbį?",
+    "hideConfirmBody": "Pokalbis dings iš jūsų sąrašo. Pašnekovas to nematys, o pokalbis grįš po naujos žinutės."
   },
   "chatDir": {
     "searchPlaceholder": "Ieškoti: vardas, telefonas ar vilkikas…",

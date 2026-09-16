@@ -86,7 +86,9 @@
         "TRIP_COMPLETED": "Fahrt abgeschlossen",
         "LEGACY_RESET": "Zurücksetzen"
       }
-    }
+    },
+    "hideConfirm": "Chat löschen?",
+    "hideConfirmBody": "Der Chat verschwindet aus Ihrer Liste. Die andere Person merkt nichts, und er kehrt bei der nächsten Nachricht zurück."
   },
   "chatDir": {
     "searchPlaceholder": "Name, Telefon oder Lkw suchen…",
