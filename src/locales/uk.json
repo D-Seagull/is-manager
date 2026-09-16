@@ -405,7 +405,10 @@
     "pick": "Статус рейсу"
   },
   "trips": {
-    "searchPlaceholder": "Пошук: № замовлення, номер, водій…"
+    "searchPlaceholder": "Пошук: № замовлення, номер, водій…",
+    "deleteConfirm": "Видалити рейс?",
+    "deleteConfirmBody": "Рейс зникне разом із чатом і документами.",
+    "deleteError": "Не вдалося видалити рейс"
   },
   "truck": {
     "driverLabel": "Водій",

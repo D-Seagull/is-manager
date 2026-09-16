@@ -402,7 +402,10 @@
     "pick": "Trip status"
   },
   "trips": {
-    "searchPlaceholder": "Search: order #, plate, driver…"
+    "searchPlaceholder": "Search: order #, plate, driver…",
+    "deleteConfirm": "Delete trip?",
+    "deleteConfirmBody": "The trip disappears along with its chat and documents.",
+    "deleteError": "Could not delete the trip"
   },
   "truck": {
     "driverLabel": "Driver",

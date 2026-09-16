@@ -45,7 +45,9 @@ export interface Trip {
   createdAt: string;
   updatedAt: string;
   driver: { id: string; firstName: string; lastName: string | null; phone: string | null } | null;
-  truck: { id: string; plate: string } | null;
+  // managerId decides who may delete the trip: the truck's current
+  // manager, or a teamlead. Sent by the API so the UI need not ask.
+  truck: { id: string; plate: string; managerId: string | null } | null;
   manager: { id: string; firstName: string; lastName: string | null };
   stops: TripStop[];
   documents: TripDocument[];

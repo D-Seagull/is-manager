@@ -104,6 +104,28 @@ export function useUpdateTripStatus(truckId: string) {
   });
 }
 
+/**
+ * Hides a trip — DELETE /trips/:id.
+ *
+ * The backend soft-deletes: the row and its transport record survive, the
+ * trip simply stops appearing anywhere. Refused unless the caller is the
+ * truck's current manager, a teamlead or an admin.
+ */
+export function useDeleteTrip(truckId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await api.delete(`/trips/${id}`);
+      return id;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['trips-by-truck', truckId] });
+      qc.invalidateQueries({ queryKey: ['trips'] });
+      qc.invalidateQueries({ queryKey: ['trucks-my'] });
+    },
+  });
+}
+
 /** Reassign the trip's driver — PATCH /trips/:id/assign. */
 export function useReassignTrip(truckId: string) {
   const qc = useQueryClient();

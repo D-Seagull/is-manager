@@ -402,7 +402,10 @@
     "pick": "Fahrtstatus"
   },
   "trips": {
-    "searchPlaceholder": "Suche: Auftrags-Nr., Kennzeichen, Fahrer…"
+    "searchPlaceholder": "Suche: Auftrags-Nr., Kennzeichen, Fahrer…",
+    "deleteConfirm": "Fahrt löschen?",
+    "deleteConfirmBody": "Die Fahrt verschwindet samt Chat und Dokumenten.",
+    "deleteError": "Fahrt konnte nicht gelöscht werden"
   },
   "truck": {
     "driverLabel": "Fahrer",

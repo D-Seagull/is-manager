@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Modal,
+  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -17,7 +18,8 @@ import { StatusDot } from '@/components/status-dot';
 import { TRIP_STATUSES, TRIP_STATUS_COLORS, type TripStatus } from '@/constants/trip-status';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useTripsByTruck, useUpdateTripStatus } from '@/hooks/use-trips';
+import { useTripsByTruck, useUpdateTripStatus, useDeleteTrip } from '@/hooks/use-trips';
+import { useUser } from '@/store/auth';
 import { formatDate } from '@/lib/format-date';
 import { fullName } from '@/lib/format';
 import { Trip } from '@/lib/types';
@@ -117,6 +119,45 @@ export function TripsTab({
 
 function TripRow({ trip, truckId, variant, onOpen }: { trip: Trip; truckId: string; variant: Variant; onOpen: () => void }) {
   const { t } = useTranslation();
+  const user = useUser();
+  const deleteTrip = useDeleteTrip(truckId);
+  // Mirrors the backend rule: teamleads and admins may delete any trip, a
+  // manager only the trips of a truck they currently hold.
+  const canDelete =
+    user?.role === 'ADMIN' ||
+    user?.role === 'TEAMLEAD' ||
+    (user?.role === 'MANAGER' && trip.truck?.managerId === user.id);
+
+  // Long-press rather than a visible button: on a phone this list is
+  // scrolled with a thumb, and hiding a trip takes its chat and documents
+  // with it. Deliberate enough to be worth the extra half-second.
+  const confirmDelete = () => {
+    if (!canDelete) return;
+    Alert.alert(
+      t('trips.deleteConfirm', 'Видалити рейс?'),
+      t('trips.deleteConfirmBody', 'Рейс зникне разом із чатом і документами. Дію можна скасувати лише через підтримку.'),
+      [
+        { text: t('common.cancel', 'Скасувати'), style: 'cancel' },
+        {
+          text: t('common.delete', 'Видалити'),
+          style: 'destructive',
+          onPress: () => {
+            deleteTrip.mutate(trip.id, {
+              onError: (e: any) => {
+                const msg =
+                  e?.response?.data?.message ??
+                  t('trips.deleteError', 'Не вдалося видалити рейс');
+                Alert.alert(
+                  t('trips.deleteError', 'Не вдалося видалити рейс'),
+                  Array.isArray(msg) ? msg[0] : String(msg),
+                );
+              },
+            });
+          },
+        },
+      ],
+    );
+  };
   const c = Colors[useColorScheme() ?? 'light'];
   const updateStatus = useUpdateTripStatus(truckId);
   const [stopsOpen, setStopsOpen] = useState(false);
@@ -140,7 +181,12 @@ function TripRow({ trip, truckId, variant, onOpen }: { trip: Trip; truckId: stri
         },
       ]}
     >
-      <Pressable onPress={onOpen} style={styles.cardMain}>
+      <Pressable
+        onPress={onOpen}
+        onLongPress={canDelete ? confirmDelete : undefined}
+        delayLongPress={450}
+        style={styles.cardMain}
+      >
         <View style={[styles.dot, { backgroundColor: dotColor }]} />
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text style={[styles.title, { color: c.foreground }]} numberOfLines={1}>

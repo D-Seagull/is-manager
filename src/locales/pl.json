@@ -405,7 +405,10 @@
     "pick": "Status trasy"
   },
   "trips": {
-    "searchPlaceholder": "Szukaj: nr zamówienia, numer, kierowca…"
+    "searchPlaceholder": "Szukaj: nr zamówienia, numer, kierowca…",
+    "deleteConfirm": "Usunąć trasę?",
+    "deleteConfirmBody": "Trasa zniknie razem z czatem i dokumentami.",
+    "deleteError": "Nie udało się usunąć trasy"
   },
   "truck": {
     "driverLabel": "Kierowca",

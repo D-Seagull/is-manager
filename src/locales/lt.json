@@ -405,7 +405,10 @@
     "pick": "Reiso būsena"
   },
   "trips": {
-    "searchPlaceholder": "Ieškoti: užsakymo nr., numeris, vairuotojas…"
+    "searchPlaceholder": "Ieškoti: užsakymo nr., numeris, vairuotojas…",
+    "deleteConfirm": "Ištrinti reisą?",
+    "deleteConfirmBody": "Reisas dings kartu su pokalbiu ir dokumentais.",
+    "deleteError": "Nepavyko ištrinti reiso"
   },
   "truck": {
     "driverLabel": "Vairuotojas",
