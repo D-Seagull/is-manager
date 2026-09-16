@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
+import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -36,6 +37,7 @@ import {
 } from '@/lib/auth-api';
 import { fullName, initials } from '@/lib/format';
 import { setAppLanguage } from '@/lib/i18n';
+import { PRIVACY_URL, TERMS_URL } from '@/lib/config';
 import { useAlertPrefs } from '@/store/alert-prefs';
 import { useAuthStore, useUser } from '@/store/auth';
 
@@ -491,6 +493,29 @@ export default function AccountScreen() {
             </Text>
           )}
         </Pressable>
+
+        {/* Store policy wants the privacy policy reachable from inside the
+            app, not only from the listing. System browser rather than a
+            WebView, so the address being read is visible. */}
+        <View style={styles.legalRow}>
+          <Pressable
+            onPress={() => WebBrowser.openBrowserAsync(PRIVACY_URL)}
+            hitSlop={8}
+          >
+            <Text style={[styles.legalLink, { color: c.mutedForeground }]}>
+              {t('settings.privacyPolicy', 'Політика конфіденційності')}
+            </Text>
+          </Pressable>
+          <Text style={[styles.legalLink, { color: c.mutedForeground }]}>·</Text>
+          <Pressable
+            onPress={() => WebBrowser.openBrowserAsync(TERMS_URL)}
+            hitSlop={8}
+          >
+            <Text style={[styles.legalLink, { color: c.mutedForeground }]}>
+              {t('settings.terms', 'Умови використання')}
+            </Text>
+          </Pressable>
+        </View>
       </ScrollView>
 
       <PresenceStatusSheet open={statusPickerOpen} onClose={() => setStatusPickerOpen(false)} />
@@ -651,6 +676,14 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     minHeight: 44,
   },
+  legalRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingBottom: Spacing.md,
+  },
+  legalLink: { fontSize: 12, textDecorationLine: 'underline' },
   deleteAccountText: {
     fontSize: 13,
     fontWeight: '500',

@@ -19,6 +19,15 @@ function readString(key: string, fallback: string): string {
 
 export const API_URL = readString("API_URL", "http://localhost:3001");
 
+/**
+ * Where the public legal pages live. Always the deployed web app, even in a
+ * development build: a driver must read the published policy, and a localhost
+ * URL would simply fail to open on their phone. Overridable for staging.
+ */
+export const WEB_URL = readString("WEB_URL", "https://app.isfleet.eu");
+export const PRIVACY_URL = WEB_URL + "/privacy";
+export const TERMS_URL = WEB_URL + "/terms";
+
 // Boot-time sanity log — confirms which API the app is talking to. Remove
 // this once the network setup is stable.
 console.log("[config]", { API_URL });
