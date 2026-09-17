@@ -57,6 +57,9 @@ export function useCreateTrip() {
     onSuccess: (trip) => {
       qc.invalidateQueries({ queryKey: ['trips-by-truck', trip.truck?.id] });
       qc.invalidateQueries({ queryKey: ['trucks-my'] });
+      // The trip's documents disappear with it — drop their cache too, or
+      // the Documents tab keeps listing files of a trip that is gone.
+      qc.invalidateQueries({ queryKey: ['documents'] });
     },
   });
 }
@@ -100,6 +103,9 @@ export function useUpdateTripStatus(truckId: string) {
       qc.invalidateQueries({ queryKey: ['trips-by-truck', truckId] });
       qc.invalidateQueries({ queryKey: ['trip', trip.id] });
       qc.invalidateQueries({ queryKey: ['trucks-my'] });
+      // The trip's documents disappear with it — drop their cache too, or
+      // the Documents tab keeps listing files of a trip that is gone.
+      qc.invalidateQueries({ queryKey: ['documents'] });
     },
   });
 }
@@ -111,7 +117,7 @@ export function useUpdateTripStatus(truckId: string) {
  * trip simply stops appearing anywhere. Refused unless the caller is the
  * truck's current manager, a teamlead or an admin.
  */
-export function useDeleteTrip(truckId: string) {
+export function useDeleteTrip(truckId?: string | null) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
@@ -119,9 +125,14 @@ export function useDeleteTrip(truckId: string) {
       return id;
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['trips-by-truck', truckId] });
+      if (truckId) qc.invalidateQueries({ queryKey: ['trips-by-truck', truckId] });
+      // 'trips-all' feeds the company-wide Trips screen, which deletes too.
+      qc.invalidateQueries({ queryKey: ['trips-all'] });
       qc.invalidateQueries({ queryKey: ['trips'] });
       qc.invalidateQueries({ queryKey: ['trucks-my'] });
+      // The trip's documents disappear with it — drop their cache too, or
+      // the Documents tab keeps listing files of a trip that is gone.
+      qc.invalidateQueries({ queryKey: ['documents'] });
     },
   });
 }

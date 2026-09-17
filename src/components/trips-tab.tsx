@@ -171,7 +171,10 @@ function TripRow({ trip, truckId, variant, onOpen }: { trip: Trip; truckId: stri
   })();
 
   return (
-    <View
+    <Pressable
+      // Довге натискання ловить уся картка, не лише рядок з назвою.
+      onLongPress={canDelete ? confirmDelete : undefined}
+      delayLongPress={450}
       style={[
         styles.card,
         {
@@ -253,7 +256,7 @@ function TripRow({ trip, truckId, variant, onOpen }: { trip: Trip; truckId: stri
           </Pressable>
         </Pressable>
       </Modal>
-    </View>
+    </Pressable>
   );
 }
 

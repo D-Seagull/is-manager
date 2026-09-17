@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { ChatAvatar } from '@/components/chat-avatar';
 import { SectionHeader } from '@/components/section-header';
@@ -14,9 +14,10 @@ import { TRIP_STATUS_COLORS } from '@/constants/trip-status';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useTripDocuments } from '@/hooks/use-documents';
-import { useTrips } from '@/hooks/use-trips';
+import { useDeleteTrip, useTrips } from '@/hooks/use-trips';
 import { fullName } from '@/lib/format';
 import { StopType, Trip } from '@/lib/types';
+import { useUser } from '@/store/auth';
 
 /** Планова дата завантаження — windowDate першого LOADING-стопу. */
 function loadingDate(trip: Trip): string | null {
@@ -108,6 +109,41 @@ function TripRow({ trip, c, t }: { trip: Trip; c: (typeof Colors)['light']; t: T
   const date = loadingDate(trip);
   // Документи тягнемо (зі signed URL) лише коли картку розгорнуто.
   const { data: docs = [], isLoading: docsLoading } = useTripDocuments(expanded ? trip.id : null);
+  const user = useUser();
+  const deleteTrip = useDeleteTrip(trip.truck?.id);
+  // Те саме правило, що й на бекенді: тімлід і адмін видаляють будь-який
+  // рейс, менеджер — лише рейси трака, який зараз за ним.
+  const canDelete =
+    user?.role === 'ADMIN' ||
+    user?.role === 'TEAMLEAD' ||
+    (user?.role === 'MANAGER' && trip.truck?.managerId === user.id);
+
+  // Довге натискання по картці або смітник у нижньому правому куті.
+  const confirmDelete = () => {
+    if (!canDelete) return;
+    Alert.alert(
+      t('trips.deleteConfirm', 'Видалити рейс?'),
+      t('trips.deleteConfirmBody', 'Рейс зникне разом із чатом і документами.'),
+      [
+        { text: t('common.cancel', 'Скасувати'), style: 'cancel' },
+        {
+          text: t('common.delete', 'Видалити'),
+          style: 'destructive',
+          onPress: () =>
+            deleteTrip.mutate(trip.id, {
+              onError: (e: any) => {
+                const msg =
+                  e?.response?.data?.message ?? t('trips.deleteError', 'Не вдалося видалити рейс');
+                Alert.alert(
+                  t('trips.deleteError', 'Не вдалося видалити рейс'),
+                  Array.isArray(msg) ? msg[0] : String(msg),
+                );
+              },
+            }),
+        },
+      ],
+    );
+  };
 
   const stopLabel = (s: Trip['stops'][number]) => {
     if (s.type === 'WAYPOINT') return s.name || t('trip.stops.waypoint', 'Проміжна точка');
@@ -117,6 +153,8 @@ function TripRow({ trip, c, t }: { trip: Trip; c: (typeof Colors)['light']; t: T
   return (
     <Pressable
       onPress={() => setExpanded((v) => !v)}
+      onLongPress={canDelete ? confirmDelete : undefined}
+      delayLongPress={450}
       style={({ pressed }) => [styles.card, { backgroundColor: pressed ? c.muted : c.card, borderColor: c.border }]}
     >
       <View style={styles.top}>
@@ -159,6 +197,11 @@ function TripRow({ trip, c, t }: { trip: Trip; c: (typeof Colors)['light']; t: T
             <Ionicons name="attach-outline" size={14} color={c.mutedForeground} />
             <Text style={{ fontSize: 12, color: c.mutedForeground }}>{trip.documents.length}</Text>
           </View>
+        ) : null}
+        {canDelete ? (
+          <Pressable onPress={confirmDelete} hitSlop={10} style={styles.trashBtn}>
+            <Ionicons name="trash-outline" size={15} color="#EF4444" />
+          </Pressable>
         ) : null}
       </View>
 
@@ -224,6 +267,7 @@ const styles = StyleSheet.create({
   badgeText: { fontSize: 11, fontWeight: '700' },
   meta: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: Spacing.md, marginTop: Spacing.sm },
   metaItem: { flexDirection: 'row', alignItems: 'center', gap: 5, maxWidth: '60%' },
+  trashBtn: { marginLeft: 'auto', padding: 2 },
   expand: { marginTop: Spacing.sm, paddingTop: Spacing.sm, borderTopWidth: StyleSheet.hairlineWidth, gap: 4 },
   sectionLabel: { fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 2 },
   stopRow: { flexDirection: 'row', gap: Spacing.sm, paddingVertical: 3 },
