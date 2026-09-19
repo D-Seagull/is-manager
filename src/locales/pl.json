@@ -84,7 +84,8 @@
         "DRIVER_CHANGED": "Zmiana kierowcy",
         "MANAGER_CHANGED": "Zmiana menedżera",
         "TRIP_COMPLETED": "Trasa zakończona",
-        "LEGACY_RESET": "Reset"
+        "LEGACY_RESET": "Reset",
+        "TRUCK_CHANGED": "Zmieniono pojazd"
       }
     },
     "hideConfirm": "Usunąć czat?",
@@ -368,7 +369,8 @@
   },
   "sys": {
     "driverAssigned": "Kierowca {{name}} przydzielony do ciężarówki {{plate}}",
-    "managerAssigned": "Menedżer {{name}} przydzielony do ciężarówki {{plate}}"
+    "managerAssigned": "Menedżer {{name}} przydzielony do ciężarówki {{plate}}",
+    "truckAssigned": "Do trasy przypisano pojazd {{plate}} · kierowca {{name}}"
   },
   "trip": {
     "chatLabel": "Czat trasy",
@@ -388,6 +390,22 @@
       "customs": "Odprawa celna",
       "parking": "Parking",
       "fuel": "Tankowanie"
+    },
+    "reassign": {
+      "title": "Zmień pojazd",
+      "subtitle": "{{trip}} · obecnie {{plate}}",
+      "searchPlaceholder": "Numer lub kierowca",
+      "noTrucks": "Brak innych pojazdów",
+      "noDriver": "bez kierowcy",
+      "busy": "zajęty",
+      "confirm": "Zmień pojazd",
+      "error": "Nie udało się zmienić pojazdu",
+      "conflictTitle": "{{plate}} jest już w trasie",
+      "conflictBody": "Wybierz, co zrobić z tamtą trasą.",
+      "swap": "Zamień trasy",
+      "swapHint": "Tamta trasa przejdzie na {{plate}}",
+      "completeOther": "Zakończ tamtą trasę",
+      "completeOtherHint": "Zostanie dostarczona, pojazd się zwolni"
     }
   },
   "tripChat": {

@@ -84,7 +84,8 @@
         "DRIVER_CHANGED": "Driver changed",
         "MANAGER_CHANGED": "Manager changed",
         "TRIP_COMPLETED": "Trip completed",
-        "LEGACY_RESET": "Reset"
+        "LEGACY_RESET": "Reset",
+        "TRUCK_CHANGED": "Truck reassigned"
       }
     },
     "hideConfirm": "Delete chat?",
@@ -365,7 +366,8 @@
   },
   "sys": {
     "driverAssigned": "Driver {{name}} assigned to truck {{plate}}",
-    "managerAssigned": "Manager {{name}} assigned to truck {{plate}}"
+    "managerAssigned": "Manager {{name}} assigned to truck {{plate}}",
+    "truckAssigned": "Truck {{plate}} assigned to this trip · driver {{name}}"
   },
   "trip": {
     "chatLabel": "Trip chat",
@@ -385,6 +387,22 @@
       "customs": "Customs",
       "parking": "Parking",
       "fuel": "Fuel"
+    },
+    "reassign": {
+      "title": "Reassign truck",
+      "subtitle": "{{trip}} · currently {{plate}}",
+      "searchPlaceholder": "Plate or driver",
+      "noTrucks": "No other trucks",
+      "noDriver": "no driver",
+      "busy": "busy",
+      "confirm": "Reassign",
+      "error": "Could not reassign the trip",
+      "conflictTitle": "{{plate}} is already on a trip",
+      "conflictBody": "Choose what happens to the trip it is running.",
+      "swap": "Swap the trips",
+      "swapHint": "That trip moves to {{plate}}",
+      "completeOther": "Complete that trip",
+      "completeOtherHint": "It becomes delivered and frees the truck"
     }
   },
   "tripChat": {

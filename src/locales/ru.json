@@ -84,7 +84,8 @@
         "DRIVER_CHANGED": "Смена водителя",
         "MANAGER_CHANGED": "Смена менеджера",
         "TRIP_COMPLETED": "Рейс завершён",
-        "LEGACY_RESET": "Сброс"
+        "LEGACY_RESET": "Сброс",
+        "TRUCK_CHANGED": "Переназначена машина"
       }
     },
     "hideConfirm": "Удалить чат?",
@@ -368,7 +369,8 @@
   },
   "sys": {
     "driverAssigned": "Водитель {{name}} назначен на грузовик {{plate}}",
-    "managerAssigned": "Менеджер {{name}} назначен на грузовик {{plate}}"
+    "managerAssigned": "Менеджер {{name}} назначен на грузовик {{plate}}",
+    "truckAssigned": "Рейсу назначена машина {{plate}} · водитель {{name}}"
   },
   "trip": {
     "chatLabel": "Чат рейса",
@@ -388,6 +390,22 @@
       "customs": "Таможня",
       "parking": "Парковка",
       "fuel": "Заправка"
+    },
+    "reassign": {
+      "title": "Переназначить машину",
+      "subtitle": "{{trip}} · сейчас {{plate}}",
+      "searchPlaceholder": "Номер или водитель",
+      "noTrucks": "Других машин нет",
+      "noDriver": "без водителя",
+      "busy": "занята",
+      "confirm": "Переназначить",
+      "error": "Не удалось переназначить рейс",
+      "conflictTitle": "{{plate}} уже в рейсе",
+      "conflictBody": "Выберите, что сделать со встречным рейсом.",
+      "swap": "Заменить рейсы",
+      "swapHint": "Встречный рейс перейдёт на {{plate}}",
+      "completeOther": "Завершить тот рейс",
+      "completeOtherHint": "Станет доставленным, машина освободится"
     }
   },
   "tripChat": {

@@ -6,12 +6,14 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { ReassignTruckModal } from '@/components/reassign-truck-modal';
 import { TripForm } from '@/components/trip-form';
 import { TRIP_STATUSES, TRIP_STATUS_COLORS } from '@/constants/trip-status';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useTrip } from '@/hooks/use-trip';
 import { useUpdateTripStatus } from '@/hooks/use-trips';
+import { useUser } from '@/store/auth';
 import { formatStopWindow } from '@/lib/format';
 import { TripStop } from '@/lib/types';
 
@@ -54,12 +56,20 @@ export function TripHeader({ tripId }: { tripId: string }) {
   const { data: trip } = useTrip(tripId);
   const [collapsed, setCollapsed] = useState(true);
   const [editOpen, setEditOpen] = useState(false);
+  const [reassignOpen, setReassignOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
   const updateStatus = useUpdateTripStatus(trip?.truck?.id ?? '');
+  const user = useUser();
 
   if (!trip) return null;
 
   const statusCol = TRIP_STATUS_COLORS[trip.status];
+  // Перепризначає менеджер рейсу, а не менеджер траку: рейс лишається за ним
+  // і після переїзду на чужу машину. Дзеркалить веб.
+  const canReassign =
+    user?.role === 'ADMIN' ||
+    user?.role === 'TEAMLEAD' ||
+    (user?.role === 'MANAGER' && trip.manager?.id === user.id);
 
   return (
     <View style={[styles.card, { backgroundColor: c.card, borderBottomColor: c.border }]}>
@@ -74,6 +84,11 @@ export function TripHeader({ tripId }: { tripId: string }) {
             </Text>
           ) : null}
         </Pressable>
+        {canReassign ? (
+          <Pressable onPress={() => setReassignOpen(true)} hitSlop={8} style={styles.editBtn}>
+            <Ionicons name="swap-horizontal" size={17} color={c.mutedForeground} />
+          </Pressable>
+        ) : null}
         <Pressable onPress={() => setEditOpen(true)} hitSlop={8} style={styles.editBtn}>
           <Ionicons name="pencil" size={16} color={c.mutedForeground} />
         </Pressable>
@@ -133,6 +148,12 @@ export function TripHeader({ tripId }: { tripId: string }) {
         trip={trip}
         visible={editOpen}
         onClose={() => setEditOpen(false)}
+      />
+
+      <ReassignTruckModal
+        trip={trip}
+        visible={reassignOpen}
+        onClose={() => setReassignOpen(false)}
       />
     </View>
   );

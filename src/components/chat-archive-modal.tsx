@@ -21,6 +21,7 @@ const REASON_FALLBACK: Record<SessionEndReason, string> = {
   DRIVER_CHANGED: 'Зміна водія',
   MANAGER_CHANGED: 'Зміна менеджера',
   TRIP_COMPLETED: 'Рейс завершено',
+  TRUCK_CHANGED: 'Перепризначено вантажівку',
   LEGACY_RESET: 'Скидання',
 };
 

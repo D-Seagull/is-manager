@@ -84,7 +84,8 @@
         "DRIVER_CHANGED": "Fahrerwechsel",
         "MANAGER_CHANGED": "Managerwechsel",
         "TRIP_COMPLETED": "Fahrt abgeschlossen",
-        "LEGACY_RESET": "Zurücksetzen"
+        "LEGACY_RESET": "Zurücksetzen",
+        "TRUCK_CHANGED": "Fahrzeug gewechselt"
       }
     },
     "hideConfirm": "Chat löschen?",
@@ -365,7 +366,8 @@
   },
   "sys": {
     "driverAssigned": "Fahrer {{name}} dem Lkw {{plate}} zugewiesen",
-    "managerAssigned": "Manager {{name}} dem Lkw {{plate}} zugewiesen"
+    "managerAssigned": "Manager {{name}} dem Lkw {{plate}} zugewiesen",
+    "truckAssigned": "Fahrzeug {{plate}} dieser Fahrt zugewiesen · Fahrer {{name}}"
   },
   "trip": {
     "chatLabel": "Fahrt-Chat",
@@ -385,6 +387,22 @@
       "customs": "Zoll",
       "parking": "Parken",
       "fuel": "Tanken"
+    },
+    "reassign": {
+      "title": "Fahrzeug wechseln",
+      "subtitle": "{{trip}} · aktuell {{plate}}",
+      "searchPlaceholder": "Kennzeichen oder Fahrer",
+      "noTrucks": "Keine weiteren Fahrzeuge",
+      "noDriver": "ohne Fahrer",
+      "busy": "belegt",
+      "confirm": "Fahrzeug wechseln",
+      "error": "Fahrzeugwechsel fehlgeschlagen",
+      "conflictTitle": "{{plate}} ist bereits unterwegs",
+      "conflictBody": "Wählen Sie, was mit der anderen Fahrt geschieht.",
+      "swap": "Fahrten tauschen",
+      "swapHint": "Die andere Fahrt geht auf {{plate}}",
+      "completeOther": "Andere Fahrt abschließen",
+      "completeOtherHint": "Sie gilt als zugestellt, das Fahrzeug wird frei"
     }
   },
   "tripChat": {

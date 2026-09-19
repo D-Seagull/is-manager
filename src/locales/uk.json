@@ -84,7 +84,8 @@
         "DRIVER_CHANGED": "Зміна водія",
         "MANAGER_CHANGED": "Зміна менеджера",
         "TRIP_COMPLETED": "Рейс завершено",
-        "LEGACY_RESET": "Скидання"
+        "LEGACY_RESET": "Скидання",
+        "TRUCK_CHANGED": "Перепризначено вантажівку"
       }
     },
     "hideConfirm": "Видалити чат?",
@@ -368,7 +369,8 @@
   },
   "sys": {
     "driverAssigned": "До вантажівки {{plate}} призначений водій {{name}}",
-    "managerAssigned": "До вантажівки {{plate}} призначений менеджер {{name}}"
+    "managerAssigned": "До вантажівки {{plate}} призначений менеджер {{name}}",
+    "truckAssigned": "До рейсу призначена вантажівка {{plate}} · водій {{name}}"
   },
   "trip": {
     "chatLabel": "Чат рейсу",
@@ -388,6 +390,22 @@
       "customs": "Митниця",
       "parking": "Паркінг",
       "fuel": "Заправка"
+    },
+    "reassign": {
+      "title": "Перепризначити вантажівку",
+      "subtitle": "{{trip}} · зараз {{plate}}",
+      "searchPlaceholder": "Номер або водій",
+      "noTrucks": "Немає інших вантажівок",
+      "noDriver": "без водія",
+      "busy": "зайнята",
+      "confirm": "Перепризначити",
+      "error": "Не вдалося перепризначити рейс",
+      "conflictTitle": "{{plate}} вже в рейсі",
+      "conflictBody": "Оберіть, що зробити із зустрічним рейсом.",
+      "swap": "Замінити рейси",
+      "swapHint": "Зустрічний рейс переїде на {{plate}}",
+      "completeOther": "Завершити той рейс",
+      "completeOtherHint": "Стане доставленим, машина звільниться"
     }
   },
   "tripChat": {

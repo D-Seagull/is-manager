@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import type { TripStatus } from '@/constants/trip-status';
 import { api } from '@/lib/api';
 import { StopType, Trip } from '@/lib/types';
 
@@ -148,6 +149,58 @@ export function useReassignTrip(truckId: string) {
     onSuccess: (trip) => {
       qc.invalidateQueries({ queryKey: ['trips-by-truck', truckId] });
       qc.invalidateQueries({ queryKey: ['trip', trip.id] });
+    },
+  });
+}
+
+/** 409-тіло, яке бекенд віддає, коли цільова машина вже в рейсі. */
+export interface TargetTruckBusy {
+  code: 'TARGET_TRUCK_BUSY';
+  message: string;
+  trip: {
+    id: string;
+    title: string;
+    orderNumber: string | null;
+    status: TripStatus;
+    driverName: string;
+  };
+}
+
+export type TruckConflictStrategy = 'SWAP' | 'COMPLETE_OTHER';
+
+/**
+ * Перепризначення рейсу на іншу машину — PATCH /trips/:id/truck. Водій їде
+ * разом з машиною, менеджер лишається той самий. Без `onConflict` сервер
+ * відмовляє з 409, якщо цільова машина вже виконує рейс.
+ */
+export function useAssignTruck() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      id,
+      targetTruckId,
+      onConflict,
+    }: {
+      id: string;
+      targetTruckId: string;
+      onConflict?: TruckConflictStrategy;
+    }) => {
+      const res = await api.patch(`/trips/${id}/truck`, {
+        truckId: targetTruckId,
+        ...(onConflict ? { onConflict } : {}),
+      });
+      return res.data as Trip;
+    },
+    onSuccess: (trip) => {
+      // Рейс залишає одну машину й сідає на іншу — застарілі обидві сторони.
+      qc.invalidateQueries({ queryKey: ['trips-by-truck'] });
+      qc.invalidateQueries({ queryKey: ['trips-all'] });
+      qc.invalidateQueries({ queryKey: ['trip', trip.id] });
+      qc.invalidateQueries({ queryKey: ['trucks-my'] });
+      qc.invalidateQueries({ queryKey: ['trucks-all'] });
+      qc.invalidateQueries({ queryKey: ['truck', trip.truck?.id] });
+      qc.invalidateQueries({ queryKey: ['trip-messages', trip.id] });
+      qc.invalidateQueries({ queryKey: ['trip-unread'] });
     },
   });
 }

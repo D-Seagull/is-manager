@@ -84,7 +84,8 @@
         "DRIVER_CHANGED": "Vairuotojo keitimas",
         "MANAGER_CHANGED": "Vadovo keitimas",
         "TRIP_COMPLETED": "Reisas baigtas",
-        "LEGACY_RESET": "Atstatymas"
+        "LEGACY_RESET": "Atstatymas",
+        "TRUCK_CHANGED": "Pakeistas vilkikas"
       }
     },
     "hideConfirm": "Ištrinti pokalbį?",
@@ -368,7 +369,8 @@
   },
   "sys": {
     "driverAssigned": "Vairuotojas {{name}} priskirtas vilkikui {{plate}}",
-    "managerAssigned": "Vadovas {{name}} priskirtas vilkikui {{plate}}"
+    "managerAssigned": "Vadovas {{name}} priskirtas vilkikui {{plate}}",
+    "truckAssigned": "Reisui priskirtas vilkikas {{plate}} · vairuotojas {{name}}"
   },
   "trip": {
     "chatLabel": "Reiso pokalbis",
@@ -388,6 +390,22 @@
       "customs": "Muitinė",
       "parking": "Stovėjimas",
       "fuel": "Degalinė"
+    },
+    "reassign": {
+      "title": "Keisti vilkiką",
+      "subtitle": "{{trip}} · dabar {{plate}}",
+      "searchPlaceholder": "Numeris arba vairuotojas",
+      "noTrucks": "Kitų vilkikų nėra",
+      "noDriver": "be vairuotojo",
+      "busy": "užimtas",
+      "confirm": "Keisti vilkiką",
+      "error": "Nepavyko pakeisti vilkiko",
+      "conflictTitle": "{{plate}} jau vykdo reisą",
+      "conflictBody": "Pasirinkite, ką daryti su tuo reisu.",
+      "swap": "Sukeisti reisus",
+      "swapHint": "Tas reisas persikels į {{plate}}",
+      "completeOther": "Užbaigti tą reisą",
+      "completeOtherHint": "Jis taps pristatytas, vilkikas atsilaisvins"
     }
   },
   "tripChat": {

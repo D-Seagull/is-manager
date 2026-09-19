@@ -7,6 +7,7 @@ export type SessionEndReason =
   | 'DRIVER_CHANGED'
   | 'MANAGER_CHANGED'
   | 'TRIP_COMPLETED'
+  | 'TRUCK_CHANGED'
   | 'LEGACY_RESET';
 
 export interface ChatArchivePerson {
