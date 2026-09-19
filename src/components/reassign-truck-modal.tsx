@@ -27,11 +27,18 @@ import {
 import { fullName } from '@/lib/format';
 import { Trip } from '@/lib/types';
 
-/** Витягує 409-тіло з axios-помилки, якщо це саме конфлікт зайнятої машини. */
+/**
+ * Витягує 409-тіло з axios-помилки, якщо це саме конфлікт зайнятої машини.
+ * Глобальний фільтр помилок бекенду перепаковує кинуте тіло під `message`,
+ * тож payload приходить вкладеним; читаємо обидві форми.
+ */
 function readConflict(error: unknown): TargetTruckBusy | null {
   if (!isAxiosError(error) || error.response?.status !== 409) return null;
-  const data = error.response.data as Partial<TargetTruckBusy> | undefined;
-  return data?.code === 'TARGET_TRUCK_BUSY' ? (data as TargetTruckBusy) : null;
+  const data = error.response.data as { code?: string; message?: unknown } | undefined;
+  const body = (
+    data && typeof data.message === 'object' && data.message !== null ? data.message : data
+  ) as Partial<TargetTruckBusy> | undefined;
+  return body?.code === 'TARGET_TRUCK_BUSY' ? (body as TargetTruckBusy) : null;
 }
 
 function readMessage(error: unknown, fallback: string): string {
@@ -39,6 +46,11 @@ function readMessage(error: unknown, fallback: string): string {
   const message = (error.response?.data as { message?: unknown })?.message;
   if (typeof message === 'string') return message;
   if (Array.isArray(message) && typeof message[0] === 'string') return message[0];
+  // Вкладений конверт: { message: { code, message, trip } }.
+  if (message && typeof message === 'object') {
+    const inner = (message as { message?: unknown }).message;
+    if (typeof inner === 'string') return inner;
+  }
   return fallback;
 }
 
