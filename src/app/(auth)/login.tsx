@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -19,7 +20,8 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@/store/auth';
 
 export default function LoginScreen() {
-  const c = Colors[useColorScheme() ?? 'light'];
+  const scheme = useColorScheme() ?? 'light';
+  const c = Colors[scheme];
   const { t } = useTranslation();
   const router = useRouter();
   const login = useAuthStore((s) => s.login);
@@ -65,9 +67,16 @@ export default function LoginScreen() {
       <SafeAreaView style={styles.safe}>
         <View style={styles.content}>
           <View style={styles.header}>
-            <Text style={[styles.title, { color: c.foreground }]}>
-              {t('login.title', 'IS Fleet · Менеджер')}
-            </Text>
+            <Image
+              source={
+                scheme === 'dark'
+                  ? require('../../assets/images/is_logo__white.png')
+                  : require('../../assets/images/IS_logo.png')
+              }
+              style={styles.logo}
+              resizeMode="contain"
+              accessibilityLabel="IS Fleet"
+            />
             <Text style={[styles.subtitle, { color: c.mutedForeground }]}>
               {t('login.subtitle', 'Увійдіть у свій акаунт')}
             </Text>
@@ -161,8 +170,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.xl,
     gap: Spacing['2xl'],
   },
-  header: { gap: Spacing.xs, alignItems: 'center' },
-  title: { fontSize: 24, fontWeight: '700' },
+  header: { gap: Spacing.sm, alignItems: 'center' },
+  // contain вписує лого в рамку, тож ширина — це стеля, а не розтягування
+  logo: { width: 190, height: 52 },
   subtitle: { fontSize: 15 },
   form: { gap: Spacing.lg },
   field: { gap: Spacing.xs },
