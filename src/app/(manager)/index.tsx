@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.xs,
     paddingBottom: Spacing.xs,
   },
-  brandLogo: { width: 73, height: 48 },
+  brandLogo: { width: 104, height: 48 },
   scroll: { paddingHorizontal: Spacing.md, paddingBottom: Spacing.lg, gap: Spacing.md },
 
   hero: {
