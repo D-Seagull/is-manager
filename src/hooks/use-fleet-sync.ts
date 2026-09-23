@@ -30,6 +30,10 @@ export function useFleetSync() {
       qc.invalidateQueries({ queryKey: ['trip-chat-archive'] });
     };
     const onTruckChanged = () => {
+      // Обмін машинами між менеджерами міняє і те, чий це рейс у панелі, і
+      // право писати в його чат — тож сам рейс теж перечитуємо, інакше екран
+      // лишається з правами, які вже неактуальні, до перезаходу.
+      qc.invalidateQueries({ queryKey: ['trip'] });
       qc.invalidateQueries({ queryKey: ['trucks-my'] });
       qc.invalidateQueries({ queryKey: ['trucks-all'] });
       qc.invalidateQueries({ queryKey: ['truck'] });

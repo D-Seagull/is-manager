@@ -64,12 +64,12 @@ export function TripHeader({ tripId }: { tripId: string }) {
   if (!trip) return null;
 
   const statusCol = TRIP_STATUS_COLORS[trip.status];
-  // Перепризначає менеджер рейсу, а не менеджер траку: рейс лишається за ним
-  // і після переїзду на чужу машину. Дзеркалить веб.
+  // Спільна дія менеджерів і тімлідів — не привʼязана до того, хто веде рейс.
+  // Дзеркалить веб.
   const canReassign =
     user?.role === 'ADMIN' ||
     user?.role === 'TEAMLEAD' ||
-    (user?.role === 'MANAGER' && trip.manager?.id === user.id);
+    user?.role === 'MANAGER';
 
   return (
     <View style={[styles.card, { backgroundColor: c.card, borderBottomColor: c.border }]}>
