@@ -461,6 +461,23 @@ export default function DmScreen() {
       )}
 
       {/* Composer */}
+      {me?.company?.isActive === false ? (
+        <View
+          style={[
+            styles.composer,
+            {
+              backgroundColor: c.card,
+              borderTopColor: c.border,
+              paddingBottom: Math.max(insets.bottom, Spacing.sm),
+              justifyContent: 'center',
+            },
+          ]}
+        >
+          <Text style={{ color: c.mutedForeground, fontSize: 12, textAlign: 'center' }}>
+            {t('chat.companyDeactivatedNotice')}
+          </Text>
+        </View>
+      ) : (
       <View
         style={[
           styles.composer,
@@ -527,6 +544,7 @@ export default function DmScreen() {
           />
         </Pressable>
       </View>
+      )}
 
       <EmojiPicker
         open={emojiOpen}

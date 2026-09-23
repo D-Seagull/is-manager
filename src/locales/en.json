@@ -65,6 +65,7 @@
   "chat": {
     "messagePlaceholder": "Message…",
     "editPlaceholder": "Edit the message…",
+    "companyDeactivatedNotice": "Unfortunately, you can't use the app in full right now.",
     "editingMessage": "Editing message",
     "editedShort": "(ed.)",
     "replyTo": "Reply to {{name}}",
@@ -407,6 +408,7 @@
   },
   "tripChat": {
     "inactive": "You're no longer this trip's manager — the chat is read-only",
+    "companyDeactivated": "Unfortunately, you can't use the app in full right now",
     "noTrip": {
       "title": "No active trip",
       "subtitle": "The chat appears once a trip is assigned to the truck."

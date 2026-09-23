@@ -65,6 +65,7 @@
   "chat": {
     "messagePlaceholder": "Žinutė…",
     "editPlaceholder": "Redaguoti žinutę…",
+    "companyDeactivatedNotice": "Deja, šiuo metu negalite naudotis programėle visa apimtimi.",
     "editingMessage": "Žinutės redagavimas",
     "editedShort": "(red.)",
     "replyTo": "Atsakymas {{name}}",
@@ -410,6 +411,7 @@
   },
   "tripChat": {
     "inactive": "Jūs nebe šio reiso vadovas — pokalbis tik skaitymui",
+    "companyDeactivated": "Deja, šiuo metu negalite naudotis programėle visa apimtimi",
     "noTrip": {
       "title": "Nėra aktyvaus reiso",
       "subtitle": "Pokalbis atsiras, kai vilkikui bus priskirtas reisas."

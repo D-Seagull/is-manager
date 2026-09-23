@@ -65,6 +65,7 @@
   "chat": {
     "messagePlaceholder": "Nachricht…",
     "editPlaceholder": "Nachricht bearbeiten…",
+    "companyDeactivatedNotice": "Leider können Sie die App im Moment nicht vollständig nutzen.",
     "editingMessage": "Nachricht bearbeiten",
     "editedShort": "(bearb.)",
     "replyTo": "Antwort an {{name}}",
@@ -407,6 +408,7 @@
   },
   "tripChat": {
     "inactive": "Sie sind nicht mehr der Manager dieser Fahrt — der Chat ist schreibgeschützt",
+    "companyDeactivated": "Leider können Sie die App im Moment nicht vollständig nutzen",
     "noTrip": {
       "title": "Keine aktive Fahrt",
       "subtitle": "Der Chat erscheint, sobald dem Lkw eine Fahrt zugewiesen wird."

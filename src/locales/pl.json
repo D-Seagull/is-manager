@@ -65,6 +65,7 @@
   "chat": {
     "messagePlaceholder": "Wiadomość…",
     "editPlaceholder": "Edytuj wiadomość…",
+    "companyDeactivatedNotice": "Niestety, obecnie nie możesz w pełni korzystać z aplikacji.",
     "editingMessage": "Edycja wiadomości",
     "editedShort": "(edyt.)",
     "replyTo": "Odpowiedź do {{name}}",
@@ -410,6 +411,7 @@
   },
   "tripChat": {
     "inactive": "Nie jesteś już menedżerem tej trasy — czat tylko do odczytu",
+    "companyDeactivated": "Niestety, obecnie nie możesz w pełni korzystać z aplikacji",
     "noTrip": {
       "title": "Brak aktywnej trasy",
       "subtitle": "Czat pojawi się, gdy ciężarówce zostanie przypisana trasa."

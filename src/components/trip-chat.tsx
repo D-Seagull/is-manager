@@ -293,7 +293,14 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
         />
       )}
 
-      {trip && !isActiveParticipant ? (
+      {trip && me?.company?.isActive === false ? (
+        <View style={[styles.inactiveBar, { paddingBottom: Math.max(insets.bottom, Spacing.sm), borderTopColor: c.border }]}>
+          <Ionicons name="lock-closed-outline" size={15} color={c.mutedForeground} />
+          <Text style={{ color: c.mutedForeground, fontSize: 13, flex: 1 }}>
+            {t('tripChat.companyDeactivated', 'На жаль, зараз ви не можете використовувати застосунок у повному обсязі')}
+          </Text>
+        </View>
+      ) : trip && !isActiveParticipant ? (
         <View style={[styles.inactiveBar, { paddingBottom: Math.max(insets.bottom, Spacing.sm), borderTopColor: c.border }]}>
           <Ionicons name="lock-closed-outline" size={15} color={c.mutedForeground} />
           <Text style={{ color: c.mutedForeground, fontSize: 13, flex: 1 }}>

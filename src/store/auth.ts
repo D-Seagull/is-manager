@@ -260,6 +260,7 @@ configureApiAuth({
   getToken: () => useAuthStore.getState().token,
   refreshAccessToken: () => useAuthStore.getState().refresh(),
   onUnauthorized: () => useAuthStore.getState().logout(),
+  isCompanyActive: () => useAuthStore.getState().user?.company?.isActive !== false,
 });
 
 // Feed the socket a VALID access token on every (re)connect. After a ~15-min
@@ -279,3 +280,5 @@ export const useUser = () => useAuthStore((s) => s.user);
 export const useIsAuth = () => useAuthStore((s) => !!s.token);
 export const useAuthHydrated = () => useAuthStore((s) => s.isHydrated);
 export const useAuthLoading = () => useAuthStore((s) => s.isLoading);
+export const useIsCompanyActive = () =>
+  useAuthStore((s) => s.user?.company?.isActive !== false);

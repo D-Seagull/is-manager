@@ -39,6 +39,8 @@ export interface AuthUser {
   status?: UserStatus;
   statusUntil?: string | null;
   timezone?: string | null;
+  /** null/undefined = не деактивована (безпечний дефолт); false — компанія деактивована. */
+  company?: { isActive: boolean } | null;
 }
 
 export interface AuthResult {
