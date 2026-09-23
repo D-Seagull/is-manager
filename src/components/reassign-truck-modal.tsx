@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { isAxiosError } from 'axios';
+import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -108,12 +109,20 @@ export function ReassignTruckModal({
   async function submit(onConflict?: TruckConflictStrategy) {
     if (!selectedId) return;
     try {
+      const targetPlate = trucks.find((x) => x.id === selectedId)?.plate ?? '';
       await assignTruck.mutateAsync({
         id: trip.id,
         targetTruckId: selectedId,
         onConflict,
       });
+      const targetId = selectedId;
       close();
+      // Рейс поїхав на іншу машину — разом із правом писати в його чат. Екран,
+      // з якого ми прийшли, показує вже чужий трак, тож ведемо за рейсом.
+      router.replace({
+        pathname: '/(manager)/truck/[truckId]',
+        params: { truckId: targetId, plate: targetPlate, tab: 'chat' },
+      } as never);
     } catch (error) {
       const busy = readConflict(error);
       if (busy) {
