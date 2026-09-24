@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   },
   header: { gap: Spacing.sm, alignItems: 'center' },
   // contain вписує лого в рамку, тож ширина — це стеля, а не розтягування
-  logo: { width: 230, height: 56 },
+  logo: { width: 207, height: 50 },
   subtitle: { fontSize: 15 },
   form: { gap: Spacing.lg },
   field: { gap: Spacing.xs },

@@ -1,4 +1,5 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { isAxiosError } from 'axios';
 import { useIsFocused } from 'expo-router';
 import { router } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -24,7 +25,7 @@ import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useCompanyUsers, type CompanyUser } from '@/hooks/use-company-users';
-import { useCreateDriver, useCreateManager } from '@/hooks/use-people';
+import { useCreateDriver, useCreateManager, type DriverExistsElsewhereConflict } from '@/hooks/use-people';
 import { fullName } from '@/lib/format';
 import { useUser } from '@/store/auth';
 
@@ -180,16 +181,47 @@ function CreateModal({ kind, visible, onClose }: { kind: 'driver' | 'manager'; v
 
   const canSave = kind === 'driver' ? firstName.trim() && phone.trim() : email.trim() && phone.trim();
 
+  // Phone matched a driver already registered with another company — the
+  // backend refuses to create/move anything until we resend with
+  // confirmTransfer: true (see users.service.ts createDriver).
+  const saveDriver = async (confirmTransfer = false) => {
+    try {
+      await createDriver.mutateAsync({
+        firstName: firstName.trim(),
+        lastName: lastName.trim() || null,
+        phone: phone.trim(),
+        confirmTransfer,
+      });
+      onClose();
+    } catch (e) {
+      const inner = isAxiosError(e) ? (e.response?.data as { message?: unknown } | undefined)?.message : undefined;
+      if (inner && typeof inner === 'object' && (inner as DriverExistsElsewhereConflict).code === 'DRIVER_EXISTS_ELSEWHERE') {
+        const driver = (inner as DriverExistsElsewhereConflict).driver;
+        const name = fullName(driver) || driver.id;
+        Alert.alert(
+          t('drivers.existsElsewhereTitle', 'Водій вже є в системі'),
+          t('drivers.existsElsewhereBody', { name, defaultValue: `Водій «${name}» вже зареєстрований в іншій компанії. Перенести його до вашої компанії?` }),
+          [
+            { text: t('drivers.cancelTransfer', 'Скасувати'), style: 'cancel' },
+            { text: t('drivers.confirmTransfer', 'Так, перенести'), onPress: () => saveDriver(true) },
+          ],
+        );
+        return;
+      }
+      throw e;
+    }
+  };
+
   const handleSave = async () => {
     if (!canSave || saving) return;
     setSaving(true);
     try {
       if (kind === 'driver') {
-        await createDriver.mutateAsync({ firstName: firstName.trim(), lastName: lastName.trim() || null, phone: phone.trim() });
+        await saveDriver();
       } else {
         await createManager.mutateAsync({ email: email.trim(), phone: phone.trim(), firstName: firstName.trim() || undefined, lastName: lastName.trim() || null });
+        onClose();
       }
-      onClose();
     } catch (e) {
       Alert.alert(t('common.error', 'Помилка'), (e as Error).message);
     } finally {

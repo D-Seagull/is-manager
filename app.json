@@ -57,7 +57,7 @@
         {
           "icon": "./src/assets/images/notification-icon.png",
           "color": "#3B82F6",
-          "sounds": []
+          "sounds": ["./src/assets/sounds/push_message.mp3"]
         }
       ]
     ],

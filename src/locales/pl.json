@@ -135,7 +135,11 @@
   },
   "drivers": {
     "addDriver": "Nowy kierowca",
-    "inviteHint": "Kierowca loguje się numerem telefonu za pomocą kodu SMS."
+    "inviteHint": "Kierowca loguje się numerem telefonu za pomocą kodu SMS.",
+    "existsElsewhereTitle": "Kierowca już istnieje",
+    "existsElsewhereBody": "Kierowca „{{name}}” jest już zarejestrowany w innej firmie. Przenieść go do Twojej firmy?",
+    "confirmTransfer": "Tak, przenieś",
+    "cancelTransfer": "Anuluj"
   },
   "forgot": {
     "title": "Odzyskiwanie hasła",

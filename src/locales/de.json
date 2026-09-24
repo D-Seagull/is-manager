@@ -135,7 +135,11 @@
   },
   "drivers": {
     "addDriver": "Neuer Fahrer",
-    "inviteHint": "Der Fahrer meldet sich mit seiner Telefonnummer per SMS-Code an."
+    "inviteHint": "Der Fahrer meldet sich mit seiner Telefonnummer per SMS-Code an.",
+    "existsElsewhereTitle": "Fahrer existiert bereits",
+    "existsElsewhereBody": "Der Fahrer „{{name}}“ ist bereits bei einem anderen Unternehmen registriert. Zu Ihrem Unternehmen verschieben?",
+    "confirmTransfer": "Ja, verschieben",
+    "cancelTransfer": "Abbrechen"
   },
   "forgot": {
     "title": "Passwort zurücksetzen",

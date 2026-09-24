@@ -135,7 +135,11 @@
   },
   "drivers": {
     "addDriver": "New driver",
-    "inviteHint": "The driver signs in with their phone number via an SMS code."
+    "inviteHint": "The driver signs in with their phone number via an SMS code.",
+    "existsElsewhereTitle": "Driver already exists",
+    "existsElsewhereBody": "Driver \"{{name}}\" is already registered with another company. Move them to your company?",
+    "confirmTransfer": "Yes, move them",
+    "cancelTransfer": "Cancel"
   },
   "forgot": {
     "title": "Password recovery",

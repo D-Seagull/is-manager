@@ -135,7 +135,11 @@
   },
   "drivers": {
     "addDriver": "Naujas vairuotojas",
-    "inviteHint": "Vairuotojas prisijungia telefono numeriu su SMS kodu."
+    "inviteHint": "Vairuotojas prisijungia telefono numeriu su SMS kodu.",
+    "existsElsewhereTitle": "Vairuotojas jau egzistuoja",
+    "existsElsewhereBody": "Vairuotojas „{{name}}“ jau užregistruotas kitoje įmonėje. Perkelti jį į jūsų įmonę?",
+    "confirmTransfer": "Taip, perkelti",
+    "cancelTransfer": "Atšaukti"
   },
   "forgot": {
     "title": "Slaptažodžio atkūrimas",

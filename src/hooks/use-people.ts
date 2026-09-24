@@ -93,10 +93,23 @@ export function useRateDriver(id: string) {
   });
 }
 
+/** Shape of a 409's `response.data.message` when the backend flags a phone
+ *  match against a driver in another company (see users.service.ts). */
+export interface DriverExistsElsewhereConflict {
+  code: 'DRIVER_EXISTS_ELSEWHERE';
+  message: string;
+  driver: { id: string; firstName: string; lastName: string | null };
+}
+
 export function useCreateDriver() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (data: { firstName: string; lastName?: string | null; phone: string }) => {
+    mutationFn: async (data: {
+      firstName: string;
+      lastName?: string | null;
+      phone: string;
+      confirmTransfer?: boolean;
+    }) => {
       const res = await api.post('/users/driver', data);
       return res.data;
     },
