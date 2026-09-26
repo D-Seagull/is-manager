@@ -3,6 +3,12 @@
     "name": "is-manager",
     "slug": "is-manager",
     "version": "1.0.0",
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/dbf59c29-bdcf-4465-9f3c-e4e73effc375"
+    },
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "scheme": "ismanager",

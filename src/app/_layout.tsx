@@ -16,6 +16,7 @@ import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-cont
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { ThemeProvider } from '@/hooks/use-theme';
 import { queryClient } from '@/lib/query';
+import { useOtaUpdates } from '@/lib/updates';
 
 // Tell React Query when the app returns to foreground from background.
 // We track the PREVIOUS state so we only trigger on a real background→active
@@ -47,6 +48,7 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   useAppStateRefetch();
+  useOtaUpdates();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>

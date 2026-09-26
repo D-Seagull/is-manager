@@ -598,5 +598,11 @@
       "dashboard": "Panel",
       "dashboardSub": "Przegląd wszystkich firm"
     }
+  },
+  "update": {
+    "title": "Dostępna aktualizacja",
+    "body": "Pobrano nową wersję aplikacji. Uruchomić ponownie teraz, aby ją zastosować?",
+    "later": "Później",
+    "restart": "Uruchom ponownie"
   }
 }

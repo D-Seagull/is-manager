@@ -595,5 +595,11 @@
       "dashboard": "Dashboard",
       "dashboardSub": "Überblick über alle Unternehmen"
     }
+  },
+  "update": {
+    "title": "Update verfügbar",
+    "body": "Eine neue Version der App wurde heruntergeladen. Jetzt neu starten, um sie anzuwenden?",
+    "later": "Später",
+    "restart": "Neu starten"
   }
 }

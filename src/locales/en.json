@@ -595,5 +595,11 @@
       "dashboard": "Dashboard",
       "dashboardSub": "Overview across all companies"
     }
+  },
+  "update": {
+    "title": "Update available",
+    "body": "A new version of the app has been downloaded. Restart now to apply it?",
+    "later": "Later",
+    "restart": "Restart"
   }
 }

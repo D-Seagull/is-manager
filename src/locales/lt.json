@@ -598,5 +598,11 @@
       "dashboard": "Skydelis",
       "dashboardSub": "Visų įmonių apžvalga"
     }
+  },
+  "update": {
+    "title": "Yra atnaujinimas",
+    "body": "Atsisiųsta nauja programėlės versija. Paleisti iš naujo dabar, kad ji būtų pritaikyta?",
+    "later": "Vėliau",
+    "restart": "Paleisti iš naujo"
   }
 }
