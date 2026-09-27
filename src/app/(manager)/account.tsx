@@ -94,6 +94,14 @@ export default function AccountScreen() {
     { key: 'dark', labelKey: 'settings.theme.dark', fallback: 'Темна', icon: 'moon-outline' },
   ];
 
+  // Keep the picker label in step when the language is switched from another
+  // device (profileUpdated → followServerUiLocale) while this screen is open.
+  useEffect(() => {
+    const onLang = (lng: string) => setUiLocale(lng.toUpperCase() as UILocale);
+    i18n.on('languageChanged', onLang);
+    return () => i18n.off('languageChanged', onLang);
+  }, [i18n]);
+
   useEffect(() => {
     if (!user) return;
     setFirstName(user.firstName ?? '');

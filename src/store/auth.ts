@@ -16,6 +16,7 @@ import {
   refreshTokens,
   revokeRefreshToken,
 } from '@/lib/auth-api';
+import { followServerUiLocale } from '@/lib/i18n';
 import {
   configureSocketAuth,
   disconnectSocket,
@@ -172,6 +173,7 @@ export const useAuthStore = create<AuthState>()(
           get().logout();
           throw new Error('MANAGER_ONLY');
         }
+        void followServerUiLocale(finalUser.uiLocale);
         // Open the socket connection now that we have a token.
         getSocket(get().token ?? undefined);
       },
@@ -192,6 +194,8 @@ export const useAuthStore = create<AuthState>()(
             return;
           }
           set({ user, isLoading: false });
+          // Мову могли змінити на іншому пристрої, поки застосунок був закритий.
+          void followServerUiLocale(user.uiLocale);
         } catch {
           set({ user: null, token: null, refreshToken: null, isLoading: false });
         }

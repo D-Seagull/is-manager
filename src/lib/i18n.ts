@@ -82,4 +82,27 @@ export function setAppLanguage(lang?: AppLanguage | string | null) {
   void AsyncStorage.setItem(EXPLICIT_KEY, '1');
 }
 
+// Last server `uiLocale` this device has seen. A different value later means
+// the same person switched language on another device (web, desktop, another
+// phone), so we follow it. The first sighting only records a baseline — the
+// server's UK default never overrides the phone locale of someone who has
+// never picked a language.
+const SERVER_KEY = 'server_ui_locale';
+
+/**
+ * Follow a UI-language change made elsewhere. `force` = the caller knows the
+ * value was just changed (live `profileUpdated` event with `uiLocale` in
+ * `changed`); otherwise we compare with the last server value we saw, which
+ * catches switches made while this app was closed.
+ */
+export async function followServerUiLocale(
+  uiLocale?: string | null,
+  force = false,
+) {
+  if (!uiLocale) return;
+  const seen = await AsyncStorage.getItem(SERVER_KEY).catch(() => null);
+  void AsyncStorage.setItem(SERVER_KEY, uiLocale).catch(() => {});
+  if (force || (seen !== null && seen !== uiLocale)) setAppLanguage(uiLocale);
+}
+
 export default i18n;
