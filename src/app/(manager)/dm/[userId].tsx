@@ -54,6 +54,7 @@ import {
   useLoadOlderDirectMessages,
   type DirectMessage,
 } from '@/hooks/use-direct-messages';
+import { useChatTyping } from '@/hooks/use-chat-typing';
 import { useReactionsSocketSync } from '@/hooks/use-message-reactions';
 import { EDIT_WINDOW_MS } from '@/lib/constants';
 import { formatDate, formatTime } from '@/lib/format-date';
@@ -120,6 +121,7 @@ export default function DmScreen() {
   useChatEvents({ dmOtherUserId: peerId, myUserId: myId });
   useReactionsSocketSync({ dmOtherUserId: peerId });
   useConversationDocsSocketSync(peerId);
+  const typing = useChatTyping(peerId ? { kind: 'dm', peerId } : null);
 
   // Mark-as-read fires only on conversation open (peer change). Subsequent
   // unread bumps from inbound messages are caught by the socket handler
@@ -302,6 +304,7 @@ export default function DmScreen() {
 
     const replyMsgId = replyingTo?.targetType === 'msg' ? replyingTo.id : null;
     const replyDocId = replyingTo?.targetType === 'doc' ? replyingTo.id : null;
+    typing.notifyStopTyping();
     getSocket().emit('send_direct_message', {
       receiverId: peerId,
       content: trimmed,
@@ -460,6 +463,13 @@ export default function DmScreen() {
         />
       )}
 
+      {/* Typing indicator — same line as the trip chat. */}
+      {typing.typers.size > 0 && (
+        <Text style={[styles.typing, { color: c.mutedForeground }]} numberOfLines={1}>
+          {t('chat.typing', { defaultValue: '{{name}} друкує…', name: peerName })}
+        </Text>
+      )}
+
       {/* Composer */}
       {me?.company?.isActive === false ? (
         <View
@@ -520,7 +530,11 @@ export default function DmScreen() {
         </Pressable>
         <TextInput
           value={text}
-          onChangeText={setText}
+          onChangeText={(v) => {
+            setText(v);
+            if (!editing) typing.notifyTyping();
+          }}
+          onBlur={typing.notifyStopTyping}
           placeholder={editing ? t('chat.editPlaceholder') : t('chat.messagePlaceholder')}
           placeholderTextColor={c.mutedForeground}
           style={[styles.input, { color: c.foreground, backgroundColor: c.muted }]}
@@ -1262,6 +1276,7 @@ const styles = StyleSheet.create({
   bannerClose: { padding: 4 },
 
   // Composer
+  typing: { fontSize: 11, paddingHorizontal: Spacing.md, paddingBottom: 2 },
   composer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
