@@ -3,6 +3,7 @@ import { Redirect, Stack } from 'expo-router';
 import { PushNoticeOverlay } from '@/components/push-notice-overlay';
 import { useBugReportsSocketSync, useOnlineUsersSocketSync } from '@/hooks/use-admin';
 import { useAppStatePresence } from '@/hooks/use-app-state-presence';
+import { useAutoOnline } from '@/hooks/use-auto-online';
 import { useChatAlerts } from '@/hooks/use-chat-alerts';
 import { useDmUnreadSync } from '@/hooks/use-direct-messages';
 import { useGroupUnreadSync } from '@/hooks/use-groups';
@@ -25,6 +26,8 @@ export default function ManagerLayout() {
   useChatAlerts();
   usePresenceSync();
   useUserStatusSync();
+  // Lift a desk-set AWAY back to ONLINE while this app is in use.
+  useAutoOnline();
   useFleetSync();
   useAppStatePresence();
   useTripUnreadSync();
