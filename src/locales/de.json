@@ -172,6 +172,7 @@
     "noManager": "Kein Manager"
   },
   "login": {
+    "rememberMe": "Angemeldet bleiben",
     "title": "IS Fleet · Manager",
     "subtitle": "Melden Sie sich bei Ihrem Konto an",
     "email": "E-Mail",

@@ -2,8 +2,15 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 import { getSocket } from '@/lib/socket';
-import { UserStatus } from '@/lib/auth-api';
+import { AuthUser, UserStatus } from '@/lib/auth-api';
+import { followServerUiLocale } from '@/lib/i18n';
 import { useAuthStore } from '@/store/auth';
+
+interface ProfileUpdatedEvent {
+  user: Partial<AuthUser> & { id: string };
+  /** Поля, які змінились — напр. ["firstName"], ["uiLocale", "language"]. */
+  changed: string[];
+}
 
 interface UserStatusEvent {
   userId: string;
@@ -124,11 +131,25 @@ export function useUserStatusSync() {
       }
     };
 
+    // `profileUpdated` (бекенд шле в мою `userId` кімнату після будь-якої зміни
+    // мого профілю — з вебу, десктопа чи іншого телефона): вливаємо у стор, щоб
+    // ім'я / аватар / телефон оновились одразу, і підхоплюємо зміну мови.
+    const onProfile = (evt: ProfileUpdatedEvent) => {
+      const current = useAuthStore.getState().user;
+      if (!current || evt.user.id !== current.id) return;
+      setUser({ ...current, ...evt.user });
+      if (evt.changed.includes('uiLocale')) {
+        void followServerUiLocale(evt.user.uiLocale, true);
+      }
+    };
+
     socket.on('userStatusChanged', onChange);
     socket.on('companyStatusChanged', onCompanyChange);
+    socket.on('profileUpdated', onProfile);
     return () => {
       socket.off('userStatusChanged', onChange);
       socket.off('companyStatusChanged', onCompanyChange);
+      socket.off('profileUpdated', onProfile);
     };
   }, [queryClient, setUser, myId]);
 }

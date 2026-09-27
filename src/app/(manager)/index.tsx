@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatAvatar } from '@/components/chat-avatar';
@@ -234,7 +234,12 @@ function ManagerCard({ insetsBottom }: { insetsBottom: number }) {
         {
           backgroundColor: c.card,
           borderTopColor: c.border,
-          paddingBottom: Math.max(insetsBottom, Spacing.md),
+          // Android: inset + gap, or the card sits flush on the nav bar.
+          // iOS: the home-indicator inset already leaves enough room.
+          paddingBottom:
+            Platform.OS === 'android'
+              ? insetsBottom + Spacing.md
+              : Math.max(insetsBottom, Spacing.md),
         },
       ]}
     >

@@ -1,6 +1,8 @@
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AxiosError } from 'axios';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
@@ -19,6 +21,11 @@ import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@/store/auth';
 
+// Remembered login email. '' = user unticked "remember me"; null = first launch.
+// The session itself already survives restarts (refresh token in SecureStore),
+// so on mobile "remember me" means prefilling the email after a logout.
+const REMEMBER_KEY = 'login_remember_email';
+
 export default function LoginScreen() {
   const scheme = useColorScheme() ?? 'light';
   const c = Colors[scheme];
@@ -30,6 +37,17 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [remember, setRemember] = useState(true);
+
+  useEffect(() => {
+    AsyncStorage.getItem(REMEMBER_KEY)
+      .then((saved) => {
+        if (saved === null) return; // first launch — keep the default (on)
+        setRemember(saved !== '');
+        if (saved) setEmail(saved);
+      })
+      .catch(() => {});
+  }, []);
 
   const canSubmit = email.trim().length > 0 && password.length > 0 && !submitting;
 
@@ -39,6 +57,7 @@ export default function LoginScreen() {
     setSubmitting(true);
     try {
       await login(email.trim(), password);
+      void AsyncStorage.setItem(REMEMBER_KEY, remember ? email.trim() : '').catch(() => {});
       router.replace('/(manager)' as never);
     } catch (err) {
       if (err instanceof Error && err.message === 'MANAGER_ONLY') {
@@ -126,6 +145,24 @@ export default function LoginScreen() {
               />
             </View>
 
+            <Pressable
+              onPress={() => setRemember((v) => !v)}
+              disabled={submitting}
+              hitSlop={6}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: remember }}
+              style={styles.rememberRow}
+            >
+              <Ionicons
+                name={remember ? 'checkbox' : 'square-outline'}
+                size={22}
+                color={remember ? c.primary : c.mutedForeground}
+              />
+              <Text style={[styles.rememberText, { color: c.foreground }]}>
+                {t('login.rememberMe', "Запам'ятати мене")}
+              </Text>
+            </Pressable>
+
             {error ? (
               <Text style={[styles.error, { color: c.destructive }]}>{error}</Text>
             ) : null}
@@ -184,6 +221,13 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     fontSize: 16,
   },
+  rememberRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    alignSelf: 'flex-start',
+  },
+  rememberText: { fontSize: 14 },
   error: { fontSize: 14, textAlign: 'center' },
   button: {
     borderRadius: Radius.lg,

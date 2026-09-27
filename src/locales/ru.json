@@ -174,6 +174,7 @@
     "noManager": "Без менеджера"
   },
   "login": {
+    "rememberMe": "Запомнить меня",
     "title": "IS Fleet · Менеджер",
     "subtitle": "Войдите в свой аккаунт",
     "email": "Email",
