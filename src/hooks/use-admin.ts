@@ -79,6 +79,8 @@ export interface AdminCompanyUser {
   statusUntil: string | null;
   avatar: string | null;
   createdAt: string;
+  /** True when the user has a live socket right now (real presence). */
+  isOnline: boolean;
 }
 
 export interface AdminCompanyDetail {
@@ -174,6 +176,33 @@ export function useOnlineUsers(enabled = true) {
  * (`adminPresenceChanged`, emitted to the `admins` room). Mount once in the
  * manager layout so the dashboard list stays live. Admin-only.
  */
+/**
+ * Patch an open company-detail cache in place so a user's dot flips the instant
+ * the presence event lands — no expensive `/admin/companies/:id` refetch (that
+ * round-trip is what made the status lag). Also recomputes the online counts.
+ */
+function patchCompanyPresence(
+  old: AdminCompanyDetail | undefined,
+  userId: string,
+  online: boolean,
+): AdminCompanyDetail | undefined {
+  if (!old?.users?.some((u) => u.id === userId && u.isOnline !== online)) {
+    return old;
+  }
+  const users = old.users.map((u) =>
+    u.id === userId ? { ...u, isOnline: online } : u,
+  );
+  const drivers = users.filter((u) => u.role === 'DRIVER' && u.isOnline).length;
+  const managers = users.filter(
+    (u) => (u.role === 'MANAGER' || u.role === 'TEAMLEAD') && u.isOnline,
+  ).length;
+  return {
+    ...old,
+    users,
+    counts: { ...old.counts, onlineNow: { drivers, managers } },
+  };
+}
+
 export function useOnlineUsersSocketSync() {
   const qc = useQueryClient();
   const token = useAuthStore((s) => s.token);
@@ -181,9 +210,18 @@ export function useOnlineUsersSocketSync() {
   useEffect(() => {
     if (!token || role !== 'ADMIN') return;
     const socket = getSocket();
-    const onChange = () => {
+    const onChange = (payload?: { userId?: string; online?: boolean }) => {
+      // Fast path: patch the open company detail directly from the event so the
+      // dot flips instantly instead of waiting on a heavy refetch.
+      if (payload?.userId && typeof payload.online === 'boolean') {
+        qc.setQueriesData<AdminCompanyDetail>(
+          { queryKey: ['admin', 'company'] },
+          (old) => patchCompanyPresence(old, payload.userId!, payload.online!),
+        );
+      }
+      // The online list needs full user rows on connect, and the KPI a recount —
+      // these endpoints are light, so refetch them.
       void qc.invalidateQueries({ queryKey: ONLINE_USERS_KEY });
-      // Keep the dashboard's "Online" KPI (from /admin/stats) live too.
       void qc.invalidateQueries({ queryKey: ['admin', 'stats'] });
     };
     socket.on('adminPresenceChanged', onChange);
