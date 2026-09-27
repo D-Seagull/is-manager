@@ -247,7 +247,7 @@ function CreateModal({ kind, visible, onClose }: { kind: 'driver' | 'manager'; v
           )}
           <Input label={t('settings.name.first', "Ім'я")} value={firstName} onChangeText={setFirstName} c={c} />
           <Input label={t('settings.name.last', 'Прізвище')} value={lastName} onChangeText={setLastName} c={c} />
-          <Input label={t('login.phone', 'Телефон')} value={phone} onChangeText={setPhone} c={c} keyboardType="phone-pad" placeholder="+380…" />
+          <Input label={t('login.phone', 'Телефон')} value={phone} onChangeText={setPhone} c={c} keyboardType="phone-pad" placeholder="+48…" />
           {kind === 'manager' ? (
             <Text style={{ fontSize: 12, color: c.mutedForeground }}>{t('managers.inviteHint', 'Менеджер отримає лист із паролем на вказаний email.')}</Text>
           ) : (
