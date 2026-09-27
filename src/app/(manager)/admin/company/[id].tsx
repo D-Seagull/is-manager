@@ -443,7 +443,7 @@ function UsersCard({
         </Text>
       ) : (
         users.map((u, i) => {
-          const status = resolveDisplayStatus(u, u.status === 'ONLINE');
+          const status = resolveDisplayStatus(u, u.isOnline);
           return (
             <View
               key={u.id}
