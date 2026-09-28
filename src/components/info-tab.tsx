@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useCompanyUsers } from '@/hooks/use-company-users';
 import {
   MyTruck,
@@ -32,6 +33,7 @@ import { useUser } from '@/store/auth';
 export function InfoTab({ truck, activeTripId }: { truck: MyTruck; activeTripId?: string | null }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
+  const listPad = useListBottomPadding();
   const user = useUser();
 
   const { data: companyUsers = [] } = useCompanyUsers();
@@ -74,7 +76,7 @@ export function InfoTab({ truck, activeTripId }: { truck: MyTruck; activeTripId?
   const managerName = fullName(truck.manager) || t('info.noManager', 'Без менеджера');
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: c.background }} contentContainerStyle={{ padding: Spacing.md, gap: Spacing.md }} keyboardShouldPersistTaps="handled">
+    <ScrollView style={{ flex: 1, backgroundColor: c.background }} contentContainerStyle={{ padding: Spacing.md, gap: Spacing.md, paddingBottom: listPad }} keyboardShouldPersistTaps="handled">
       {/* Assignments */}
       <View style={[styles.card, { backgroundColor: c.card, borderColor: c.border }]}>
         <Row label={t('info.driver', 'Водій')} c={c}>

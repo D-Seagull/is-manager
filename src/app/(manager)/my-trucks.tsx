@@ -10,6 +10,7 @@ import { SectionHeader } from '@/components/section-header';
 import { TruckCard } from '@/components/truck-card';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useMyTrucks } from '@/hooks/use-my-trucks';
 import { useTripUnread } from '@/hooks/use-notifications';
 
@@ -19,6 +20,8 @@ export default function MyTrucksScreen() {
   const { data: trucks, isLoading, refetch } = useMyTrucks();
   const { data: tripUnread } = useTripUnread();
   const [broadcastOpen, setBroadcastOpen] = useState(false);
+
+  const listPad = useListBottomPadding();
 
   const isFocused = useIsFocused();
   useEffect(() => {
@@ -66,7 +69,7 @@ export default function MyTrucksScreen() {
         <FlatList
           data={sortedTrucks}
           keyExtractor={(tr) => tr.id}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={[styles.list, { paddingBottom: listPad }]}
           renderItem={({ item }) => <TruckCard truck={item} />}
         />
       )}

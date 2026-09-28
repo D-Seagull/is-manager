@@ -11,6 +11,7 @@ import { NotificationsBell } from '@/components/notifications-bell';
 import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { PersonDetail, useRateDriver, useSetUserActive, useUserDetail, useUserRatings } from '@/hooks/use-people';
 import { fullName } from '@/lib/format';
 import { useUser } from '@/store/auth';
@@ -18,6 +19,7 @@ import { useUser } from '@/store/auth';
 export default function PersonScreen() {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
+  const listPad = useListBottomPadding();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: person, isLoading } = useUserDetail(id);
@@ -54,7 +56,7 @@ export default function PersonScreen() {
       {isLoading || !person ? (
         <View style={styles.center}><ActivityIndicator color={c.primary} /></View>
       ) : (
-        <ScrollView contentContainerStyle={{ padding: Spacing.md, gap: Spacing.md }}>
+        <ScrollView contentContainerStyle={{ padding: Spacing.md, gap: Spacing.md, paddingBottom: listPad }}>
           {/* Profile */}
           <View style={[styles.card, styles.profile, { backgroundColor: c.card, borderColor: c.border }]}>
             <View>

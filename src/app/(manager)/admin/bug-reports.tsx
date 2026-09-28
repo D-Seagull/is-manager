@@ -17,6 +17,7 @@ import { ChatAvatar } from '@/components/chat-avatar';
 import { SectionHeader } from '@/components/section-header';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import {
   useBugReports,
   useUpdateBugStatus,
@@ -37,6 +38,7 @@ const ROLE_COLOR: Record<string, string> = {
 
 export default function AdminBugReportsScreen() {
   const c = Colors[useColorScheme() ?? 'light'];
+  const listPad = useListBottomPadding();
   const { t } = useTranslation();
   const [filter, setFilter] = useState<Filter>('NEW');
   const status = filter === 'all' ? undefined : filter;
@@ -90,7 +92,7 @@ export default function AdminBugReportsScreen() {
         <FlatList
           data={reports}
           keyExtractor={(r) => r.id}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={[styles.list, { paddingBottom: listPad }]}
           renderItem={({ item }) => <ReportCard report={item} onOpenImage={setLightbox} />}
         />
       )}
