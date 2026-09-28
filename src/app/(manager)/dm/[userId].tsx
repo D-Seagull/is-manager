@@ -38,6 +38,7 @@ import { MessageQuote } from '@/components/message-quote';
 import { MessageReactionsCluster } from '@/components/message-reactions';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useComposerBottomPadding } from '@/hooks/use-composer-bottom-padding';
 import { useChatEvents } from '@/hooks/use-chat-events';
 import {
   useConversationDocuments,
@@ -81,6 +82,8 @@ export default function DmScreen() {
   const scheme = useColorScheme() ?? 'light';
   const c = Colors[scheme];
   const insets = useSafeAreaInsets();
+  // Safe-area pad when the keyboard is closed, small gap when it's open.
+  const composerPad = useComposerBottomPadding();
   const { userId: peerId } = useLocalSearchParams<{ userId: string }>();
   const me = useUser();
   const myId = me?.id ?? '';
@@ -478,7 +481,7 @@ export default function DmScreen() {
             {
               backgroundColor: c.card,
               borderTopColor: c.border,
-              paddingBottom: Math.max(insets.bottom, Spacing.sm),
+              paddingBottom: composerPad,
               justifyContent: 'center',
             },
           ]}
@@ -494,7 +497,7 @@ export default function DmScreen() {
           {
             backgroundColor: c.card,
             borderTopColor: c.border,
-            paddingBottom: Math.max(insets.bottom, Spacing.sm),
+            paddingBottom: composerPad,
           },
         ]}
       >
@@ -1232,6 +1235,9 @@ const styles = StyleSheet.create({
   barWrapOwn: { alignItems: 'flex-end' },
 
   bubble: {
+    // Shrink next to the reaction trigger — maxWidth '100%' alone lets a long
+    // message push the row past the screen edge.
+    flexShrink: 1,
     borderRadius: Radius.lg,
     paddingHorizontal: 12,
     paddingVertical: 8,

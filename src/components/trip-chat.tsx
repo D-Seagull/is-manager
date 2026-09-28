@@ -32,6 +32,7 @@ import { ScreenPlaceholder } from '@/components/screen-placeholder';
 import { TripHeader } from '@/components/trip-header';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useComposerBottomPadding } from '@/hooks/use-composer-bottom-padding';
 import { ChatArchiveModal } from '@/components/chat-archive-modal';
 import { useTripDocuments, useUploadDocuments } from '@/hooks/use-documents';
 import { useTripChatArchive } from '@/hooks/use-trip-archive';
@@ -60,6 +61,8 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
+  // Safe-area pad when the keyboard is closed, small gap when it's open.
+  const composerPad = useComposerBottomPadding();
   const me = useUser();
   const myId = me?.id ?? '';
 
@@ -294,21 +297,21 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
       )}
 
       {trip && me?.company?.isActive === false ? (
-        <View style={[styles.inactiveBar, { paddingBottom: Math.max(insets.bottom, Spacing.sm), borderTopColor: c.border }]}>
+        <View style={[styles.inactiveBar, { paddingBottom: composerPad, borderTopColor: c.border }]}>
           <Ionicons name="lock-closed-outline" size={15} color={c.mutedForeground} />
           <Text style={{ color: c.mutedForeground, fontSize: 13, flex: 1 }}>
             {t('tripChat.companyDeactivated', 'На жаль, зараз ви не можете використовувати застосунок у повному обсязі')}
           </Text>
         </View>
       ) : trip && !isActiveParticipant ? (
-        <View style={[styles.inactiveBar, { paddingBottom: Math.max(insets.bottom, Spacing.sm), borderTopColor: c.border }]}>
+        <View style={[styles.inactiveBar, { paddingBottom: composerPad, borderTopColor: c.border }]}>
           <Ionicons name="lock-closed-outline" size={15} color={c.mutedForeground} />
           <Text style={{ color: c.mutedForeground, fontSize: 13, flex: 1 }}>
             {t('tripChat.inactive', 'Ви більше не менеджер цього рейсу — чат лише для перегляду')}
           </Text>
         </View>
       ) : (
-        <View style={[styles.composer, { paddingBottom: Math.max(insets.bottom, Spacing.sm) }]}>
+        <View style={[styles.composer, { paddingBottom: composerPad }]}>
           {!editing && (
             <Pressable onPress={showAttachSheet} disabled={uploadDocs.isPending} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed || uploadDocs.isPending ? 0.5 : 1 }]}>
               {uploadDocs.isPending ? <ActivityIndicator size="small" color={c.mutedForeground} /> : <Ionicons name="attach" size={24} color={c.mutedForeground} />}
@@ -617,7 +620,9 @@ const styles = StyleSheet.create({
   // Attachments vary in height; pin the reaction to the bottom edge so the gap
   // reads the same for tall photos and short file cards.
   bubbleRowDoc: { alignItems: 'flex-end' },
-  bubble: { borderRadius: Radius.lg, paddingHorizontal: 12, paddingVertical: 8, maxWidth: '100%' },
+  // flexShrink: shrink next to the reaction trigger — maxWidth '100%' alone lets
+  // a long message push the row past the screen edge.
+  bubble: { flexShrink: 1, borderRadius: Radius.lg, paddingHorizontal: 12, paddingVertical: 8, maxWidth: '100%' },
   bubbleDeleted: { backgroundColor: 'rgba(128,128,128,0.15)', paddingHorizontal: 10, paddingVertical: 4 },
   bubbleText: { lineHeight: 18 },
   meta: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 4, marginTop: 2 },
