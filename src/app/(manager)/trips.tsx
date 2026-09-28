@@ -13,6 +13,7 @@ import { StatusDot } from '@/components/status-dot';
 import { TRIP_STATUS_COLORS } from '@/constants/trip-status';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useTripDocuments } from '@/hooks/use-documents';
 import { useDeleteTrip, useTrips } from '@/hooks/use-trips';
 import { fullName } from '@/lib/format';
@@ -30,6 +31,7 @@ const fmtDate = (iso: string) => {
 
 export default function TripsScreen() {
   const c = Colors[useColorScheme() ?? 'light'];
+  const listPad = useListBottomPadding();
   const { t } = useTranslation();
   const { data: trips, isLoading, refetch } = useTrips();
   const [search, setSearch] = useState('');
@@ -92,7 +94,7 @@ export default function TripsScreen() {
         <FlatList
           data={list}
           keyExtractor={(tr) => tr.id}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={[styles.listContent, { paddingBottom: listPad }]}
           renderItem={({ item }) => <TripRow trip={item} c={c} t={t} />}
           ItemSeparatorComponent={() => <View style={{ height: Spacing.sm }} />}
         />

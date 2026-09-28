@@ -16,6 +16,7 @@ import {
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import {
   Alarm,
   AlarmRecurrence,
@@ -42,6 +43,7 @@ const offsetDate = (min: number) => {
 export function AlarmTab({ truck, activeTripId }: { truck: MyTruck; activeTripId?: string | null }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
+  const listPad = useListBottomPadding();
   const user = useUser();
 
   const { data: alarms = [], isLoading } = useAlarmsByTruck(truck.id);
@@ -153,7 +155,7 @@ export function AlarmTab({ truck, activeTripId }: { truck: MyTruck; activeTripId
         </Pressable>
       </View>
 
-      <ScrollView contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm }} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm, paddingBottom: listPad }} keyboardShouldPersistTaps="handled">
         {showForm && (
           <View style={[styles.form, { backgroundColor: c.card, borderColor: c.border }]}>
             {/* Target */}

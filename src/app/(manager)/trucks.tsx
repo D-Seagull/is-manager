@@ -8,6 +8,7 @@ import { SectionHeader } from '@/components/section-header';
 import { TruckCard } from '@/components/truck-card';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useTrucks } from '@/hooks/use-my-trucks';
 import { fullName } from '@/lib/format';
 
@@ -16,6 +17,8 @@ export default function TrucksScreen() {
   const { t } = useTranslation();
   const { data: trucks, isLoading, refetch } = useTrucks();
   const [search, setSearch] = useState('');
+
+  const listPad = useListBottomPadding();
 
   const isFocused = useIsFocused();
   useEffect(() => {
@@ -71,7 +74,7 @@ export default function TrucksScreen() {
         <FlatList
           data={list}
           keyExtractor={(tr) => tr.id}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={[styles.list, { paddingBottom: listPad }]}
           renderItem={({ item }) => <TruckCard truck={item} openTab="info" />}
         />
       )}

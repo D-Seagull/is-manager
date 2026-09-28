@@ -13,10 +13,12 @@ import {
 import { SectionHeader } from '@/components/section-header';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useAdminStats } from '@/hooks/use-admin';
 
 export default function AdminDashboardScreen() {
   const c = Colors[useColorScheme() ?? 'light'];
+  const listPad = useListBottomPadding();
   const { t, i18n } = useTranslation();
   const { data, isLoading, isError } = useAdminStats();
 
@@ -24,7 +26,7 @@ export default function AdminDashboardScreen() {
     <View style={{ flex: 1, backgroundColor: c.background }}>
       <SectionHeader title={t('admin.dashboard.title', 'Адмінка')} />
 
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: listPad }]}>
         {isError && (
           <Text style={{ color: c.destructive }}>
             {t('admin.dashboard.errorStats', 'Не вдалося завантажити статистику')}

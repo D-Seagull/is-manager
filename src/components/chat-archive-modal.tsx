@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import {
   ChatArchiveSession,
   SessionEndReason,
@@ -41,6 +42,7 @@ export function ChatArchiveModal({
 }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
+  const listPad = useListBottomPadding();
   const insets = useSafeAreaInsets();
   const [selected, setSelected] = useState<ChatArchiveSession | null>(null);
   const { data: sessions = [], isLoading } = useTripChatArchive(visible ? tripId : null);
@@ -85,7 +87,7 @@ export function ChatArchiveModal({
           <FlatList
             data={sessions}
             keyExtractor={(s) => s.id}
-            contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm }}
+            contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm, paddingBottom: listPad }}
             renderItem={({ item: s }) => (
               <Pressable
                 onPress={() => setSelected(s)}
@@ -130,6 +132,7 @@ function ArchivedMessages({
   t: TFunction;
 }) {
   const { data: messages = [], isLoading } = useArchivedSessionMessages(tripId, sessionId);
+  const listPad = useListBottomPadding();
 
   if (isLoading) return <View style={styles.center}><ActivityIndicator color={c.primary} /></View>;
   if (messages.length === 0)
@@ -139,7 +142,7 @@ function ArchivedMessages({
     <FlatList
       data={messages}
       keyExtractor={(m) => m.id}
-      contentContainerStyle={{ padding: Spacing.md, gap: 6 }}
+      contentContainerStyle={{ padding: Spacing.md, gap: 6, paddingBottom: listPad }}
       renderItem={({ item: m }) => {
         if (m.isSystem) {
           return (

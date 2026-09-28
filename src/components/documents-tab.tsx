@@ -21,6 +21,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useDeleteDocument, useTruckDocuments, useUploadDocuments } from '@/hooks/use-documents';
 import { useTripsByTruck } from '@/hooks/use-trips';
 import { DriverDocument } from '@/lib/documents-api';
@@ -30,6 +31,7 @@ import { formatDate } from '@/lib/format-date';
 export function DocumentsTab({ truckId }: { truckId: string }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
+  const listPad = useListBottomPadding();
 
   const { data: docs = [], isLoading } = useTruckDocuments(truckId);
   const { data: trips = [] } = useTripsByTruck(truckId);
@@ -173,7 +175,7 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
         <FlatList
           data={filtered}
           keyExtractor={(d) => d.id}
-          contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm }}
+          contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm, paddingBottom: listPad }}
           renderItem={({ item }) => (
             <View style={[styles.row, { backgroundColor: c.card, borderColor: c.border }]}>
               <Pressable onPress={() => openDoc(item)} style={styles.rowMain}>
