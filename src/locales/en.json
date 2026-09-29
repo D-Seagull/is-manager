@@ -355,7 +355,7 @@
   },
   "status": {
     "ONLINE": "Online",
-    "BUSY": "Do not disturb",
+    "BUSY": "busy",
     "AWAY": "Away",
     "SLEEP": "Sleeping",
     "VACATION": "On vacation",

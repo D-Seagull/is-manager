@@ -358,7 +358,7 @@
   },
   "status": {
     "ONLINE": "prisijungęs",
-    "BUSY": "netrukdyti",
+    "BUSY": "užimtas",
     "AWAY": "pasitraukęs",
     "SLEEP": "miega",
     "VACATION": "atostogos",

@@ -358,7 +358,7 @@
   },
   "status": {
     "ONLINE": "online",
-    "BUSY": "nie przeszkadzać",
+    "BUSY": "zajęty",
     "AWAY": "poza miejscem",
     "SLEEP": "śpi",
     "VACATION": "urlop",
