@@ -1,6 +1,7 @@
 import { Redirect, Stack } from 'expo-router';
 
 import { PushNoticeOverlay } from '@/components/push-notice-overlay';
+import { TripStatusBanner } from '@/components/trip-status-banner';
 import { useBugReportsSocketSync, useOnlineUsersSocketSync } from '@/hooks/use-admin';
 import { useAppStatePresence } from '@/hooks/use-app-state-presence';
 import { useAutoOnline } from '@/hooks/use-auto-online';
@@ -68,6 +69,7 @@ export default function ManagerLayout() {
         <Stack.Screen name="truck/[truckId]" />
       </Stack>
       <PushNoticeOverlay />
+      <TripStatusBanner />
     </>
   );
 }

@@ -358,7 +358,7 @@
   },
   "status": {
     "ONLINE": "online",
-    "BUSY": "nie przeszkadzać",
+    "BUSY": "zajęty",
     "AWAY": "poza miejscem",
     "SLEEP": "śpi",
     "VACATION": "urlop",
@@ -467,7 +467,8 @@
       "searchPlaceholder": "Szukaj trasy…",
       "sectionActive": "Aktywne",
       "sectionQueued": "W kolejce",
-      "sectionDone": "Zakończone"
+      "sectionDone": "Zakończone",
+      "queuedChatNotice": "Czat tej trasy otworzy się po zakończeniu bieżącej trasy."
     },
     "documents": {
       "allTrips": "Wszystkie trasy ({{count}})",
@@ -605,5 +606,8 @@
     "body": "Pobrano nową wersję aplikacji. Uruchomić ponownie teraz, aby ją zastosować?",
     "later": "Później",
     "restart": "Uruchom ponownie"
+  },
+  "tripNotice": {
+    "notDeparted": "{{name}}: wyjazd niepotwierdzony po 3 przypomnieniach"
   }
 }

@@ -355,7 +355,7 @@
   },
   "status": {
     "ONLINE": "online",
-    "BUSY": "nicht stören",
+    "BUSY": "beschäftigt",
     "AWAY": "abwesend",
     "SLEEP": "schläft",
     "VACATION": "im Urlaub",
@@ -464,7 +464,8 @@
       "searchPlaceholder": "Fahrt suchen…",
       "sectionActive": "Aktiv",
       "sectionQueued": "In Warteschlange",
-      "sectionDone": "Erledigt"
+      "sectionDone": "Erledigt",
+      "queuedChatNotice": "Der Chat dieser Fahrt öffnet sich, sobald die aktuelle Fahrt abgeschlossen ist."
     },
     "documents": {
       "allTrips": "Alle Fahrten ({{count}})",
@@ -602,5 +603,8 @@
     "body": "Eine neue Version der App wurde heruntergeladen. Jetzt neu starten, um sie anzuwenden?",
     "later": "Später",
     "restart": "Neu starten"
+  },
+  "tripNotice": {
+    "notDeparted": "{{name}}: Abfahrt nach 3 Erinnerungen nicht bestätigt"
   }
 }

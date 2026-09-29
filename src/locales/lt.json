@@ -358,7 +358,7 @@
   },
   "status": {
     "ONLINE": "prisijungęs",
-    "BUSY": "netrukdyti",
+    "BUSY": "užimtas",
     "AWAY": "pasitraukęs",
     "SLEEP": "miega",
     "VACATION": "atostogos",
@@ -467,7 +467,8 @@
       "searchPlaceholder": "Ieškoti reiso…",
       "sectionActive": "Aktyvūs",
       "sectionQueued": "Eilėje",
-      "sectionDone": "Atlikti"
+      "sectionDone": "Atlikti",
+      "queuedChatNotice": "Šio reiso pokalbis atsidarys, kai bus baigtas dabartinis reisas."
     },
     "documents": {
       "allTrips": "Visi reisai ({{count}})",
@@ -605,5 +606,8 @@
     "body": "Atsisiųsta nauja programėlės versija. Paleisti iš naujo dabar, kad ji būtų pritaikyta?",
     "later": "Vėliau",
     "restart": "Paleisti iš naujo"
+  },
+  "tripNotice": {
+    "notDeparted": "{{name}}: išvykimas nepatvirtintas po 3 priminimų"
   }
 }
