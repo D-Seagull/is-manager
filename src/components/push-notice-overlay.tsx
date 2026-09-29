@@ -95,6 +95,10 @@ export function PushNoticeOverlay() {
         payload?.type === 'DM_MESSAGE'
       )
         return;
+      // Trip status / "driver hasn't set off" — the colored TripStatusBanner
+      // already shows it from the socket while the app is open.
+      if (payload?.type === 'TRIP_STATUS' || payload?.type === 'TRIP_NOT_DEPARTED')
+        return;
 
       setNotice({ title: title ?? t('push.noticeTitle', 'Сповіщення'), body: body ?? '', data: payload });
     });

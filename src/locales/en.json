@@ -464,7 +464,8 @@
       "searchPlaceholder": "Search trip…",
       "sectionActive": "Active",
       "sectionQueued": "Queued",
-      "sectionDone": "Done"
+      "sectionDone": "Done",
+      "queuedChatNotice": "This trip's chat opens once the current trip is finished."
     },
     "documents": {
       "allTrips": "All trips ({{count}})",
@@ -602,5 +603,8 @@
     "body": "A new version of the app has been downloaded. Restart now to apply it?",
     "later": "Later",
     "restart": "Restart"
+  },
+  "tripNotice": {
+    "notDeparted": "{{name}}: departure not confirmed after 3 reminders"
   }
 }

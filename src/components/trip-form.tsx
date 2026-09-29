@@ -120,6 +120,7 @@ export function TripForm({
   const [stops, setStops] = useState<StopRowData[]>([emptyStop('LOADING'), emptyStop('UNLOADING')]);
   const [driverPickerOpen, setDriverPickerOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
   const [picker, setPicker] = useState<{ idx: number; kind: 'date' | 'start' | 'end' } | null>(null);
   const [typeMenu, setTypeMenu] = useState<{ mode: 'insert' | 'change'; idx: number } | null>(null);
   // назва редагована вручну → не перезаписуємо автоматично з адрес
@@ -201,6 +202,10 @@ export function TripForm({
       Alert.alert(t('truckPanel.newTrip.selectDriver', 'Оберіть водія'));
       return;
     }
+    // `saving` state lands a render later — a quick double tap got through it
+    // and created the trip twice (the driver then had to press OK twice).
+    if (savingRef.current) return;
+    savingRef.current = true;
     setSaving(true);
     try {
       const built = buildStops();
@@ -228,6 +233,7 @@ export function TripForm({
     } catch (e) {
       Alert.alert(t('common.error', 'Помилка'), (e as Error).message);
     } finally {
+      savingRef.current = false;
       setSaving(false);
     }
   };

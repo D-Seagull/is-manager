@@ -15,7 +15,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { StatusDot } from '@/components/status-dot';
-import { TRIP_STATUSES, TRIP_STATUS_COLORS, type TripStatus } from '@/constants/trip-status';
+import { TRIP_STATUSES, TRIP_STATUS_COLORS } from '@/constants/trip-status';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
@@ -23,9 +23,9 @@ import { useTripsByTruck, useUpdateTripStatus, useDeleteTrip } from '@/hooks/use
 import { useUser } from '@/store/auth';
 import { formatDate } from '@/lib/format-date';
 import { fullName } from '@/lib/format';
+import { currentTrip } from '@/lib/trip-order';
 import { Trip } from '@/lib/types';
 
-const IN_PROGRESS: TripStatus[] = ['ON_WAY', 'ON_SITE', 'LOADED'];
 type Variant = 'active' | 'queued' | 'done';
 
 function tripLoadingDate(trip: Trip): string | null {
@@ -57,12 +57,15 @@ export function TripsTab({
         (tr.orderNumber ?? '').toLowerCase().includes(q) ||
         (fullName(tr.driver) || '').toLowerCase().includes(q),
     );
+    // "Current" is decided on the whole list (not the search result), so a
+    // search never promotes a queued trip.
+    const current = currentTrip(trips ?? []);
     const active: Trip[] = [];
     const queued: Trip[] = [];
     const done: Trip[] = [];
     for (const tr of filtered) {
       if (tr.status === 'DELIVERED') done.push(tr);
-      else if (IN_PROGRESS.includes(tr.status)) active.push(tr);
+      else if (tr.id === current?.id) active.push(tr);
       else queued.push(tr);
     }
     return [
@@ -109,7 +112,24 @@ export function TripsTab({
                 <Text style={[styles.sectionCount, { color: c.mutedForeground }]}>{s.list.length}</Text>
               </View>
               {s.list.map((tr) => (
-                <TripRow key={tr.id} trip={tr} truckId={truckId} variant={s.variant} onOpen={() => onOpenTrip(tr.id)} />
+                <TripRow
+                  key={tr.id}
+                  trip={tr}
+                  truckId={truckId}
+                  variant={s.variant}
+                  onOpen={() =>
+                    // A queued trip's chat opens only once it's current.
+                    s.variant === 'queued'
+                      ? Alert.alert(
+                          tr.title,
+                          t(
+                            'truckPanel.trips.queuedChatNotice',
+                            'Чат цього рейсу відкриється, коли поточний рейс буде завершено.',
+                          ),
+                        )
+                      : onOpenTrip(tr.id)
+                  }
+                />
               ))}
             </View>
           ))}
