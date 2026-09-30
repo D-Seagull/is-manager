@@ -467,8 +467,7 @@
       "searchPlaceholder": "Поиск рейса…",
       "sectionActive": "Актуальные",
       "sectionQueued": "В очереди",
-      "sectionDone": "Выполненные",
-      "queuedChatNotice": "Чат этого рейса откроется, когда текущий рейс будет завершён."
+      "sectionDone": "Выполненные"
     },
     "documents": {
       "allTrips": "Все рейсы ({{count}})",

@@ -467,8 +467,7 @@
       "searchPlaceholder": "Szukaj trasy…",
       "sectionActive": "Aktywne",
       "sectionQueued": "W kolejce",
-      "sectionDone": "Zakończone",
-      "queuedChatNotice": "Czat tej trasy otworzy się po zakończeniu bieżącej trasy."
+      "sectionDone": "Zakończone"
     },
     "documents": {
       "allTrips": "Wszystkie trasy ({{count}})",

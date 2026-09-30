@@ -117,18 +117,7 @@ export function TripsTab({
                   trip={tr}
                   truckId={truckId}
                   variant={s.variant}
-                  onOpen={() =>
-                    // A queued trip's chat opens only once it's current.
-                    s.variant === 'queued'
-                      ? Alert.alert(
-                          tr.title,
-                          t(
-                            'truckPanel.trips.queuedChatNotice',
-                            'Чат цього рейсу відкриється, коли поточний рейс буде завершено.',
-                          ),
-                        )
-                      : onOpenTrip(tr.id)
-                  }
+                  onOpen={() => onOpenTrip(tr.id)}
                 />
               ))}
             </View>

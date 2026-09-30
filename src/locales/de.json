@@ -464,8 +464,7 @@
       "searchPlaceholder": "Fahrt suchen…",
       "sectionActive": "Aktiv",
       "sectionQueued": "In Warteschlange",
-      "sectionDone": "Erledigt",
-      "queuedChatNotice": "Der Chat dieser Fahrt öffnet sich, sobald die aktuelle Fahrt abgeschlossen ist."
+      "sectionDone": "Erledigt"
     },
     "documents": {
       "allTrips": "Alle Fahrten ({{count}})",
