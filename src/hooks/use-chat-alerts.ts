@@ -5,12 +5,15 @@ import { getSocket } from '@/lib/socket';
 import { useAuthStore } from '@/store/auth';
 
 /**
- * Global chime + vibration for incoming DM / group messages. Mounted once in
- * the manager layout so it fires on ANY screen — the backend joins every group
- * room on connect, so `new_group_message` reaches us app-wide, and
- * `new_direct_message` already lands in the personal room. Trip chat triggers
- * its own feedback inside `useTripChat`. Sound and vibration each honour their
- * Settings toggle (see `notifyIncomingMessage`).
+ * Global chime + vibration for incoming DM / group / trip-chat messages.
+ * Mounted once in the manager layout so it fires on ANY screen:
+ *  - DM: `new_direct_message` lands in the personal room;
+ *  - groups: the backend joins every member group room on connect (and
+ *    keeps members there when a group screen closes);
+ *  - trip chat: `tripUnreadChanged` reaches the personal room for every
+ *    new trip message — useTripChat no longer chimes, so no double sound.
+ * Sound and vibration each honour their Settings toggle (see
+ * `notifyIncomingMessage`).
  */
 export function useChatAlerts() {
   const token = useAuthStore((s) => s.token);
@@ -23,11 +26,21 @@ export function useChatAlerts() {
       if (msg?.senderId && msg.senderId === myId) return;
       notifyIncomingMessage();
     };
+    // Trip chat: the backend's lightweight `tripUnreadChanged` reaches our
+    // personal room for every new trip message / document, on ANY screen
+    // (the trip room itself only while that chat is open). System signals
+    // carry no senderName — no chime for those.
+    const onTrip = (sig: { senderId?: string; senderName?: string }) => {
+      if (!sig?.senderName || sig.senderId === myId) return;
+      notifyIncomingMessage();
+    };
     socket.on('new_direct_message', onNew);
     socket.on('new_group_message', onNew);
+    socket.on('tripUnreadChanged', onTrip);
     return () => {
       socket.off('new_direct_message', onNew);
       socket.off('new_group_message', onNew);
+      socket.off('tripUnreadChanged', onTrip);
     };
   }, [token, myId]);
 }

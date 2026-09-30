@@ -3,8 +3,8 @@ import type { Trip } from '@/lib/types';
 /**
  * Which open trip of a truck is the one in progress — mirrors the backend's
  * `trip-order.ts`: furthest along first, then the OLDEST within a status
- * (loads are done in the order given). Every other open trip is "queued":
- * its chat stays closed until it becomes current.
+ * (loads are done in the order given). Every other open trip is "queued"
+ * (listed under В черзі; its chat can still be opened).
  */
 const PROGRESS_RANK: Record<string, number> = {
   LOADED: 5,

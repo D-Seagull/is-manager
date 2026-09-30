@@ -464,8 +464,7 @@
       "searchPlaceholder": "Search trip…",
       "sectionActive": "Active",
       "sectionQueued": "Queued",
-      "sectionDone": "Done",
-      "queuedChatNotice": "This trip's chat opens once the current trip is finished."
+      "sectionDone": "Done"
     },
     "documents": {
       "allTrips": "All trips ({{count}})",

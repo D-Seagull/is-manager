@@ -467,8 +467,7 @@
       "searchPlaceholder": "Ieškoti reiso…",
       "sectionActive": "Aktyvūs",
       "sectionQueued": "Eilėje",
-      "sectionDone": "Atlikti",
-      "queuedChatNotice": "Šio reiso pokalbis atsidarys, kai bus baigtas dabartinis reisas."
+      "sectionDone": "Atlikti"
     },
     "documents": {
       "allTrips": "Visi reisai ({{count}})",

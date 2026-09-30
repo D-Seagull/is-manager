@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useIsFocused, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -54,6 +54,9 @@ export default function TruckDetailScreen() {
   const { data: tripUnread } = useTripUnread();
   const chatUnread =
     tripUnread?.items.find((i) => i.truckId === truckId)?.activeTripUnread ?? 0;
+  // The screen stays mounted under anything pushed on top (DM, person card,
+  // another truck) — the chat must not ack messages while hidden.
+  const screenFocused = useIsFocused();
   const [newTripOpen, setNewTripOpen] = useState(false);
   // A trip picked from the Trips tab opens its chat; falls back to the active trip.
   const [selectedTripId, setSelectedTripId] = useState<string | null>(null);
@@ -116,7 +119,7 @@ export default function TruckDetailScreen() {
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={0} style={styles.fill}>
         <View style={styles.content}>
           {tab === 'chat' ? (
-            <TripChat tripId={selectedTripId ?? activeTripId} isFocused={tab === 'chat'} loading={truckLoading} />
+            <TripChat tripId={selectedTripId ?? activeTripId} isFocused={tab === 'chat' && screenFocused} loading={truckLoading} />
           ) : tab === 'trips' ? (
             <TripsTab
               truckId={truckId ?? ''}
