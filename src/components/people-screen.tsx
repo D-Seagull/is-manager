@@ -138,7 +138,7 @@ function PersonRow({ user, kind }: { user: CompanyUser; kind: 'driver' | 'manage
   const subtitle = kind === 'driver'
     ? user.currentTruck?.plate || user.phone || t('nav.driverFallback', 'Водій')
     : user.role === 'TEAMLEAD' ? t('chatDir.teamlead', 'Тімлід') : t('nav.manager', 'Менеджер');
-  // Managers tab: "Менеджер - останній вхід 12:30" after 15+ min away.
+  // Managers tab: "останній вхід 12:30" under the role after 15+ min away.
   const lastSeen = useLastSeenText(kind === 'manager' ? user : null);
 
   return (
@@ -152,7 +152,10 @@ function PersonRow({ user, kind }: { user: CompanyUser; kind: 'driver' | 'manage
       </View>
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text style={[styles.name, { color: c.foreground }]} numberOfLines={1}>{fullName(user) || '—'}</Text>
-        <Text style={[styles.sub, { color: c.mutedForeground }]} numberOfLines={1}>{subtitle}{lastSeen ? ` - ${lastSeen}` : ''}</Text>
+        <Text style={[styles.sub, { color: c.mutedForeground }]} numberOfLines={1}>{subtitle}</Text>
+        {lastSeen ? (
+          <Text style={[styles.lastSeen, { color: c.mutedForeground }]} numberOfLines={1}>{lastSeen}</Text>
+        ) : null}
       </View>
       {kind === 'manager' ? (
         <View style={styles.truckCount}>
@@ -286,6 +289,8 @@ const styles = StyleSheet.create({
   dotWrap: { position: 'absolute', right: -2, bottom: -2 },
   name: { fontSize: 15, fontWeight: '500' },
   sub: { fontSize: 13, marginTop: 2 },
+  // Own small line under the role: "останній вхід 12:30".
+  lastSeen: { fontSize: 11, marginTop: 1 },
   mHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: Spacing.md, paddingBottom: Spacing.sm, borderBottomWidth: StyleSheet.hairlineWidth },
   mTitle: { fontSize: 16, fontWeight: '700' },
   input: { borderWidth: 1, borderRadius: Radius.md, paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm + 2, fontSize: 15 },
