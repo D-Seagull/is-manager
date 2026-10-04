@@ -107,6 +107,10 @@
     "error": "Błąd",
     "file": "Plik",
     "fileDeleted": "Plik usunięty",
+    "album_one": "Album · {{count}} plik",
+    "album_few": "Album · {{count}} pliki",
+    "album_many": "Album · {{count}} plików",
+    "album_other": "Album · {{count}} pliku",
     "messageDeleted": "Wiadomość usunięta",
     "noMatches": "Brak wyników.",
     "reply": "Odpowiedz",
@@ -608,5 +612,14 @@
   },
   "tripNotice": {
     "notDeparted": "{{name}}: wyjazd niepotwierdzony po 3 przypomnieniach"
+  },
+  "gallery": {
+    "save": "Zapisz",
+    "saved": "Zapisano",
+    "share": "Udostępnij",
+    "saveFailed": "Nie udało się zapisać zdjęcia",
+    "shareFailed": "Nie udało się udostępnić zdjęcia",
+    "permissionTitle": "Brak dostępu do galerii",
+    "permissionBody": "Zezwól na zapisywanie zdjęć w ustawieniach telefonu."
   }
 }

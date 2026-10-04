@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
-import * as WebBrowser from 'expo-web-browser';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -20,11 +19,14 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { PhotoGallery } from '@/components/photo-gallery';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useDeleteDocument, useTruckDocuments, useUploadDocuments } from '@/hooks/use-documents';
 import { useTripsByTruck } from '@/hooks/use-trips';
+import { openRemoteFile, readableFileName } from '@/lib/open-file';
 import { DriverDocument } from '@/lib/documents-api';
+import { compressPhotos, PICKER_QUALITY } from '@/lib/compress-photo';
 import { fullName } from '@/lib/format';
 import { formatDate } from '@/lib/format-date';
 
@@ -43,11 +45,14 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
   const [filterOpen, setFilterOpen] = useState(false);
   const [uploadPickOpen, setUploadPickOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [viewerUri, setViewerUri] = useState<string | null>(null);
+  // Index into `galleryPhotos` of the photo open in the gallery, or null.
+  const [galleryIndex, setGalleryIndex] = useState<number | null>(null);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return docs.filter((d) => {
+      // Deleted files (incl. ones gone from storage) can't be opened.
+      if (d.deletedAt || !d.signedUrl) return false;
       if (tripFilter !== 'all' && d.tripId !== tripFilter) return false;
       if (!q) return true;
       return (
@@ -57,6 +62,16 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
       );
     });
   }, [docs, search, tripFilter]);
+
+  // The gallery flips through the photos currently listed (search + trip
+  // filter applied, same order as the list).
+  const galleryPhotos = useMemo(
+    () =>
+      filtered
+        .filter((d) => d.fileType === 'PHOTO')
+        .map((d) => ({ id: d.id, uri: d.signedUrl, thumbUri: d.thumbUrl, fileName: d.fileName })),
+    [filtered],
+  );
 
   const filterLabel =
     tripFilter === 'all'
@@ -72,19 +87,19 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
       if (source === 'camera') {
         const perm = await ImagePicker.requestCameraPermissionsAsync();
         if (!perm.granted) return;
-        const r = await ImagePicker.launchCameraAsync({ quality: 0.8 });
+        const r = await ImagePicker.launchCameraAsync({ quality: PICKER_QUALITY });
         if (r.canceled) return;
-        files = r.assets.map((a) => ({ uri: a.uri, name: a.fileName ?? `photo-${Date.now()}.jpg`, mimeType: a.mimeType ?? 'image/jpeg' }));
+        files = await compressPhotos(r.assets);
       } else if (source === 'gallery') {
         const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!perm.granted) return;
-        const r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsMultipleSelection: true, quality: 0.8 });
+        const r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsMultipleSelection: true, quality: PICKER_QUALITY });
         if (r.canceled) return;
-        files = r.assets.map((a) => ({ uri: a.uri, name: a.fileName ?? `photo-${Date.now()}.jpg`, mimeType: a.mimeType ?? 'image/jpeg' }));
+        files = await compressPhotos(r.assets);
       } else {
         const r = await DocumentPicker.getDocumentAsync({ multiple: true, copyToCacheDirectory: true, type: '*/*' });
         if (r.canceled) return;
-        files = r.assets.map((a) => ({ uri: a.uri, name: a.name, mimeType: a.mimeType ?? 'application/octet-stream' }));
+        files = r.assets.map((a) => ({ uri: a.uri, name: readableFileName(a.name), mimeType: a.mimeType ?? 'application/octet-stream' }));
       }
       if (files.length === 0) return;
       setUploading(true);
@@ -116,11 +131,12 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
 
   const openDoc = async (doc: DriverDocument) => {
     if (doc.fileType === 'PHOTO') {
-      setViewerUri(doc.signedUrl);
+      const i = galleryPhotos.findIndex((p) => p.id === doc.id);
+      if (i >= 0) setGalleryIndex(i);
       return;
     }
     try {
-      await WebBrowser.openBrowserAsync(doc.signedUrl);
+      await openRemoteFile(doc);
     } catch (e) {
       Alert.alert(t('documents.cannotOpen', 'Не вдалося відкрити'), (e as Error).message);
     }
@@ -180,7 +196,7 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
             <View style={[styles.row, { backgroundColor: c.card, borderColor: c.border }]}>
               <Pressable onPress={() => openDoc(item)} style={styles.rowMain}>
                 {item.fileType === 'PHOTO' ? (
-                  <Image source={{ uri: item.signedUrl }} style={styles.thumb} />
+                  <Image source={{ uri: item.thumbUrl || item.signedUrl }} style={styles.thumb} />
                 ) : (
                   <View style={[styles.thumb, styles.fileThumb, { backgroundColor: c.muted }]}>
                     <Ionicons name="document-text-outline" size={22} color={c.mutedForeground} />
@@ -225,7 +241,11 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
       />
 
       {/* Photo viewer */}
-      <PhotoViewer uri={viewerUri} onClose={() => setViewerUri(null)} />
+      <PhotoGallery
+        photos={galleryPhotos}
+        startIndex={galleryIndex}
+        onClose={() => setGalleryIndex(null)}
+      />
     </View>
   );
 }
@@ -260,20 +280,6 @@ function PickerModal({
   );
 }
 
-function PhotoViewer({ uri, onClose }: { uri: string | null; onClose: () => void }) {
-  const insets = useSafeAreaInsets();
-  return (
-    <Modal visible={!!uri} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable style={styles.viewerBackdrop} onPress={onClose}>
-        {uri && <Image source={{ uri }} style={styles.viewerImage} resizeMode="contain" />}
-        <Pressable onPress={onClose} hitSlop={10} style={[styles.viewerClose, { top: insets.top + Spacing.md }]}>
-          <Ionicons name="close" size={30} color="#fff" />
-        </Pressable>
-      </Pressable>
-    </Modal>
-  );
-}
-
 const styles = StyleSheet.create({
   topRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingHorizontal: Spacing.md, paddingTop: Spacing.sm },
   searchBox: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, height: 36, borderRadius: Radius.md, paddingHorizontal: Spacing.md },
@@ -293,7 +299,4 @@ const styles = StyleSheet.create({
   sheet: { borderTopLeftRadius: Radius.lg, borderTopRightRadius: Radius.lg, padding: Spacing.md },
   sheetTitle: { fontSize: 13, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: Spacing.sm, textAlign: 'center' },
   sheetItem: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing.md, paddingVertical: 12, borderRadius: Radius.sm },
-  viewerBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.92)', alignItems: 'center', justifyContent: 'center' },
-  viewerImage: { width: '100%', height: '100%' },
-  viewerClose: { position: 'absolute', right: Spacing.lg },
 });

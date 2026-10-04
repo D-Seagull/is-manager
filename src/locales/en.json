@@ -107,6 +107,8 @@
     "error": "Error",
     "file": "File",
     "fileDeleted": "File deleted",
+    "album_one": "Album · {{count}} file",
+    "album_other": "Album · {{count}} files",
     "messageDeleted": "Message deleted",
     "noMatches": "No matches.",
     "reply": "Reply",
@@ -605,5 +607,14 @@
   },
   "tripNotice": {
     "notDeparted": "{{name}}: departure not confirmed after 3 reminders"
+  },
+  "gallery": {
+    "save": "Save",
+    "saved": "Saved",
+    "share": "Share",
+    "saveFailed": "Couldn't save the photo",
+    "shareFailed": "Couldn't share the photo",
+    "permissionTitle": "No access to the gallery",
+    "permissionBody": "Allow saving photos in the phone's settings."
   }
 }

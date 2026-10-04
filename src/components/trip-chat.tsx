@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
-import * as WebBrowser from 'expo-web-browser';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -31,6 +30,8 @@ import { MessageReactionsCluster } from '@/components/message-reactions';
 import { ScreenPlaceholder } from '@/components/screen-placeholder';
 import { TripHeader } from '@/components/trip-header';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { PhotoGallery } from '@/components/photo-gallery';
+import { AlbumGrid } from '@/components/album-grid';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useComposerBottomPadding } from '@/hooks/use-composer-bottom-padding';
 import { ChatArchiveModal } from '@/components/chat-archive-modal';
@@ -38,6 +39,9 @@ import { useTripDocuments, useUploadDocuments } from '@/hooks/use-documents';
 import { useTripChatArchive } from '@/hooks/use-trip-archive';
 import { useTrip } from '@/hooks/use-trip';
 import { ChatMessage, useTripChat } from '@/hooks/use-trip-chat';
+import { openRemoteFile, readableFileName } from '@/lib/open-file';
+import { albumSizes, groupAlbums } from '@/lib/albums';
+import { compressPhotos, PICKER_QUALITY } from '@/lib/compress-photo';
 import { EDIT_WINDOW_MS } from '@/lib/constants';
 import { DriverDocument } from '@/lib/documents-api';
 import { fullName } from '@/lib/format';
@@ -53,9 +57,12 @@ type ReplyTarget = {
   isDeleted: boolean;
 };
 type EditingState = { id: string; original: string };
+// Files sent in one message (same batchId) are one "album" item: `data` is
+// its first file (position, reactions), `docs` all of them.
 type TimelineItem =
   | { kind: 'msg'; data: ChatMessage; ts: number }
-  | { kind: 'doc'; data: DriverDocument; ts: number };
+  | { kind: 'doc'; data: DriverDocument; ts: number }
+  | { kind: 'album'; data: DriverDocument; docs: DriverDocument[]; ts: number };
 
 export function TripChat({ tripId, isFocused, loading }: { tripId: string | null; isFocused: boolean; loading?: boolean }) {
   const { t } = useTranslation();
@@ -83,7 +90,8 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [replyingTo, setReplyingTo] = useState<ReplyTarget | null>(null);
   const [editing, setEditing] = useState<EditingState | null>(null);
-  const [viewerUri, setViewerUri] = useState<string | null>(null);
+  // Index into `galleryPhotos` of the photo open in the gallery, or null.
+  const [galleryIndex, setGalleryIndex] = useState<number | null>(null);
   const [sheetFor, setSheetFor] = useState<ChatMessage | null>(null);
   const [cardUserId, setCardUserId] = useState<string | null>(null);
   const [docSheetFor, setDocSheetFor] = useState<DriverDocument | null>(null);
@@ -91,24 +99,64 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
   const data = useMemo<TimelineItem[]>(() => {
     const items: TimelineItem[] = [
       ...chat.messages.map((m) => ({ kind: 'msg' as const, data: m, ts: new Date(m.createdAt).getTime() })),
-      ...documents.map((d) => ({ kind: 'doc' as const, data: d, ts: new Date(d.createdAt).getTime() })),
+      ...groupAlbums(documents).map((g): TimelineItem => {
+        const ts = new Date(g[0].createdAt).getTime();
+        return g.length > 1
+          ? { kind: 'album', data: g[0], docs: g, ts }
+          : { kind: 'doc', data: g[0], ts };
+      }),
     ];
     return items.sort((a, b) => b.ts - a.ts);
   }, [chat.messages, documents]);
 
+  // A quoted file that belongs to an album reads "Album · N files".
+  const albumSize = useMemo(() => albumSizes(documents), [documents]);
+  const docLabel = useCallback(
+    (d: { fileName: string; batchId?: string | null }) => {
+      const count = d.batchId ? albumSize.get(d.batchId) : undefined;
+      return count ? t('common.album', { count }) : d.fileName;
+    },
+    [albumSize, t],
+  );
+
+  // Every photo of this trip, oldest first — the gallery flips through all
+  // of them, starting at the one tapped.
+  const galleryPhotos = useMemo(
+    () =>
+      documents
+        .filter((d) => d.fileType === 'PHOTO' && !d.deletedAt && d.signedUrl)
+        // id breaks ties so an album flips in the same order as its grid.
+        .sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime() ||
+            a.id.localeCompare(b.id),
+        )
+        .map((d) => ({ id: d.id, uri: d.signedUrl, thumbUri: d.thumbUrl, fileName: d.fileName })),
+    [documents],
+  );
+
   const openDoc = useCallback(
     async (doc: DriverDocument) => {
       if (doc.fileType === 'PHOTO') {
-        setViewerUri(doc.signedUrl);
+        const i = galleryPhotos.findIndex((p) => p.id === doc.id);
+        if (i < 0) return;
+        if (docsOpen) {
+          // From the documents sheet: iOS won't show a Modal while another
+          // one is still closing — close it, then open.
+          setDocsOpen(false);
+          setTimeout(() => setGalleryIndex(i), 400);
+        } else {
+          setGalleryIndex(i);
+        }
         return;
       }
       try {
-        await WebBrowser.openBrowserAsync(doc.signedUrl);
+        await openRemoteFile(doc);
       } catch (e) {
         Alert.alert(t('documents.cannotOpen', 'Не вдалося відкрити'), (e as Error).message);
       }
     },
-    [t],
+    [t, galleryPhotos, docsOpen],
   );
 
   // Stable per-list callbacks so the memoized bubbles below don't re-render on
@@ -141,19 +189,19 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
       if (source === 'camera') {
         const perm = await ImagePicker.requestCameraPermissionsAsync();
         if (!perm.granted) return;
-        const r = await ImagePicker.launchCameraAsync({ quality: 0.8 });
+        const r = await ImagePicker.launchCameraAsync({ quality: PICKER_QUALITY });
         if (r.canceled) return;
-        files = r.assets.map((a) => ({ uri: a.uri, name: a.fileName ?? `photo-${Date.now()}.jpg`, mimeType: a.mimeType ?? 'image/jpeg' }));
+        files = await compressPhotos(r.assets);
       } else if (source === 'gallery') {
         const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!perm.granted) return;
-        const r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsMultipleSelection: true, quality: 0.8 });
+        const r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsMultipleSelection: true, quality: PICKER_QUALITY });
         if (r.canceled) return;
-        files = r.assets.map((a) => ({ uri: a.uri, name: a.fileName ?? `photo-${Date.now()}.jpg`, mimeType: a.mimeType ?? 'image/jpeg' }));
+        files = await compressPhotos(r.assets);
       } else {
         const r = await DocumentPicker.getDocumentAsync({ multiple: true, copyToCacheDirectory: true, type: '*/*' });
         if (r.canceled) return;
-        files = r.assets.map((a) => ({ uri: a.uri, name: a.name, mimeType: a.mimeType ?? 'application/octet-stream' }));
+        files = r.assets.map((a) => ({ uri: a.uri, name: readableFileName(a.name), mimeType: a.mimeType ?? 'application/octet-stream' }));
       }
       if (files.length === 0) return;
       await uploadDocs.mutateAsync({ tripId, files });
@@ -213,7 +261,7 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
         <View style={{ flex: 1 }} />
         <Pressable onPress={() => setDocsOpen(true)} hitSlop={6} style={({ pressed }) => [styles.folderBtn, { opacity: pressed ? 0.6 : 1 }]}>
           <Ionicons name="folder-outline" size={16} color={c.mutedForeground} />
-          <Text style={[styles.chatLabelText, { color: c.mutedForeground }]}>{documents.length}</Text>
+          <Text style={[styles.chatLabelText, { color: c.mutedForeground }]}>{documents.filter((d) => !d.deletedAt && d.signedUrl).length}</Text>
         </Pressable>
       </View>
 
@@ -264,6 +312,15 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
                 myId={myId}
                 onLongPress={handleMsgLongPress}
                 onOpenUser={setCardUserId}
+                docLabel={docLabel}
+              />
+            ) : item.kind === 'album' ? (
+              <AlbumBubble
+                docs={item.docs}
+                isOwn={item.data.uploadedBy === myId}
+                myId={myId}
+                onOpen={openDoc}
+                onLongPress={handleDocLongPress}
               />
             ) : (
               <DocBubble
@@ -370,19 +427,17 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
         visible={!!docSheetFor}
         onClose={() => setDocSheetFor(null)}
         actions={{
-          onReply: docSheetFor ? () => { const d = docSheetFor; setReplyingTo({ id: d.id, targetType: 'doc', senderName: fullName(d.uploader) || null, content: d.fileName, isDeleted: false }); setEditing(null); } : undefined,
+          onReply: docSheetFor ? () => { const d = docSheetFor; setReplyingTo({ id: d.id, targetType: 'doc', senderName: fullName(d.uploader) || null, content: docLabel(d), isDeleted: false }); setEditing(null); } : undefined,
           onDelete: docSheetFor && docSheetFor.uploadedBy === myId ? () => chat.removeDocument(docSheetFor.id) : undefined,
         }}
       />
 
-      <Modal visible={!!viewerUri} transparent animationType="fade" onRequestClose={() => setViewerUri(null)}>
-        <Pressable style={styles.viewerBackdrop} onPress={() => setViewerUri(null)}>
-          {viewerUri && <Image source={{ uri: viewerUri }} style={styles.viewerImage} resizeMode="contain" />}
-          <Pressable onPress={() => setViewerUri(null)} hitSlop={10} style={[styles.viewerClose, { top: insets.top + Spacing.md }]}>
-            <Ionicons name="close" size={30} color="#fff" />
-          </Pressable>
-        </Pressable>
-      </Modal>
+      {/* Full-screen photo gallery: swipe, pinch / double-tap zoom */}
+      <PhotoGallery
+        photos={galleryPhotos}
+        startIndex={galleryIndex}
+        onClose={() => setGalleryIndex(null)}
+      />
     </View>
   );
 }
@@ -430,7 +485,7 @@ function Banner({ kind, target, onCancel }: { kind: 'reply' | 'edit'; target: Re
   );
 }
 
-const MsgBubble = memo(function MsgBubble({ msg, isOwn, myId, onLongPress, onOpenUser }: { msg: ChatMessage; isOwn: boolean; myId: string; onLongPress: (m: ChatMessage) => void; onOpenUser: (userId: string) => void }) {
+const MsgBubble = memo(function MsgBubble({ msg, isOwn, myId, onLongPress, onOpenUser, docLabel }: { msg: ChatMessage; isOwn: boolean; myId: string; onLongPress: (m: ChatMessage) => void; onOpenUser: (userId: string) => void; docLabel: (d: { fileName: string; batchId?: string | null }) => string }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const isDeleted = !!msg.deletedAt;
@@ -467,7 +522,7 @@ const MsgBubble = memo(function MsgBubble({ msg, isOwn, myId, onLongPress, onOpe
             <MessageQuote senderName={fullName(msg.replyTo.sender)} content={msg.replyTo.content} isDeleted={!!msg.replyTo.deletedAt} variant={isOwn ? 'onPrimary' : 'default'} />
           )}
           {!isDeleted && msg.replyToDocument && (
-            <MessageQuote kind="doc" senderName={fullName(msg.replyToDocument.uploader)} fileName={msg.replyToDocument.fileName} content="" isDeleted={!!msg.replyToDocument.deletedAt} variant={isOwn ? 'onPrimary' : 'default'} />
+            <MessageQuote kind="doc" senderName={fullName(msg.replyToDocument.uploader)} fileName={docLabel(msg.replyToDocument)} content="" isDeleted={!!msg.replyToDocument.deletedAt} variant={isOwn ? 'onPrimary' : 'default'} />
           )}
           <Text style={[styles.bubbleText, { color: isDeleted ? c.mutedForeground : isOwn ? c.primaryForeground : c.foreground, fontStyle: isDeleted ? 'italic' : 'normal', fontSize: isDeleted ? 12 : 14 }]}>
             {isDeleted ? t('common.messageDeleted', 'Повідомлення видалено') : msg.content}
@@ -485,7 +540,21 @@ const MsgBubble = memo(function MsgBubble({ msg, isOwn, myId, onLongPress, onOpe
 });
 
 const DocBubble = memo(function DocBubble({ doc, isOwn, myId, onOpen, onLongPress }: { doc: DriverDocument; isOwn: boolean; myId: string; onOpen: (d: DriverDocument) => void; onLongPress: (d: DriverDocument) => void }) {
+  const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
+  // Deleted (or gone from storage — then signedUrl is ""): a plain
+  // "File deleted" label, like the DM / group chats and the web.
+  if (doc.deletedAt || !doc.signedUrl) {
+    return (
+      <View style={[styles.outerCol, isOwn && styles.outerColOwn]}>
+        <View style={[styles.bubble, styles.bubbleDeleted]}>
+          <Text style={[styles.bubbleText, { color: c.mutedForeground, fontStyle: 'italic', fontSize: 12 }]}>
+            {t('common.fileDeleted', 'Файл видалено')}
+          </Text>
+        </View>
+      </View>
+    );
+  }
   const isPhoto = doc.fileType === 'PHOTO';
   const time = formatTime(doc.createdAt, { hour: '2-digit', minute: '2-digit' });
   const senderName = fullName(doc.uploader) || doc.uploader?.role || '';
@@ -500,7 +569,7 @@ const DocBubble = memo(function DocBubble({ doc, isOwn, myId, onOpen, onLongPres
         {isOwn && sidekick}
         <Pressable onPress={() => onOpen(doc)} onLongPress={() => onLongPress(doc)} delayLongPress={400} style={[styles.docBubble, { backgroundColor: isOwn ? c.primary : c.muted }]}>
           {isPhoto ? (
-            <Image source={{ uri: doc.signedUrl }} style={styles.docThumb} />
+            <Image source={{ uri: doc.thumbUrl || doc.signedUrl }} style={styles.docThumb} />
           ) : (
             <View style={styles.docFileRow}>
               <Ionicons name="document-text" size={22} color={isOwn ? c.primaryForeground : c.foreground} />
@@ -508,6 +577,72 @@ const DocBubble = memo(function DocBubble({ doc, isOwn, myId, onOpen, onLongPres
             </View>
           )}
         </Pressable>
+        {!isOwn && sidekick}
+      </View>
+      <View style={[styles.meta, isOwn && styles.metaOwn]}>
+        <Text style={[styles.metaText, { color: c.mutedForeground }]}>{time}</Text>
+      </View>
+    </View>
+  );
+});
+
+/**
+ * Several files sent in one message: photo grid (+N), the other files under
+ * it, the caption once. Reactions belong to the first file; long press opens
+ * the album's actions (reply, delete the whole album). Tapping a photo opens
+ * the gallery at it.
+ */
+const AlbumBubble = memo(function AlbumBubble({ docs, isOwn, myId, onOpen, onLongPress }: { docs: DriverDocument[]; isOwn: boolean; myId: string; onOpen: (d: DriverDocument) => void; onLongPress: (d: DriverDocument) => void }) {
+  const { t } = useTranslation();
+  const c = Colors[useColorScheme() ?? 'light'];
+  const lead = docs[0];
+  // Files can also be deleted one by one from the Documents tab.
+  const live = docs.filter((d) => !d.deletedAt && d.signedUrl);
+  const photos = live.filter((d) => d.fileType === 'PHOTO');
+  const files = live.filter((d) => d.fileType !== 'PHOTO');
+  const caption = lead.caption?.trim();
+  const time = formatTime(lead.createdAt, { hour: '2-digit', minute: '2-digit' });
+  const senderName = fullName(lead.uploader) || lead.uploader?.role || '';
+  const fg = isOwn ? c.primaryForeground : c.foreground;
+  const press = () => onLongPress(lead);
+  const sidekick = live.length === 0 ? null : (
+    <MessageReactionsCluster type="TRIP_DOC" targetId={lead.id} reactions={lead.reactions ?? []} currentUserId={myId} />
+  );
+
+  return (
+    <View style={[styles.outerCol, isOwn && styles.outerColOwn]}>
+      {!isOwn && <Text style={[styles.senderName, { color: c.primary }]} numberOfLines={1}>{senderName}</Text>}
+      <View style={[styles.bubbleRow, styles.bubbleRowDoc]}>
+        {isOwn && sidekick}
+        <View style={[styles.albumBubble, { backgroundColor: isOwn ? c.primary : c.muted }]}>
+          {live.length === 0 ? (
+            <Pressable onLongPress={press} delayLongPress={400}>
+              <Text style={[styles.albumDeleted, { color: c.mutedForeground }]}>{t('common.fileDeleted', 'Файл видалено')}</Text>
+            </Pressable>
+          ) : (
+            <>
+              <AlbumGrid
+                photos={photos.map((p) => ({ id: p.id, uri: p.thumbUrl || p.signedUrl }))}
+                onOpen={(id) => {
+                  const p = photos.find((x) => x.id === id);
+                  if (p) onOpen(p);
+                }}
+                onLongPress={press}
+              />
+              {files.map((d) => (
+                <Pressable key={d.id} onPress={() => onOpen(d)} onLongPress={press} delayLongPress={400} style={styles.docFileRow}>
+                  <Ionicons name="document-text" size={22} color={fg} />
+                  <Text style={[styles.docFileName, { color: fg }]} numberOfLines={2}>{d.fileName}</Text>
+                </Pressable>
+              ))}
+              {!!caption && (
+                <Pressable onLongPress={press} delayLongPress={400}>
+                  <Text style={[styles.albumCaption, { color: fg }]}>{caption}</Text>
+                </Pressable>
+              )}
+            </>
+          )}
+        </View>
         {!isOwn && sidekick}
       </View>
       <View style={[styles.meta, isOwn && styles.metaOwn]}>
@@ -538,11 +673,13 @@ function TripDocsSheet({
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
   const [tab, setTab] = useState<DocTab>('ALL');
-  const photos = docs.filter((d) => d.fileType === 'PHOTO');
-  const files = docs.filter((d) => d.fileType === 'DOCUMENT');
-  const filtered = tab === 'ALL' ? docs : tab === 'PHOTO' ? photos : files;
+  // Deleted files (incl. ones gone from storage) can't be opened — hide them.
+  const live = docs.filter((d) => !d.deletedAt && d.signedUrl);
+  const photos = live.filter((d) => d.fileType === 'PHOTO');
+  const files = live.filter((d) => d.fileType === 'DOCUMENT');
+  const filtered = tab === 'ALL' ? live : tab === 'PHOTO' ? photos : files;
   const tabs: { key: DocTab; label: string; count: number }[] = [
-    { key: 'ALL', label: t('documents.tabs.all', 'Усі'), count: docs.length },
+    { key: 'ALL', label: t('documents.tabs.all', 'Усі'), count: live.length },
     { key: 'PHOTO', label: t('documents.tabs.photos', 'Фото'), count: photos.length },
     { key: 'DOCUMENT', label: t('documents.tabs.files', 'Файли'), count: files.length },
   ];
@@ -580,7 +717,7 @@ function TripDocsSheet({
             renderItem={({ item }) => (
               <Pressable onPress={() => onOpen(item)} style={[styles.docItem, { borderColor: c.border }]}>
                 {item.fileType === 'PHOTO' ? (
-                  <Image source={{ uri: item.signedUrl }} style={styles.docSheetThumb} />
+                  <Image source={{ uri: item.thumbUrl || item.signedUrl }} style={styles.docSheetThumb} />
                 ) : (
                   <View style={[styles.docSheetThumb, styles.docSheetThumbFile, { backgroundColor: c.muted }]}>
                     <Ionicons name="document-text-outline" size={22} color={c.mutedForeground} />
@@ -633,7 +770,12 @@ const styles = StyleSheet.create({
   docBubble: { borderRadius: Radius.lg, padding: 4, maxWidth: '100%', overflow: 'hidden' },
   docThumb: { width: 200, height: 200, borderRadius: Radius.md },
   docFileRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingHorizontal: 8, paddingVertical: 8, maxWidth: 240 },
-  docFileName: { flex: 1, fontSize: 13, fontWeight: '600' },
+  // flexShrink, not flex: 1 — in a content-sized bubble flex: 1 squeezed the
+  // name to zero width on Android (file cards showed no name).
+  docFileName: { flexShrink: 1, fontSize: 13, fontWeight: '600' },
+  albumBubble: { borderRadius: Radius.lg, overflow: 'hidden', width: 240 },
+  albumCaption: { fontSize: 14, lineHeight: 18, paddingHorizontal: 10, paddingVertical: 8 },
+  albumDeleted: { fontSize: 12, fontStyle: 'italic', paddingHorizontal: 10, paddingVertical: 4 },
   banner: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing.md, paddingVertical: Spacing.xs, borderTopWidth: StyleSheet.hairlineWidth, gap: Spacing.sm },
   bannerQuote: { flex: 1, borderLeftWidth: 2, paddingLeft: Spacing.sm, paddingVertical: 2, borderRadius: Radius.sm },
   bannerTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 3 },
