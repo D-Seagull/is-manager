@@ -83,7 +83,7 @@ export default function TruckDetailScreen() {
           {driverName ? (
             <Text style={[styles.driverSub, { color: c.mutedForeground }]} numberOfLines={1}>
               {t('truck.driverLabel', 'Водій')}: {driverName}
-              {lastSeen ? ` · ${lastSeen}` : ''}
+              {lastSeen ? ` - ${lastSeen}` : ''}
             </Text>
           ) : null}
         </View>
