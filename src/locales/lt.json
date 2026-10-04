@@ -99,6 +99,10 @@
     "teamlead": "Komandos vadovas"
   },
   "common": {
+    "lastSeen": {
+      "label": "paskutinį kartą programėlėje {{when}}",
+      "yesterday": "vakar {{time}}"
+    },
     "cancel": "Atšaukti",
     "copy": "Kopijuoti",
     "delete": "Ištrinti",

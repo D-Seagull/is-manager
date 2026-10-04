@@ -99,6 +99,10 @@
     "teamlead": "Lider zespołu"
   },
   "common": {
+    "lastSeen": {
+      "label": "ostatnio w aplikacji {{when}}",
+      "yesterday": "wczoraj {{time}}"
+    },
     "cancel": "Anuluj",
     "copy": "Kopiuj",
     "delete": "Usuń",

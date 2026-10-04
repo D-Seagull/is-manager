@@ -29,6 +29,7 @@ import {
 } from '@/hooks/use-trips';
 import { deriveTripTitle, fullName } from '@/lib/format';
 import { StopType, Trip } from '@/lib/types';
+import { HourScale } from '@/components/hour-scale';
 
 const STOP_COLOR: Record<StopType, string> = {
   LOADING: '#10B981',
@@ -60,8 +61,9 @@ const emptyStop = (type: StopType = 'LOADING'): StopRowData => ({
   ref: '',
   coords: '',
   windowDate: '',
-  windowStart: '',
-  windowEnd: '',
+  // A new stop starts with the usual working window (same as the web form).
+  windowStart: '08:00',
+  windowEnd: '16:00',
 });
 
 const stopTypeLabel = (type: StopType, t: TFunction) => {
@@ -476,6 +478,11 @@ function StopCard({
         <DateChip label={stop.windowStart || t('stopRow.from', 'з')} onPress={() => openPicker('start')} c={c} filled={!!stop.windowStart} />
         <DateChip label={stop.windowEnd || t('stopRow.to', 'до')} onPress={() => openPicker('end')} c={c} filled={!!stop.windowEnd} />
       </View>
+      <HourScale
+        start={stop.windowStart}
+        end={stop.windowEnd}
+        onChange={(windowStart, windowEnd) => setStop(index, { windowStart, windowEnd })}
+      />
     </View>
   );
 }
