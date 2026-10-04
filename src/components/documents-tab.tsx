@@ -26,6 +26,7 @@ import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useDeleteDocument, useTruckDocuments, useUploadDocuments } from '@/hooks/use-documents';
 import { useTripsByTruck } from '@/hooks/use-trips';
 import { DriverDocument } from '@/lib/documents-api';
+import { compressPhotos, PICKER_QUALITY } from '@/lib/compress-photo';
 import { fullName } from '@/lib/format';
 import { formatDate } from '@/lib/format-date';
 
@@ -68,7 +69,7 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
     () =>
       filtered
         .filter((d) => d.fileType === 'PHOTO')
-        .map((d) => ({ id: d.id, uri: d.signedUrl, fileName: d.fileName })),
+        .map((d) => ({ id: d.id, uri: d.signedUrl, thumbUri: d.thumbUrl, fileName: d.fileName })),
     [filtered],
   );
 
@@ -86,15 +87,15 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
       if (source === 'camera') {
         const perm = await ImagePicker.requestCameraPermissionsAsync();
         if (!perm.granted) return;
-        const r = await ImagePicker.launchCameraAsync({ quality: 0.8 });
+        const r = await ImagePicker.launchCameraAsync({ quality: PICKER_QUALITY });
         if (r.canceled) return;
-        files = r.assets.map((a) => ({ uri: a.uri, name: a.fileName ?? `photo-${Date.now()}.jpg`, mimeType: a.mimeType ?? 'image/jpeg' }));
+        files = await compressPhotos(r.assets);
       } else if (source === 'gallery') {
         const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!perm.granted) return;
-        const r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsMultipleSelection: true, quality: 0.8 });
+        const r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsMultipleSelection: true, quality: PICKER_QUALITY });
         if (r.canceled) return;
-        files = r.assets.map((a) => ({ uri: a.uri, name: a.fileName ?? `photo-${Date.now()}.jpg`, mimeType: a.mimeType ?? 'image/jpeg' }));
+        files = await compressPhotos(r.assets);
       } else {
         const r = await DocumentPicker.getDocumentAsync({ multiple: true, copyToCacheDirectory: true, type: '*/*' });
         if (r.canceled) return;
