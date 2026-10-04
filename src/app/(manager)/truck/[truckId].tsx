@@ -83,7 +83,11 @@ export default function TruckDetailScreen() {
           {driverName ? (
             <Text style={[styles.driverSub, { color: c.mutedForeground }]} numberOfLines={1}>
               {t('truck.driverLabel', 'Водій')}: {driverName}
-              {lastSeen ? ` · ${lastSeen}` : ''}
+            </Text>
+          ) : null}
+          {driverName && lastSeen ? (
+            <Text style={[styles.lastSeen, { color: c.mutedForeground }]} numberOfLines={1}>
+              {lastSeen}
             </Text>
           ) : null}
         </View>
@@ -181,6 +185,8 @@ const styles = StyleSheet.create({
   backBtn: { padding: 4 },
   plate: { fontSize: 18, fontWeight: '700', letterSpacing: 0.5 },
   driverSub: { fontSize: 12, marginTop: 1 },
+  // Own small line under the driver: "останній вхід 12:30".
+  lastSeen: { fontSize: 11, marginTop: 1 },
   newTripBtn: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
   fill: { flex: 1 },
   content: { flex: 1 },

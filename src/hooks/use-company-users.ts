@@ -14,6 +14,8 @@ export interface CompanyUser {
   avatar: string | null;
   status?: string | null;
   statusUntil?: string | null;
+  /** Last time they had a live connection — "останній вхід 12:30". */
+  lastSeenAt?: string | null;
   isActive: boolean;
   teamleadId?: string | null;
   truckCount?: number; // к-сть вантажівок, де цей юзер — призначений менеджер
