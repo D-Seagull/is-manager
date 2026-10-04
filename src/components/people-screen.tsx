@@ -22,6 +22,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChatAvatar } from '@/components/chat-avatar';
 import { SectionHeader } from '@/components/section-header';
 import { StatusDot } from '@/components/status-dot';
+import { useLastSeenText } from '@/components/last-seen';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useCompanyUsers, type CompanyUser } from '@/hooks/use-company-users';
@@ -137,6 +138,8 @@ function PersonRow({ user, kind }: { user: CompanyUser; kind: 'driver' | 'manage
   const subtitle = kind === 'driver'
     ? user.currentTruck?.plate || user.phone || t('nav.driverFallback', 'Водій')
     : user.role === 'TEAMLEAD' ? t('chatDir.teamlead', 'Тімлід') : t('nav.manager', 'Менеджер');
+  // Managers tab: "Менеджер - останній вхід 12:30" after 15+ min away.
+  const lastSeen = useLastSeenText(kind === 'manager' ? user : null);
 
   return (
     <Pressable
@@ -149,7 +152,7 @@ function PersonRow({ user, kind }: { user: CompanyUser; kind: 'driver' | 'manage
       </View>
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text style={[styles.name, { color: c.foreground }]} numberOfLines={1}>{fullName(user) || '—'}</Text>
-        <Text style={[styles.sub, { color: c.mutedForeground }]} numberOfLines={1}>{subtitle}</Text>
+        <Text style={[styles.sub, { color: c.mutedForeground }]} numberOfLines={1}>{subtitle}{lastSeen ? ` - ${lastSeen}` : ''}</Text>
       </View>
       {kind === 'manager' ? (
         <View style={styles.truckCount}>
