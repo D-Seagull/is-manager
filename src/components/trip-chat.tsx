@@ -770,7 +770,9 @@ const styles = StyleSheet.create({
   docBubble: { borderRadius: Radius.lg, padding: 4, maxWidth: '100%', overflow: 'hidden' },
   docThumb: { width: 200, height: 200, borderRadius: Radius.md },
   docFileRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingHorizontal: 8, paddingVertical: 8, maxWidth: 240 },
-  docFileName: { flex: 1, fontSize: 13, fontWeight: '600' },
+  // flexShrink, not flex: 1 — in a content-sized bubble flex: 1 squeezed the
+  // name to zero width on Android (file cards showed no name).
+  docFileName: { flexShrink: 1, fontSize: 13, fontWeight: '600' },
   albumBubble: { borderRadius: Radius.lg, overflow: 'hidden', width: 240 },
   albumCaption: { fontSize: 14, lineHeight: 18, paddingHorizontal: 10, paddingVertical: 8 },
   albumDeleted: { fontSize: 12, fontStyle: 'italic', paddingHorizontal: 10, paddingVertical: 4 },
