@@ -195,7 +195,7 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
             <View style={[styles.row, { backgroundColor: c.card, borderColor: c.border }]}>
               <Pressable onPress={() => openDoc(item)} style={styles.rowMain}>
                 {item.fileType === 'PHOTO' ? (
-                  <Image source={{ uri: item.signedUrl }} style={styles.thumb} />
+                  <Image source={{ uri: item.thumbUrl || item.signedUrl }} style={styles.thumb} />
                 ) : (
                   <View style={[styles.thumb, styles.fileThumb, { backgroundColor: c.muted }]}>
                     <Ionicons name="document-text-outline" size={22} color={c.mutedForeground} />

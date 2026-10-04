@@ -520,7 +520,7 @@ const DocBubble = memo(function DocBubble({ doc, isOwn, myId, onOpen, onLongPres
         {isOwn && sidekick}
         <Pressable onPress={() => onOpen(doc)} onLongPress={() => onLongPress(doc)} delayLongPress={400} style={[styles.docBubble, { backgroundColor: isOwn ? c.primary : c.muted }]}>
           {isPhoto ? (
-            <Image source={{ uri: doc.signedUrl }} style={styles.docThumb} />
+            <Image source={{ uri: doc.thumbUrl || doc.signedUrl }} style={styles.docThumb} />
           ) : (
             <View style={styles.docFileRow}>
               <Ionicons name="document-text" size={22} color={isOwn ? c.primaryForeground : c.foreground} />
@@ -602,7 +602,7 @@ function TripDocsSheet({
             renderItem={({ item }) => (
               <Pressable onPress={() => onOpen(item)} style={[styles.docItem, { borderColor: c.border }]}>
                 {item.fileType === 'PHOTO' ? (
-                  <Image source={{ uri: item.signedUrl }} style={styles.docSheetThumb} />
+                  <Image source={{ uri: item.thumbUrl || item.signedUrl }} style={styles.docSheetThumb} />
                 ) : (
                   <View style={[styles.docSheetThumb, styles.docSheetThumbFile, { backgroundColor: c.muted }]}>
                     <Ionicons name="document-text-outline" size={22} color={c.mutedForeground} />
