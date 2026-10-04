@@ -5,9 +5,10 @@ import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { ChatAvatar } from '@/components/chat-avatar';
+import { PhotoGallery } from '@/components/photo-gallery';
 import { SectionHeader } from '@/components/section-header';
 import { StatusDot } from '@/components/status-dot';
 import { TRIP_STATUS_COLORS } from '@/constants/trip-status';
@@ -111,6 +112,22 @@ function TripRow({ trip, c, t }: { trip: Trip; c: (typeof Colors)['light']; t: T
   const date = loadingDate(trip);
   // Документи тягнемо (зі signed URL) лише коли картку розгорнуто.
   const { data: docs = [], isLoading: docsLoading } = useTripDocuments(expanded ? trip.id : null);
+  // As on the web Trips page: deleted / vanished files are left out, photos
+  // open in the gallery, other files in the browser.
+  const live = useMemo(() => docs.filter((d) => !d.deletedAt && d.signedUrl), [docs]);
+  const galleryPhotos = useMemo(
+    () =>
+      live
+        .filter((d) => d.fileType === 'PHOTO')
+        .map((d) => ({ id: d.id, uri: d.signedUrl, thumbUri: d.thumbUrl, fileName: d.fileName })),
+    [live],
+  );
+  const [galleryIndex, setGalleryIndex] = useState<number | null>(null);
+  const openDoc = (d: (typeof live)[number]) => {
+    const i = galleryPhotos.findIndex((p) => p.id === d.id);
+    if (i >= 0) setGalleryIndex(i);
+    else WebBrowser.openBrowserAsync(d.signedUrl);
+  };
   const user = useUser();
   const deleteTrip = useDeleteTrip(trip.truck?.id);
   // Те саме правило, що й на бекенді: тімлід і адмін видаляють будь-який
@@ -229,17 +246,22 @@ function TripRow({ trip, c, t }: { trip: Trip; c: (typeof Colors)['light']; t: T
           <Text style={[styles.sectionLabel, { color: c.mutedForeground, marginTop: Spacing.md }]}>{t('truck.tabs.documents', 'Документи')}</Text>
           {docsLoading ? (
             <ActivityIndicator color={c.mutedForeground} style={{ alignSelf: 'flex-start', marginTop: 4 }} />
-          ) : docs.length === 0 ? (
+          ) : live.length === 0 ? (
             <Text style={{ fontSize: 12, color: c.mutedForeground }}>{t('documents.empty', 'Документів немає')}</Text>
           ) : (
-            docs.map((d) => (
-              <Pressable key={d.id} onPress={() => d.signedUrl && WebBrowser.openBrowserAsync(d.signedUrl)} style={styles.docRow}>
-                <Ionicons name={d.fileType === 'PHOTO' ? 'image-outline' : 'document-text-outline'} size={16} color={c.primary} />
+            live.map((d) => (
+              <Pressable key={d.id} onPress={() => openDoc(d)} style={styles.docRow}>
+                {d.fileType === 'PHOTO' ? (
+                  <Image source={{ uri: d.thumbUrl || d.signedUrl }} style={styles.docThumb} />
+                ) : (
+                  <Ionicons name="document-text-outline" size={16} color={c.primary} />
+                )}
                 <Text style={{ flex: 1, fontSize: 13, color: c.foreground }} numberOfLines={1}>{d.fileName}</Text>
-                <Ionicons name="open-outline" size={15} color={c.mutedForeground} />
+                {d.fileType !== 'PHOTO' && <Ionicons name="open-outline" size={15} color={c.mutedForeground} />}
               </Pressable>
             ))
           )}
+          <PhotoGallery photos={galleryPhotos} startIndex={galleryIndex} onClose={() => setGalleryIndex(null)} />
 
           {trip.truck ? (
             <Pressable
@@ -274,5 +296,6 @@ const styles = StyleSheet.create({
   sectionLabel: { fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 2 },
   stopRow: { flexDirection: 'row', gap: Spacing.sm, paddingVertical: 3 },
   docRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingVertical: 6 },
+  docThumb: { width: 32, height: 32, borderRadius: Radius.sm },
   openTruck: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: Spacing.md, paddingVertical: 9, borderRadius: Radius.md, borderWidth: 1 },
 });
