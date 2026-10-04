@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { useIsFocused } from 'expo-router';
 import type { TFunction } from 'i18next';
 import { router } from 'expo-router';
-import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -17,6 +16,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useTripDocuments } from '@/hooks/use-documents';
 import { useDeleteTrip, useTrips } from '@/hooks/use-trips';
+import { openRemoteFile } from '@/lib/open-file';
 import { fullName } from '@/lib/format';
 import { StopType, Trip } from '@/lib/types';
 import { useUser } from '@/store/auth';
@@ -126,7 +126,10 @@ function TripRow({ trip, c, t }: { trip: Trip; c: (typeof Colors)['light']; t: T
   const openDoc = (d: (typeof live)[number]) => {
     const i = galleryPhotos.findIndex((p) => p.id === d.id);
     if (i >= 0) setGalleryIndex(i);
-    else WebBrowser.openBrowserAsync(d.signedUrl);
+    else
+      openRemoteFile(d).catch((e) =>
+        Alert.alert(t('documents.cannotOpen', 'Не вдалося відкрити файл'), (e as Error).message),
+      );
   };
   const user = useUser();
   const deleteTrip = useDeleteTrip(trip.truck?.id);

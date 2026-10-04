@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
-import * as WebBrowser from 'expo-web-browser';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -40,6 +39,7 @@ import { useTripDocuments, useUploadDocuments } from '@/hooks/use-documents';
 import { useTripChatArchive } from '@/hooks/use-trip-archive';
 import { useTrip } from '@/hooks/use-trip';
 import { ChatMessage, useTripChat } from '@/hooks/use-trip-chat';
+import { openRemoteFile, readableFileName } from '@/lib/open-file';
 import { albumSizes, groupAlbums } from '@/lib/albums';
 import { compressPhotos, PICKER_QUALITY } from '@/lib/compress-photo';
 import { EDIT_WINDOW_MS } from '@/lib/constants';
@@ -151,7 +151,7 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
         return;
       }
       try {
-        await WebBrowser.openBrowserAsync(doc.signedUrl);
+        await openRemoteFile(doc);
       } catch (e) {
         Alert.alert(t('documents.cannotOpen', 'Не вдалося відкрити'), (e as Error).message);
       }
@@ -201,7 +201,7 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
       } else {
         const r = await DocumentPicker.getDocumentAsync({ multiple: true, copyToCacheDirectory: true, type: '*/*' });
         if (r.canceled) return;
-        files = r.assets.map((a) => ({ uri: a.uri, name: a.name, mimeType: a.mimeType ?? 'application/octet-stream' }));
+        files = r.assets.map((a) => ({ uri: a.uri, name: readableFileName(a.name), mimeType: a.mimeType ?? 'application/octet-stream' }));
       }
       if (files.length === 0) return;
       await uploadDocs.mutateAsync({ tripId, files });
@@ -540,7 +540,21 @@ const MsgBubble = memo(function MsgBubble({ msg, isOwn, myId, onLongPress, onOpe
 });
 
 const DocBubble = memo(function DocBubble({ doc, isOwn, myId, onOpen, onLongPress }: { doc: DriverDocument; isOwn: boolean; myId: string; onOpen: (d: DriverDocument) => void; onLongPress: (d: DriverDocument) => void }) {
+  const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
+  // Deleted (or gone from storage — then signedUrl is ""): a plain
+  // "File deleted" label, like the DM / group chats and the web.
+  if (doc.deletedAt || !doc.signedUrl) {
+    return (
+      <View style={[styles.outerCol, isOwn && styles.outerColOwn]}>
+        <View style={[styles.bubble, styles.bubbleDeleted]}>
+          <Text style={[styles.bubbleText, { color: c.mutedForeground, fontStyle: 'italic', fontSize: 12 }]}>
+            {t('common.fileDeleted', 'Файл видалено')}
+          </Text>
+        </View>
+      </View>
+    );
+  }
   const isPhoto = doc.fileType === 'PHOTO';
   const time = formatTime(doc.createdAt, { hour: '2-digit', minute: '2-digit' });
   const senderName = fullName(doc.uploader) || doc.uploader?.role || '';

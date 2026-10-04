@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
-import * as WebBrowser from 'expo-web-browser';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -25,6 +24,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useDeleteDocument, useTruckDocuments, useUploadDocuments } from '@/hooks/use-documents';
 import { useTripsByTruck } from '@/hooks/use-trips';
+import { openRemoteFile, readableFileName } from '@/lib/open-file';
 import { DriverDocument } from '@/lib/documents-api';
 import { compressPhotos, PICKER_QUALITY } from '@/lib/compress-photo';
 import { fullName } from '@/lib/format';
@@ -99,7 +99,7 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
       } else {
         const r = await DocumentPicker.getDocumentAsync({ multiple: true, copyToCacheDirectory: true, type: '*/*' });
         if (r.canceled) return;
-        files = r.assets.map((a) => ({ uri: a.uri, name: a.name, mimeType: a.mimeType ?? 'application/octet-stream' }));
+        files = r.assets.map((a) => ({ uri: a.uri, name: readableFileName(a.name), mimeType: a.mimeType ?? 'application/octet-stream' }));
       }
       if (files.length === 0) return;
       setUploading(true);
@@ -136,7 +136,7 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
       return;
     }
     try {
-      await WebBrowser.openBrowserAsync(doc.signedUrl);
+      await openRemoteFile(doc);
     } catch (e) {
       Alert.alert(t('documents.cannotOpen', 'Не вдалося відкрити'), (e as Error).message);
     }
