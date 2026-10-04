@@ -605,5 +605,14 @@
   },
   "tripNotice": {
     "notDeparted": "{{name}}: Abfahrt nach 3 Erinnerungen nicht bestätigt"
+  },
+  "gallery": {
+    "save": "Speichern",
+    "saved": "Gespeichert",
+    "share": "Teilen",
+    "saveFailed": "Foto konnte nicht gespeichert werden",
+    "shareFailed": "Foto konnte nicht geteilt werden",
+    "permissionTitle": "Kein Zugriff auf die Galerie",
+    "permissionBody": "Erlauben Sie das Speichern von Fotos in den Telefoneinstellungen."
   }
 }

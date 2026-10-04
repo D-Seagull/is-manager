@@ -608,5 +608,14 @@
   },
   "tripNotice": {
     "notDeparted": "{{name}}: išvykimas nepatvirtintas po 3 priminimų"
+  },
+  "gallery": {
+    "save": "Išsaugoti",
+    "saved": "Išsaugota",
+    "share": "Bendrinti",
+    "saveFailed": "Nepavyko išsaugoti nuotraukos",
+    "shareFailed": "Nepavyko pasidalinti nuotrauka",
+    "permissionTitle": "Nėra prieigos prie galerijos",
+    "permissionBody": "Leiskite išsaugoti nuotraukas telefono nustatymuose."
   }
 }

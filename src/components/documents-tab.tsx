@@ -20,6 +20,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { PhotoGallery } from '@/components/photo-gallery';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useDeleteDocument, useTruckDocuments, useUploadDocuments } from '@/hooks/use-documents';
@@ -43,11 +44,14 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
   const [filterOpen, setFilterOpen] = useState(false);
   const [uploadPickOpen, setUploadPickOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [viewerUri, setViewerUri] = useState<string | null>(null);
+  // Index into `galleryPhotos` of the photo open in the gallery, or null.
+  const [galleryIndex, setGalleryIndex] = useState<number | null>(null);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return docs.filter((d) => {
+      // Deleted files (incl. ones gone from storage) can't be opened.
+      if (d.deletedAt || !d.signedUrl) return false;
       if (tripFilter !== 'all' && d.tripId !== tripFilter) return false;
       if (!q) return true;
       return (
@@ -57,6 +61,16 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
       );
     });
   }, [docs, search, tripFilter]);
+
+  // The gallery flips through the photos currently listed (search + trip
+  // filter applied, same order as the list).
+  const galleryPhotos = useMemo(
+    () =>
+      filtered
+        .filter((d) => d.fileType === 'PHOTO')
+        .map((d) => ({ id: d.id, uri: d.signedUrl, fileName: d.fileName })),
+    [filtered],
+  );
 
   const filterLabel =
     tripFilter === 'all'
@@ -116,7 +130,8 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
 
   const openDoc = async (doc: DriverDocument) => {
     if (doc.fileType === 'PHOTO') {
-      setViewerUri(doc.signedUrl);
+      const i = galleryPhotos.findIndex((p) => p.id === doc.id);
+      if (i >= 0) setGalleryIndex(i);
       return;
     }
     try {
@@ -225,7 +240,11 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
       />
 
       {/* Photo viewer */}
-      <PhotoViewer uri={viewerUri} onClose={() => setViewerUri(null)} />
+      <PhotoGallery
+        photos={galleryPhotos}
+        startIndex={galleryIndex}
+        onClose={() => setGalleryIndex(null)}
+      />
     </View>
   );
 }
@@ -260,20 +279,6 @@ function PickerModal({
   );
 }
 
-function PhotoViewer({ uri, onClose }: { uri: string | null; onClose: () => void }) {
-  const insets = useSafeAreaInsets();
-  return (
-    <Modal visible={!!uri} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable style={styles.viewerBackdrop} onPress={onClose}>
-        {uri && <Image source={{ uri }} style={styles.viewerImage} resizeMode="contain" />}
-        <Pressable onPress={onClose} hitSlop={10} style={[styles.viewerClose, { top: insets.top + Spacing.md }]}>
-          <Ionicons name="close" size={30} color="#fff" />
-        </Pressable>
-      </Pressable>
-    </Modal>
-  );
-}
-
 const styles = StyleSheet.create({
   topRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, paddingHorizontal: Spacing.md, paddingTop: Spacing.sm },
   searchBox: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, height: 36, borderRadius: Radius.md, paddingHorizontal: Spacing.md },
@@ -293,7 +298,4 @@ const styles = StyleSheet.create({
   sheet: { borderTopLeftRadius: Radius.lg, borderTopRightRadius: Radius.lg, padding: Spacing.md },
   sheetTitle: { fontSize: 13, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: Spacing.sm, textAlign: 'center' },
   sheetItem: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing.md, paddingVertical: 12, borderRadius: Radius.sm },
-  viewerBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.92)', alignItems: 'center', justifyContent: 'center' },
-  viewerImage: { width: '100%', height: '100%' },
-  viewerClose: { position: 'absolute', right: Spacing.lg },
 });

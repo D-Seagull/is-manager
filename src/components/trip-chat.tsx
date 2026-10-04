@@ -31,6 +31,7 @@ import { MessageReactionsCluster } from '@/components/message-reactions';
 import { ScreenPlaceholder } from '@/components/screen-placeholder';
 import { TripHeader } from '@/components/trip-header';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { PhotoGallery } from '@/components/photo-gallery';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useComposerBottomPadding } from '@/hooks/use-composer-bottom-padding';
 import { ChatArchiveModal } from '@/components/chat-archive-modal';
@@ -83,7 +84,8 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [replyingTo, setReplyingTo] = useState<ReplyTarget | null>(null);
   const [editing, setEditing] = useState<EditingState | null>(null);
-  const [viewerUri, setViewerUri] = useState<string | null>(null);
+  // Index into `galleryPhotos` of the photo open in the gallery, or null.
+  const [galleryIndex, setGalleryIndex] = useState<number | null>(null);
   const [sheetFor, setSheetFor] = useState<ChatMessage | null>(null);
   const [cardUserId, setCardUserId] = useState<string | null>(null);
   const [docSheetFor, setDocSheetFor] = useState<DriverDocument | null>(null);
@@ -96,10 +98,30 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
     return items.sort((a, b) => b.ts - a.ts);
   }, [chat.messages, documents]);
 
+  // Every photo of this trip, oldest first — the gallery flips through all
+  // of them, starting at the one tapped.
+  const galleryPhotos = useMemo(
+    () =>
+      documents
+        .filter((d) => d.fileType === 'PHOTO' && !d.deletedAt && d.signedUrl)
+        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+        .map((d) => ({ id: d.id, uri: d.signedUrl, fileName: d.fileName })),
+    [documents],
+  );
+
   const openDoc = useCallback(
     async (doc: DriverDocument) => {
       if (doc.fileType === 'PHOTO') {
-        setViewerUri(doc.signedUrl);
+        const i = galleryPhotos.findIndex((p) => p.id === doc.id);
+        if (i < 0) return;
+        if (docsOpen) {
+          // From the documents sheet: iOS won't show a Modal while another
+          // one is still closing — close it, then open.
+          setDocsOpen(false);
+          setTimeout(() => setGalleryIndex(i), 400);
+        } else {
+          setGalleryIndex(i);
+        }
         return;
       }
       try {
@@ -108,7 +130,7 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
         Alert.alert(t('documents.cannotOpen', 'Не вдалося відкрити'), (e as Error).message);
       }
     },
-    [t],
+    [t, galleryPhotos, docsOpen],
   );
 
   // Stable per-list callbacks so the memoized bubbles below don't re-render on
@@ -213,7 +235,7 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
         <View style={{ flex: 1 }} />
         <Pressable onPress={() => setDocsOpen(true)} hitSlop={6} style={({ pressed }) => [styles.folderBtn, { opacity: pressed ? 0.6 : 1 }]}>
           <Ionicons name="folder-outline" size={16} color={c.mutedForeground} />
-          <Text style={[styles.chatLabelText, { color: c.mutedForeground }]}>{documents.length}</Text>
+          <Text style={[styles.chatLabelText, { color: c.mutedForeground }]}>{documents.filter((d) => !d.deletedAt && d.signedUrl).length}</Text>
         </Pressable>
       </View>
 
@@ -375,14 +397,12 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
         }}
       />
 
-      <Modal visible={!!viewerUri} transparent animationType="fade" onRequestClose={() => setViewerUri(null)}>
-        <Pressable style={styles.viewerBackdrop} onPress={() => setViewerUri(null)}>
-          {viewerUri && <Image source={{ uri: viewerUri }} style={styles.viewerImage} resizeMode="contain" />}
-          <Pressable onPress={() => setViewerUri(null)} hitSlop={10} style={[styles.viewerClose, { top: insets.top + Spacing.md }]}>
-            <Ionicons name="close" size={30} color="#fff" />
-          </Pressable>
-        </Pressable>
-      </Modal>
+      {/* Full-screen photo gallery: swipe, pinch / double-tap zoom */}
+      <PhotoGallery
+        photos={galleryPhotos}
+        startIndex={galleryIndex}
+        onClose={() => setGalleryIndex(null)}
+      />
     </View>
   );
 }
@@ -538,11 +558,13 @@ function TripDocsSheet({
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
   const [tab, setTab] = useState<DocTab>('ALL');
-  const photos = docs.filter((d) => d.fileType === 'PHOTO');
-  const files = docs.filter((d) => d.fileType === 'DOCUMENT');
-  const filtered = tab === 'ALL' ? docs : tab === 'PHOTO' ? photos : files;
+  // Deleted files (incl. ones gone from storage) can't be opened — hide them.
+  const live = docs.filter((d) => !d.deletedAt && d.signedUrl);
+  const photos = live.filter((d) => d.fileType === 'PHOTO');
+  const files = live.filter((d) => d.fileType === 'DOCUMENT');
+  const filtered = tab === 'ALL' ? live : tab === 'PHOTO' ? photos : files;
   const tabs: { key: DocTab; label: string; count: number }[] = [
-    { key: 'ALL', label: t('documents.tabs.all', 'Усі'), count: docs.length },
+    { key: 'ALL', label: t('documents.tabs.all', 'Усі'), count: live.length },
     { key: 'PHOTO', label: t('documents.tabs.photos', 'Фото'), count: photos.length },
     { key: 'DOCUMENT', label: t('documents.tabs.files', 'Файли'), count: files.length },
   ];
