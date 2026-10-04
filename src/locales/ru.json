@@ -99,6 +99,10 @@
     "teamlead": "Тимлид"
   },
   "common": {
+    "lastSeen": {
+      "label": "последний вход {{when}}",
+      "yesterday": "вчера {{time}}"
+    },
     "cancel": "Отмена",
     "copy": "Копировать",
     "delete": "Удалить",

@@ -19,6 +19,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useTruck } from '@/hooks/use-my-trucks';
 import { useTripUnread } from '@/hooks/use-notifications';
 import { fullName } from '@/lib/format';
+import { useLastSeenText } from '@/components/last-seen';
 
 type Tab = 'chat' | 'trips' | 'documents' | 'alarm' | 'info';
 
@@ -49,6 +50,8 @@ export default function TruckDetailScreen() {
   const { data: truck, isLoading: truckLoading } = useTruck(truckId);
   const activeTripId = truck?.trips?.[0]?.id ?? null;
   const driverName = fullName(truck?.currentDriver);
+  // "останній вхід 12:30" after 15+ min out of the app (null otherwise).
+  const lastSeen = useLastSeenText(truck?.currentDriver);
 
   // Unread trip-chat marker for the Chat tab.
   const { data: tripUnread } = useTripUnread();
@@ -80,6 +83,7 @@ export default function TruckDetailScreen() {
           {driverName ? (
             <Text style={[styles.driverSub, { color: c.mutedForeground }]} numberOfLines={1}>
               {t('truck.driverLabel', 'Водій')}: {driverName}
+              {lastSeen ? ` · ${lastSeen}` : ''}
             </Text>
           ) : null}
         </View>

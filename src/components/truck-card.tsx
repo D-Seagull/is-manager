@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ChatAvatar } from '@/components/chat-avatar';
 import { StatusDot } from '@/components/status-dot';
+import { LastSeen } from '@/components/last-seen';
 import { TRIP_STATUS_COLORS } from '@/constants/trip-status';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -93,6 +94,7 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
                   {driver.phone}
                 </Text>
               ) : null}
+              <LastSeen user={driver} style={[styles.driverSub, { color: c.mutedForeground }]} />
             </View>
           </>
         ) : (

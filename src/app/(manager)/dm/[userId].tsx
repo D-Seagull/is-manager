@@ -32,6 +32,7 @@ import { ChatAvatar } from '@/components/chat-avatar';
 import { ChatBackground } from '@/components/chat-background';
 import { NotificationsBell } from '@/components/notifications-bell';
 import { StatusDot } from '@/components/status-dot';
+import { useLastSeenText } from '@/components/last-seen';
 import { MessageActionsSheet, type MessageActions } from '@/components/message-actions-sheet';
 import { UserCardSheet } from '@/components/user-card-sheet';
 import { MessageQuote } from '@/components/message-quote';
@@ -122,6 +123,8 @@ export default function DmScreen() {
 
   // ─── Data ──────────────────────────────────────────────────────────
   const { data: peer } = useChatUser(peerId);
+  // "останній вхід 12:30" after 15+ min out of the app (null otherwise).
+  const peerLastSeen = useLastSeenText(peer);
   const { data: messages = [], isLoading } = useDirectMessages(peerId);
   const { loadOlder, loadingOlder, hasMore } = useLoadOlderDirectMessages(peerId);
   const { data: documents = [] } = useConversationDocuments(peerId);
@@ -415,6 +418,7 @@ export default function DmScreen() {
             </Text>
             <Text style={[styles.headerRole, { color: c.mutedForeground }]} numberOfLines={1}>
               {peer?.role?.toLowerCase()}
+              {peerLastSeen ? ` · ${peerLastSeen}` : ''}
             </Text>
           </View>
         </Pressable>

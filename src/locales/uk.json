@@ -99,6 +99,10 @@
     "teamlead": "Тімлід"
   },
   "common": {
+    "lastSeen": {
+      "label": "останній вхід {{when}}",
+      "yesterday": "учора {{time}}"
+    },
     "cancel": "Скасувати",
     "copy": "Копіювати",
     "delete": "Видалити",
