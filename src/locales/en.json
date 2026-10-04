@@ -107,6 +107,8 @@
     "error": "Error",
     "file": "File",
     "fileDeleted": "File deleted",
+    "album_one": "Album · {{count}} file",
+    "album_other": "Album · {{count}} files",
     "messageDeleted": "Message deleted",
     "noMatches": "No matches.",
     "reply": "Reply",

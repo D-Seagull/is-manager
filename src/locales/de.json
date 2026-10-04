@@ -107,6 +107,8 @@
     "error": "Fehler",
     "file": "Datei",
     "fileDeleted": "Datei gelöscht",
+    "album_one": "Album · {{count}} Datei",
+    "album_other": "Album · {{count}} Dateien",
     "messageDeleted": "Nachricht gelöscht",
     "noMatches": "Keine Treffer.",
     "reply": "Antworten",
