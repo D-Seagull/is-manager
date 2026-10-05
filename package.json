@@ -8,6 +8,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "build:android": "eas build --profile production --platform android",
     "build:ios": "eas build --profile production --platform ios",
     "build:all": "eas build --profile production --platform all",
@@ -73,7 +75,9 @@
     "@types/react": "~19.2.4",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~57.0.2",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "vite": "^6.4.3",
+    "vitest": "^3.2.7"
   },
   "private": true
 }
