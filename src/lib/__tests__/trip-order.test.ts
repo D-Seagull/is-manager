@@ -1,8 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { currentTrip } from "@/lib/trip-order";
+import type { TripStatus } from "@/constants/trip-status";
 
-type T = { id: string; status: string; createdAt: string };
-const trip = (id: string, status: string, createdAt: string): T => ({
+type T = { id: string; status: TripStatus; createdAt: string };
+const trip = (id: string, status: TripStatus, createdAt: string): T => ({
   id,
   status,
   createdAt,
