@@ -74,6 +74,8 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
   const myId = me?.id ?? '';
 
   const nearBottomRef = useRef(true);
+  const listRef = useRef<FlatList>(null);
+  const [showScrollDown, setShowScrollDown] = useState(false);
   const chat = useTripChat(tripId, { isFocused, nearBottomRef });
   const { data: trip } = useTrip(tripId);
   const { data: documents = [] } = useTripDocuments(tripId);
@@ -240,6 +242,7 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     // Inverted list → newest sits at offset 0; "near bottom" = small offset.
     const nb = e.nativeEvent.contentOffset.y < 80;
+    setShowScrollDown(e.nativeEvent.contentOffset.y > 200);
     if (nb !== nearBottomRef.current) nearBottomRef.current = nb;
     if (nb) chat.markReadNow();
   };
@@ -275,12 +278,14 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
         </Pressable>
       )}
 
+      <View style={{ flex: 1 }}>
       {chat.isLoading ? (
         <View style={styles.center}>
           <ActivityIndicator color={c.primary} />
         </View>
       ) : (
         <FlatList
+          ref={listRef}
           data={data}
           keyExtractor={(it) => `${it.kind}:${it.data.id}`}
           initialNumToRender={12}
@@ -334,6 +339,21 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
           }
         />
       )}
+      {showScrollDown && (
+        <Pressable
+          onPress={() =>
+            listRef.current?.scrollToOffset({ offset: 0, animated: true })
+          }
+          hitSlop={8}
+          style={[
+            styles.scrollDownBtn,
+            { backgroundColor: c.card, borderColor: c.border },
+          ]}
+        >
+          <Ionicons name="chevron-down" size={22} color={c.foreground} />
+        </Pressable>
+      )}
+      </View>
 
       {typing.length > 0 && (
         <Text style={[styles.typing, { color: c.mutedForeground }]}>
@@ -370,9 +390,14 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
       ) : (
         <View style={[styles.composer, { paddingBottom: composerPad }]}>
           {!editing && (
-            <Pressable onPress={showAttachSheet} disabled={uploadDocs.isPending} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed || uploadDocs.isPending ? 0.5 : 1 }]}>
-              {uploadDocs.isPending ? <ActivityIndicator size="small" color={c.mutedForeground} /> : <Ionicons name="attach" size={24} color={c.mutedForeground} />}
-            </Pressable>
+            <>
+              <Pressable onPress={showAttachSheet} disabled={uploadDocs.isPending} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed || uploadDocs.isPending ? 0.5 : 1 }]}>
+                {uploadDocs.isPending ? <ActivityIndicator size="small" color={c.mutedForeground} /> : <Ionicons name="attach" size={24} color={c.mutedForeground} />}
+              </Pressable>
+              <Pressable onPress={() => void pickAndUpload('camera')} disabled={uploadDocs.isPending} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed || uploadDocs.isPending ? 0.5 : 1 }]}>
+                <Ionicons name="camera-outline" size={24} color={c.mutedForeground} />
+              </Pressable>
+            </>
           )}
           <Pressable onPress={() => { Keyboard.dismiss(); setEmojiOpen(true); }} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed ? 0.6 : 1 }]}>
             <Ionicons name="happy-outline" size={24} color={c.mutedForeground} />
@@ -749,6 +774,22 @@ const styles = StyleSheet.create({
   docSheetThumbFile: { alignItems: 'center', justifyContent: 'center' },
   root: { flex: 1 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  scrollDownBtn: {
+    position: 'absolute',
+    right: 16,
+    bottom: 16,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
+  },
   typing: { fontSize: 11, paddingHorizontal: Spacing.md, paddingBottom: 2 },
   outerCol: { paddingHorizontal: Spacing.md, paddingVertical: 3, maxWidth: '92%', alignSelf: 'flex-start' },
   outerColOwn: { alignSelf: 'flex-end' },

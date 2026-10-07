@@ -4,7 +4,15 @@ import * as Clipboard from 'expo-clipboard';
 import * as Linking from 'expo-linking';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
 import { ReassignTruckModal } from '@/components/reassign-truck-modal';
 import { TripForm } from '@/components/trip-form';
@@ -55,6 +63,9 @@ export function TripHeader({ tripId }: { tripId: string }) {
   const c = Colors[useColorScheme() ?? 'light'];
   const { data: trip } = useTrip(tripId);
   const [collapsed, setCollapsed] = useState(true);
+  // Cap the expanded stops list so a trip with many stops scrolls inside the
+  // card instead of pushing the chat off-screen.
+  const { height: windowHeight } = useWindowDimensions();
   const [editOpen, setEditOpen] = useState(false);
   const [reassignOpen, setReassignOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
@@ -104,7 +115,12 @@ export function TripHeader({ tripId }: { tripId: string }) {
       </View>
 
       {!collapsed && (
-        <>
+        <ScrollView
+          style={{ maxHeight: Math.round(windowHeight * 0.5) }}
+          contentContainerStyle={{ paddingBottom: 4 }}
+          showsVerticalScrollIndicator
+          nestedScrollEnabled
+        >
           {trip.stops.map((s, i) => (
             <StopBlock key={s.id} stop={s} index={i} count={trip.stops.length} t={t} />
           ))}
@@ -113,7 +129,7 @@ export function TripHeader({ tripId }: { tripId: string }) {
               <Text style={[styles.notesText, { color: UNLOAD_COLOR }]}>{trip.notes}</Text>
             </View>
           ) : null}
-        </>
+        </ScrollView>
       )}
 
       {/* Status picker */}
