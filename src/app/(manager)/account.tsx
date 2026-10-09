@@ -507,7 +507,7 @@ export default function AccountScreen() {
             WebView, so the address being read is visible. */}
         <View style={styles.legalRow}>
           <Pressable
-            onPress={() => WebBrowser.openBrowserAsync(PRIVACY_URL)}
+            onPress={() => WebBrowser.openBrowserAsync(`${PRIVACY_URL}?lang=${i18n.language}`)}
             hitSlop={8}
           >
             <Text style={[styles.legalLink, { color: c.mutedForeground }]}>
@@ -516,7 +516,7 @@ export default function AccountScreen() {
           </Pressable>
           <Text style={[styles.legalLink, { color: c.mutedForeground }]}>·</Text>
           <Pressable
-            onPress={() => WebBrowser.openBrowserAsync(TERMS_URL)}
+            onPress={() => WebBrowser.openBrowserAsync(`${TERMS_URL}?lang=${i18n.language}`)}
             hitSlop={8}
           >
             <Text style={[styles.legalLink, { color: c.mutedForeground }]}>
