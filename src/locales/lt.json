@@ -383,6 +383,8 @@
   },
   "sys": {
     "driverAssigned": "Vairuotojas {{name}} priskirtas vilkikui {{plate}}",
+    "memberAdded": "Pridėta: {{name}}",
+    "memberRemoved": "Pašalinta: {{name}}",
     "managerAssigned": "Vadovas {{name}} priskirtas vilkikui {{plate}}",
     "truckAssigned": "Reisui priskirtas vilkikas {{plate}} · vairuotojas {{name}}"
   },

@@ -378,6 +378,8 @@
   },
   "sys": {
     "driverAssigned": "Fahrer {{name}} dem Lkw {{plate}} zugewiesen",
+    "memberAdded": "Hinzugefügt: {{name}}",
+    "memberRemoved": "Entfernt: {{name}}",
     "managerAssigned": "Manager {{name}} dem Lkw {{plate}} zugewiesen",
     "truckAssigned": "Fahrzeug {{plate}} dieser Fahrt zugewiesen · Fahrer {{name}}"
   },

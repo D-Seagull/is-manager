@@ -52,7 +52,9 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <KeyboardProvider>
+        {/* Edge-to-edge (SDK 57 default): without these the Android nav-bar
+            inset reads 0 and the chat composer sits on the nav bar. */}
+        <KeyboardProvider statusBarTranslucent navigationBarTranslucent>
           <QueryClientProvider client={queryClient}>
             <ThemeProvider>
               <NavTheme>

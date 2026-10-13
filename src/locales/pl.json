@@ -383,6 +383,8 @@
   },
   "sys": {
     "driverAssigned": "Kierowca {{name}} przydzielony do ciężarówki {{plate}}",
+    "memberAdded": "Dodano: {{name}}",
+    "memberRemoved": "Usunięto: {{name}}",
     "managerAssigned": "Menedżer {{name}} przydzielony do ciężarówki {{plate}}",
     "truckAssigned": "Do trasy przypisano pojazd {{plate}} · kierowca {{name}}"
   },
