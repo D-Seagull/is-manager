@@ -378,6 +378,8 @@
   },
   "sys": {
     "driverAssigned": "Driver {{name}} assigned to truck {{plate}}",
+    "memberAdded": "Added {{name}}",
+    "memberRemoved": "Removed {{name}}",
     "managerAssigned": "Manager {{name}} assigned to truck {{plate}}",
     "truckAssigned": "Truck {{plate}} assigned to this trip · driver {{name}}"
   },

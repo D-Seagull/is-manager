@@ -56,6 +56,7 @@ import { MessageReactionsCluster } from '@/components/message-reactions';
 import { useChatTyping } from '@/hooks/use-chat-typing';
 import { useReactionsSocketSync } from '@/hooks/use-message-reactions';
 import { openRemoteFile, readableFileName } from '@/lib/open-file';
+import { systemMessageText } from '@/lib/system-message';
 import { albumSizes, groupAlbums } from '@/lib/albums';
 import { compressPhotos, PICKER_QUALITY } from '@/lib/compress-photo';
 import { AlbumGrid } from '@/components/album-grid';
@@ -348,6 +349,9 @@ export default function GroupChatScreen() {
     });
     setText('');
     setReplyingTo(null);
+    // Snap to the newest so the just-sent message isn't hidden under the composer.
+    listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    setShowScrollDown(false);
   };
 
   // ─── Header ────────────────────────────────────────────────────────
@@ -974,7 +978,7 @@ const GroupBubble = memo(function GroupBubble({
     return (
       <View style={styles.systemRow}>
         <Text style={[styles.systemText, { color: c.mutedForeground }]}>
-          {msg.content}
+          {systemMessageText(msg.content, t)}
         </Text>
       </View>
     );

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "is-manager",
+    "name": "IS Manager",
     "slug": "is-manager",
     "version": "1.0.0",
     "runtimeVersion": { "policy": "appVersion" },
@@ -21,9 +21,9 @@
       }
     },
     "android": {
-      "package": "com.dseadull.ismanager",
+      "package": "com.isfleet.ismanager",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 1,
+      "versionCode": 0,
       "adaptiveIcon": {
         "backgroundColor": "#0F172A",
         "foregroundImage": "./src/assets/images/adaptive-icon-foreground.png",
@@ -55,7 +55,13 @@
       ],
       "expo-secure-store",
       "expo-localization",
-      "expo-audio",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Додатку потрібен доступ до мікрофона, щоб записувати голосові повідомлення в чаті.",
+          "enableBackgroundPlayback": false
+        }
+      ],
       [
         "expo-notifications",
         {

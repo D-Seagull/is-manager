@@ -237,6 +237,10 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
     });
     setText('');
     setReplyingTo(null);
+    // Snap to the newest so the just-sent message isn't hidden under the composer.
+    nearBottomRef.current = true;
+    listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    setShowScrollDown(false);
   };
 
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
