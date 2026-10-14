@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -69,9 +69,9 @@ export function NotificationsBell({ color }: { color?: string }) {
             ) : (
               <ScrollView style={{ maxHeight: 420 }}>
                 {tripItems.map((it) => (
-                  <Pressable key={`trip-${it.truckId}`} onPress={() => go(`/(manager)/truck/${it.truckId}`)} style={({ pressed }) => [styles.item, { borderBottomColor: c.border, backgroundColor: pressed ? c.muted : 'transparent' }]}>
+                  <Pressable key={`trip-${it.truckId}`} onPress={() => go(`/(manager)/truck/${it.truckId}`)} style={({ pressed }) => [styles.item, { borderBottomColor: c.border, borderLeftColor: KIND.trip, backgroundColor: pressed ? c.muted : KIND.trip + '14' }]}>
                     <View style={styles.itemTop}>
-                      <Ionicons name="cube-outline" size={15} color={c.mutedForeground} />
+                      <MaterialCommunityIcons name="truck-outline" size={16} color={KIND.trip} />
                       <Text style={[styles.itemTitle, { color: c.foreground }]} numberOfLines={1}>{it.plate}</Text>
                       <View style={[styles.count, { backgroundColor: it.activeTripUnread > 0 ? `${c.destructive}22` : c.muted }]}>
                         <Text style={{ fontSize: 11, fontWeight: '700', color: it.activeTripUnread > 0 ? c.destructive : c.mutedForeground }}>{it.totalUnread}</Text>
@@ -86,9 +86,9 @@ export function NotificationsBell({ color }: { color?: string }) {
                 ))}
 
                 {dmItems.map((cv) => (
-                  <Pressable key={`dm-${cv.user.id}`} onPress={() => go(`/(manager)/dm/${cv.user.id}`)} style={({ pressed }) => [styles.item, { borderBottomColor: c.border, backgroundColor: pressed ? c.muted : 'transparent' }]}>
+                  <Pressable key={`dm-${cv.user.id}`} onPress={() => go(`/(manager)/dm/${cv.user.id}`)} style={({ pressed }) => [styles.item, { borderBottomColor: c.border, borderLeftColor: KIND.dm, backgroundColor: pressed ? c.muted : KIND.dm + '14' }]}>
                     <View style={styles.itemTop}>
-                      <Ionicons name="chatbubble-outline" size={15} color={c.mutedForeground} />
+                      <Ionicons name="chatbubble-outline" size={15} color={KIND.dm} />
                       <Text style={[styles.itemTitle, { color: c.foreground }]} numberOfLines={1}>{fullName(cv.user) || cv.user.role}</Text>
                       <View style={[styles.count, { backgroundColor: `${c.destructive}22` }]}>
                         <Text style={{ fontSize: 11, fontWeight: '700', color: c.destructive }}>{cv.unreadCount}</Text>
@@ -101,9 +101,9 @@ export function NotificationsBell({ color }: { color?: string }) {
                 ))}
 
                 {groupItems.map((g) => (
-                  <Pressable key={`group-${g.groupId}`} onPress={() => go(`/(manager)/group/${g.groupId}`)} style={({ pressed }) => [styles.item, { borderBottomColor: c.border, backgroundColor: pressed ? c.muted : 'transparent' }]}>
+                  <Pressable key={`group-${g.groupId}`} onPress={() => go(`/(manager)/group/${g.groupId}`)} style={({ pressed }) => [styles.item, { borderBottomColor: c.border, borderLeftColor: KIND.group, backgroundColor: pressed ? c.muted : KIND.group + '14' }]}>
                     <View style={styles.itemTop}>
-                      <Ionicons name="people-outline" size={15} color={c.mutedForeground} />
+                      <Ionicons name="people-outline" size={15} color={KIND.group} />
                       <Text style={[styles.itemTitle, { color: c.foreground }]} numberOfLines={1}>{g.name}</Text>
                       <View style={[styles.count, { backgroundColor: `${c.destructive}22` }]}>
                         <Text style={{ fontSize: 11, fontWeight: '700', color: c.destructive }}>{g.unreadCount}</Text>
@@ -125,6 +125,15 @@ export function NotificationsBell({ color }: { color?: string }) {
   );
 }
 
+// Each row says where the message is: a coloured stripe, a light tint and a
+// coloured icon — trip chat / direct / group at a glance. Same colours as the
+// driver app and the web bell.
+const KIND = {
+  trip: '#3B82F6',
+  dm: '#10B981',
+  group: '#8B5CF6',
+} as const;
+
 const styles = StyleSheet.create({
   bellBtn: { padding: 4 },
   badge: { position: 'absolute', top: -1, right: -1, minWidth: 15, height: 15, borderRadius: 8, paddingHorizontal: 3, alignItems: 'center', justifyContent: 'center' },
@@ -134,7 +143,12 @@ const styles = StyleSheet.create({
   head: { paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm + 2, borderBottomWidth: StyleSheet.hairlineWidth },
   headText: { fontSize: 14, fontWeight: '700' },
   empty: { alignItems: 'center', paddingVertical: Spacing.xl },
-  item: { paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm + 2, borderBottomWidth: StyleSheet.hairlineWidth },
+  item: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm + 2,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderLeftWidth: 3,
+  },
   itemTop: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   itemTitle: { flex: 1, fontSize: 14, fontWeight: '600' },
   count: { minWidth: 22, borderRadius: 999, paddingHorizontal: 6, paddingVertical: 1, alignItems: 'center' },
