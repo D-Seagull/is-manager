@@ -61,6 +61,7 @@ import {
 } from '@/hooks/use-direct-messages';
 import { useChatTyping } from '@/hooks/use-chat-typing';
 import { useReactionsSocketSync } from '@/hooks/use-message-reactions';
+import { useFocusMessage } from '@/hooks/use-focus-message';
 import { albumSizes, groupAlbums } from '@/lib/albums';
 import { compressPhotos, PICKER_QUALITY } from '@/lib/compress-photo';
 import { AlbumGrid } from '@/components/album-grid';
@@ -93,7 +94,10 @@ export default function DmScreen() {
   const insets = useSafeAreaInsets();
   // Safe-area pad when the keyboard is closed, small gap when it's open.
   const composerPad = useComposerBottomPadding();
-  const { userId: peerId } = useLocalSearchParams<{ userId: string }>();
+  const { userId: peerId, messageId: focusMessageId } = useLocalSearchParams<{
+    userId: string;
+    messageId?: string;
+  }>();
   const me = useUser();
   const myId = me?.id ?? '';
 
@@ -251,6 +255,16 @@ export default function DmScreen() {
       );
     },
     [data],
+  );
+
+  // Opened from a push → straight to that message.
+  useFocusMessage(
+    typeof focusMessageId === 'string' ? focusMessageId : undefined,
+    data,
+    (it, id) =>
+      it.data.id === id ||
+      (it.kind === 'album' && it.docs.some((d) => d.id === id)),
+    scrollToMessage,
   );
 
   // ─── Attach flow ───────────────────────────────────────────────────

@@ -63,16 +63,24 @@ export function PushNoticeOverlay() {
     // Route a background-banner tap to the most relevant screen. Most manager
     // pushes carry a truckId (truck/trip/status/manager-change) → open the truck
     // panel; DM/group messages carry userId/groupId instead.
+    // A chat-message push opens that chat pointed at the message
+    // (`messageId` → the screen scrolls to it and flashes it). Trip chats
+    // open through their truck, on the Chat tab.
     const navigate = (data?: Record<string, unknown>) => {
-      const truckId = typeof data?.truckId === 'string' ? data.truckId : null;
-      const userId = typeof data?.userId === 'string' ? data.userId : null;
-      const groupId = typeof data?.groupId === 'string' ? data.groupId : null;
+      const str = (v: unknown) => (typeof v === 'string' && v ? v : undefined);
+      const truckId = str(data?.truckId);
+      const userId = str(data?.userId);
+      const groupId = str(data?.groupId);
+      const messageId = str(data?.messageId);
       if (truckId) {
-        router.push(`/(manager)/truck/${truckId}` as never);
+        router.push({
+          pathname: '/(manager)/truck/[truckId]',
+          params: { truckId, tab: messageId ? 'chat' : undefined, messageId },
+        });
       } else if (userId) {
-        router.push(`/(manager)/dm/${userId}` as never);
+        router.push({ pathname: '/(manager)/dm/[userId]', params: { userId, messageId } });
       } else if (groupId) {
-        router.push(`/(manager)/group/${groupId}` as never);
+        router.push({ pathname: '/(manager)/group/[groupId]', params: { groupId, messageId } });
       }
     };
 
@@ -104,10 +112,21 @@ export function PushNoticeOverlay() {
     });
 
     // Background/closed → user taps the system banner → app foregrounds.
-    const respSub = Notifications.addNotificationResponseReceivedListener((r) => {
+    const handled = new Set<string>();
+    const onResponse = (r: import('expo-notifications').NotificationResponse) => {
+      const id = r.notification.request.identifier;
+      if (handled.has(id)) return;
+      handled.add(id);
+      void Notifications.clearLastNotificationResponseAsync?.();
       const data = r.notification.request.content.data as Record<string, unknown> | undefined;
       refresh();
-      navigate(data);
+      // Cold start: let the navigator mount first.
+      setTimeout(() => navigate(data), 0);
+    };
+    const respSub = Notifications.addNotificationResponseReceivedListener(onResponse);
+    // The app was fully closed and opened by tapping the banner.
+    void Notifications.getLastNotificationResponseAsync().then((r) => {
+      if (r) onResponse(r);
     });
 
     return () => {
