@@ -455,7 +455,10 @@ export function TripChat({
           </Text>
         </View>
       ) : (
-        <View style={[styles.composer, { paddingBottom: composerPad }]}>
+        // Transparent over the chat wallpaper (unlike the DM bar), so give it
+        // a little extra air above the Android nav bar — flush against it the
+        // input looked like it was lying on the nav bar.
+        <View style={[styles.composer, { paddingBottom: composerPad + Spacing.sm }]}>
           {!editing && (
             <>
               <Pressable onPress={showAttachSheet} disabled={uploadDocs.isPending} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed || uploadDocs.isPending ? 0.5 : 1 }]}>
