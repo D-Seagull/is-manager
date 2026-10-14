@@ -35,10 +35,11 @@ export default function TruckDetailScreen() {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
-  const { truckId, plate, tab: tabParam } = useLocalSearchParams<{
+  const { truckId, plate, tab: tabParam, messageId } = useLocalSearchParams<{
     truckId: string;
     plate?: string;
     tab?: string;
+    messageId?: string;
   }>();
 
   const [tab, setTab] = useState<Tab>(
@@ -127,7 +128,12 @@ export default function TruckDetailScreen() {
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={0} style={styles.fill}>
         <View style={styles.content}>
           {tab === 'chat' ? (
-            <TripChat tripId={selectedTripId ?? activeTripId} isFocused={tab === 'chat' && screenFocused} loading={truckLoading} />
+            <TripChat
+              tripId={selectedTripId ?? activeTripId}
+              isFocused={tab === 'chat' && screenFocused}
+              loading={truckLoading}
+              focusMessageId={typeof messageId === 'string' ? messageId : undefined}
+            />
           ) : tab === 'trips' ? (
             <TripsTab
               truckId={truckId ?? ''}

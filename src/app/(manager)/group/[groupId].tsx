@@ -55,6 +55,7 @@ import {
 import { MessageReactionsCluster } from '@/components/message-reactions';
 import { useChatTyping } from '@/hooks/use-chat-typing';
 import { useReactionsSocketSync } from '@/hooks/use-message-reactions';
+import { useFocusMessage } from '@/hooks/use-focus-message';
 import { openRemoteFile, readableFileName } from '@/lib/open-file';
 import { systemMessageText } from '@/lib/system-message';
 import { albumSizes, groupAlbums } from '@/lib/albums';
@@ -90,7 +91,11 @@ export default function GroupChatScreen() {
   const insets = useSafeAreaInsets();
   // Safe-area pad when the keyboard is closed, small gap when it's open.
   const composerPad = useComposerBottomPadding();
-  const { groupId, name } = useLocalSearchParams<{ groupId: string; name?: string }>();
+  const {
+    groupId,
+    name,
+    messageId: focusMessageId,
+  } = useLocalSearchParams<{ groupId: string; name?: string; messageId?: string }>();
   const me = useUser();
   const myId = me?.id ?? '';
 
@@ -225,6 +230,16 @@ export default function GroupChatScreen() {
       );
     },
     [data],
+  );
+
+  // Opened from a push → straight to that message.
+  useFocusMessage(
+    typeof focusMessageId === 'string' ? focusMessageId : undefined,
+    data,
+    (it, id) =>
+      it.data.id === id ||
+      (it.kind === 'album' && it.docs.some((d) => d.id === id)),
+    scrollToMessage,
   );
 
   // ─── Attach flow ───────────────────────────────────────────────────

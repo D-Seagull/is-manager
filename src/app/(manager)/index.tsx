@@ -14,6 +14,7 @@ import { useConversations } from '@/hooks/use-direct-messages';
 import { useGroupUnread } from '@/hooks/use-groups';
 import { useMyTrucks } from '@/hooks/use-my-trucks';
 import { useNewBugCount } from '@/hooks/use-admin';
+import { useTripUnread } from '@/hooks/use-notifications';
 import { fullName } from '@/lib/format';
 import { resolveDisplayStatus, STATUS_HEX } from '@/lib/status';
 import { useUser } from '@/store/auth';
@@ -72,6 +73,13 @@ export default function HomeScreen() {
   const { data: myTrucks } = useMyTrucks(elevated);
   const hasMyTrucks = (myTrucks?.length ?? 0) > 0;
   const showMyTrucks = role === 'MANAGER' || (elevated && hasMyTrucks);
+  // Unread trip-chat messages on MY trucks — the same count the chat card
+  // shows for DMs and groups. Kept live by useTripUnreadSync in the layout.
+  const { data: tripUnread } = useTripUnread();
+  const myTruckIds = new Set((myTrucks ?? []).map((tr) => tr.id));
+  const myTrucksBadge = (tripUnread?.items ?? [])
+    .filter((it) => myTruckIds.has(it.truckId))
+    .reduce((sum, it) => sum + it.totalUnread, 0);
 
   // Hero cards = each role's primary working surface(s). A teamlead leads with
   // Менеджери and also gets a My-trucks hero when they own trucks — same
@@ -91,6 +99,7 @@ export default function HomeScreen() {
     color: CH.my,
     href: '/(manager)/my-trucks',
     sub: t('home.myTrucksSub', 'Ваш флот і рейси'),
+    badge: myTrucksBadge,
   };
   const isAdmin = role === 'ADMIN';
   const newBugs = useNewBugCount(isAdmin);

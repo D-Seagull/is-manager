@@ -39,6 +39,7 @@ import { useTripDocuments, useUploadDocuments } from '@/hooks/use-documents';
 import { useTripChatArchive } from '@/hooks/use-trip-archive';
 import { useTrip } from '@/hooks/use-trip';
 import { ChatMessage, useTripChat } from '@/hooks/use-trip-chat';
+import { useFocusMessage } from '@/hooks/use-focus-message';
 import { openRemoteFile, readableFileName } from '@/lib/open-file';
 import { albumSizes, groupAlbums } from '@/lib/albums';
 import { compressPhotos, PICKER_QUALITY } from '@/lib/compress-photo';
@@ -64,7 +65,18 @@ type TimelineItem =
   | { kind: 'doc'; data: DriverDocument; ts: number }
   | { kind: 'album'; data: DriverDocument; docs: DriverDocument[]; ts: number };
 
-export function TripChat({ tripId, isFocused, loading }: { tripId: string | null; isFocused: boolean; loading?: boolean }) {
+export function TripChat({
+  tripId,
+  isFocused,
+  loading,
+  focusMessageId,
+}: {
+  tripId: string | null;
+  isFocused: boolean;
+  loading?: boolean;
+  /** From a push tap: scroll to this message and flash it. */
+  focusMessageId?: string;
+}) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
@@ -110,6 +122,31 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
     ];
     return items.sort((a, b) => b.ts - a.ts);
   }, [chat.messages, documents]);
+
+  // Opened from a push: scroll to that message and flash it for a moment.
+  const [highlightId, setHighlightId] = useState<string | null>(null);
+  const scrollToMessage = useCallback(
+    (id: string) => {
+      const index = data.findIndex(
+        (it) =>
+          it.data.id === id ||
+          (it.kind === 'album' && it.docs.some((d) => d.id === id)),
+      );
+      if (index < 0) return;
+      listRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.5 });
+      setHighlightId(id);
+      setTimeout(() => setHighlightId((h) => (h === id ? null : h)), 1500);
+    },
+    [data],
+  );
+  useFocusMessage(
+    focusMessageId,
+    data,
+    (it, id) =>
+      it.data.id === id ||
+      (it.kind === 'album' && it.docs.some((d) => d.id === id)),
+    scrollToMessage,
+  );
 
   // A quoted file that belongs to an album reads "Album · N files".
   const albumSize = useMemo(() => albumSizes(documents), [documents]);
@@ -313,8 +350,33 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
               </View>
             ) : null
           }
-          renderItem={({ item }) =>
-            item.kind === 'msg' ? (
+          // A far row isn't measured yet: jump near it, then retry.
+          onScrollToIndexFailed={(info) => {
+            listRef.current?.scrollToOffset({
+              offset: info.averageItemLength * info.index,
+              animated: false,
+            });
+            setTimeout(
+              () =>
+                listRef.current?.scrollToIndex({
+                  index: info.index,
+                  animated: true,
+                  viewPosition: 0.5,
+                }),
+              120,
+            );
+          }}
+          extraData={highlightId}
+          renderItem={({ item }) => (
+            <View
+              style={
+                item.data.id === highlightId ||
+                (item.kind === 'album' && item.docs.some((d: DriverDocument) => d.id === highlightId))
+                  ? { backgroundColor: c.primary + '26', borderRadius: Radius.md }
+                  : undefined
+              }
+            >
+            {item.kind === 'msg' ? (
               <MsgBubble
                 msg={item.data}
                 isOwn={item.data.senderId === myId}
@@ -339,8 +401,9 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
                 onOpen={openDoc}
                 onLongPress={handleDocLongPress}
               />
-            )
-          }
+            )}
+            </View>
+          )}
         />
       )}
       {showScrollDown && (
@@ -392,7 +455,10 @@ export function TripChat({ tripId, isFocused, loading }: { tripId: string | null
           </Text>
         </View>
       ) : (
-        <View style={[styles.composer, { paddingBottom: composerPad }]}>
+        // Transparent over the chat wallpaper (unlike the DM bar), so give it
+        // a little extra air above the Android nav bar — flush against it the
+        // input looked like it was lying on the nav bar.
+        <View style={[styles.composer, { paddingBottom: composerPad + Spacing.sm }]}>
           {!editing && (
             <>
               <Pressable onPress={showAttachSheet} disabled={uploadDocs.isPending} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed || uploadDocs.isPending ? 0.5 : 1 }]}>
