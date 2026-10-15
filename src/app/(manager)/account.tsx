@@ -24,6 +24,7 @@ import { PresenceStatusSheet } from '@/components/presence-status-sheet';
 import { SectionHeader } from '@/components/section-header';
 import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing, ThemeColors } from '@/constants/theme';
+import { ReliableNotifications } from '@/components/reliable-notifications';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeMode, type ThemeMode } from '@/hooks/use-theme';
 import {
@@ -447,6 +448,13 @@ export default function AccountScreen() {
             </View>
           </View>
         </SectionCard>
+
+        {/* Reliable notifications (Android): lock screen + battery. */}
+        {Platform.OS === 'android' && (
+          <SectionCard colors={c} title={t('settings.reliable.title', 'Надійні сповіщення')}>
+            <ReliableNotifications colors={c} />
+          </SectionCard>
+        )}
 
         {/* Company settings — teamlead / admin only. */}
         {elevated && (

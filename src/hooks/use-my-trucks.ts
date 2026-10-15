@@ -110,6 +110,20 @@ export function useTruckNotes(truckId: string | null | undefined) {
   });
 }
 
+export function useCreateTruck() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: { plate: string; currentDriverId?: string }) => {
+      const res = await api.post('/trucks', data);
+      return res.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['trucks-all'] });
+      qc.invalidateQueries({ queryKey: ['trucks-my'] });
+    },
+  });
+}
+
 export function useCreateTruckNote(truckId: string) {
   const qc = useQueryClient();
   return useMutation({

@@ -289,7 +289,10 @@
     }
   },
   "push": {
-    "noticeTitle": "Notification"
+    "noticeTitle": "Notification",
+    "channels": {
+      "chat": "Messages and trips"
+    }
   },
   "settings": {
     "name": {
@@ -357,7 +360,13 @@
       "error": "Could not delete the account"
     },
     "privacyPolicy": "Privacy Policy",
-    "terms": "Terms of Service"
+    "terms": "Terms of Service",
+    "reliable": {
+      "title": "Reliable notifications",
+      "notifications": "Notifications on the lock screen",
+      "battery": "Battery: no restrictions",
+      "hint": "So notifications always get through: allow them on the lock screen and turn off battery saving for IS Manager. On Xiaomi / Redmi also enable “Autostart”."
+    }
   },
   "status": {
     "ONLINE": "Online",

@@ -20,6 +20,7 @@ import { SectionHeader } from '@/components/section-header';
 import { KpiCard, CompanyStatusBadge } from '@/app/(manager)/admin/index';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import {
   useAdminCompany,
   useDeactivateCompany,
@@ -36,12 +37,13 @@ export default function AdminCompanyDetailScreen() {
   const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data, isLoading, isError } = useAdminCompany(id);
+  const listPad = useListBottomPadding();
 
   return (
     <View style={{ flex: 1, backgroundColor: c.background }}>
       <SectionHeader title={data?.name ?? t('admin.detail.title', 'Компанія')} />
 
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: listPad }]}>
         {isError && (
           <Text style={{ color: c.destructive }}>
             {t('admin.detail.errorLoad', 'Не вдалося завантажити компанію')}

@@ -5,7 +5,11 @@ import * as Device from 'expo-device';
 import type { ExpoPushToken } from 'expo-notifications';
 import { Platform } from 'react-native';
 
+import i18n from './i18n';
 import { registerPushToken, unregisterPushToken } from './push-api';
+
+/** Channels this version creates beyond the original two (PushService.channelFor). */
+const ANDROID_CHANNELS = ['chat'];
 
 // Lazy-load expo-notifications. On Android Expo Go SDK 53+ importing it
 // statically eagerly runs `DevicePushTokenAutoRegistration` which THROWS
@@ -76,6 +80,17 @@ export async function registerForPushNotifications(): Promise<string | null> {
       sound: 'push_message.mp3',
       vibrationPattern: [0, 250, 250, 250],
     });
+    // `chat`: every IS Fleet push, MAX importance + public on the lock screen
+    // (pops up and shows in full while locked, wakes the screen where the
+    // firmware does that). A NEW channel because existing ones can't change;
+    // the backend uses it only for devices that report it (ANDROID_CHANNELS).
+    await Notifications.setNotificationChannelAsync('chat', {
+      name: i18n.t('push.channels.chat'),
+      importance: Notifications.AndroidImportance.MAX,
+      sound: 'push_message.mp3',
+      vibrationPattern: [0, 250, 250, 250],
+      lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+    });
   }
 
   // EAS / Expo project id — required by the Expo Push Service.
@@ -101,6 +116,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
     await registerPushToken(
       token,
       Platform.OS === 'ios' ? 'ios' : Platform.OS === 'android' ? 'android' : 'web',
+      Platform.OS === 'android' ? ANDROID_CHANNELS : [],
     );
     console.log('[push] backend registered token for', Platform.OS);
   } catch (e) {

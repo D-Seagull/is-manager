@@ -34,6 +34,7 @@ import { PhotoGallery } from '@/components/photo-gallery';
 import { AlbumGrid } from '@/components/album-grid';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useComposerBottomPadding } from '@/hooks/use-composer-bottom-padding';
+import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { ChatArchiveModal } from '@/components/chat-archive-modal';
 import { useTripDocuments, useUploadDocuments } from '@/hooks/use-documents';
 import { useTripChatArchive } from '@/hooks/use-trip-archive';
@@ -767,6 +768,7 @@ function TripDocsSheet({
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
+  const listPad = useListBottomPadding();
   const [tab, setTab] = useState<DocTab>('ALL');
   // Deleted files (incl. ones gone from storage) can't be opened — hide them.
   const live = docs.filter((d) => !d.deletedAt && d.signedUrl);
@@ -808,7 +810,7 @@ function TripDocsSheet({
           <FlatList
             data={filtered}
             keyExtractor={(d) => d.id}
-            contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm }}
+            contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm, paddingBottom: listPad }}
             renderItem={({ item }) => (
               <Pressable onPress={() => onOpen(item)} style={[styles.docItem, { borderColor: c.border }]}>
                 {item.fileType === 'PHOTO' ? (
