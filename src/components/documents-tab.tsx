@@ -19,6 +19,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { bottomBarPadding } from '@/lib/insets';
 import { InsetFlatList } from '@/components/inset-list';
 import { PhotoGallery } from '@/components/photo-gallery';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -260,7 +261,7 @@ function PickerModal({
   return (
     <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={[styles.sheet, { backgroundColor: c.card, paddingBottom: Math.max(insets.bottom, Spacing.sm) + Spacing.lg }]} onPress={(e) => e.stopPropagation()}>
+        <Pressable style={[styles.sheet, { backgroundColor: c.card, paddingBottom: bottomBarPadding(insets, Spacing.sm) + Spacing.lg }]} onPress={(e) => e.stopPropagation()}>
           <Text style={[styles.sheetTitle, { color: c.foreground }]}>{title}</Text>
           <ScrollView style={{ maxHeight: 380 }}>
             {options.map((o) => {

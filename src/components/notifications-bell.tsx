@@ -7,6 +7,7 @@ import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { bottomBarPadding } from '@/lib/insets';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useConversations } from '@/hooks/use-direct-messages';
 import { useGroupUnread } from '@/hooks/use-groups';
@@ -53,7 +54,7 @@ export function NotificationsBell({ color }: { color?: string }) {
       <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
         <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>
           <Pressable
-            style={[styles.sheet, { backgroundColor: c.card, marginTop: insets.top + 44, paddingBottom: Math.max(insets.bottom, Spacing.sm) }]}
+            style={[styles.sheet, { backgroundColor: c.card, marginTop: insets.top + 44, paddingBottom: bottomBarPadding(insets, Spacing.sm) }]}
             onPress={(e) => e.stopPropagation()}
           >
             <View style={[styles.head, { borderBottomColor: c.border }]}>
