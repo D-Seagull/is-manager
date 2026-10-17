@@ -10,7 +10,6 @@ import {
   Modal,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Switch,
   Text,
@@ -24,6 +23,7 @@ import { PresenceStatusSheet } from '@/components/presence-status-sheet';
 import { SectionHeader } from '@/components/section-header';
 import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing, ThemeColors } from '@/constants/theme';
+import { InsetScrollView } from '@/components/inset-list';
 import { ReliableNotifications } from '@/components/reliable-notifications';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeMode, type ThemeMode } from '@/hooks/use-theme';
@@ -254,11 +254,10 @@ export default function AccountScreen() {
     <View style={[styles.root, { backgroundColor: c.background }]}>
       <SectionHeader title={t('nav.items.account', 'Акаунт')} />
 
-      <ScrollView
+      <InsetScrollView bottomGap={Spacing.xl} insetIOS
         style={{ flex: 1 }}
         contentContainerStyle={{
           padding: Spacing.md,
-          paddingBottom: insets.bottom + Spacing.xl,
           gap: Spacing.lg,
         }}
         showsVerticalScrollIndicator={false}
@@ -532,7 +531,7 @@ export default function AccountScreen() {
             </Text>
           </Pressable>
         </View>
-      </ScrollView>
+      </InsetScrollView>
 
       <PresenceStatusSheet open={statusPickerOpen} onClose={() => setStatusPickerOpen(false)} />
 

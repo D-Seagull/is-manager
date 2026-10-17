@@ -4,7 +4,7 @@ import type { TFunction } from 'i18next';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { ChatAvatar } from '@/components/chat-avatar';
 import { PhotoGallery } from '@/components/photo-gallery';
@@ -12,8 +12,8 @@ import { SectionHeader } from '@/components/section-header';
 import { StatusDot } from '@/components/status-dot';
 import { TRIP_STATUS_COLORS } from '@/constants/trip-status';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetFlatList } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useTripDocuments } from '@/hooks/use-documents';
 import { useDeleteTrip, useTrips } from '@/hooks/use-trips';
 import { openRemoteFile } from '@/lib/open-file';
@@ -32,7 +32,6 @@ const fmtDate = (iso: string) => {
 
 export default function TripsScreen() {
   const c = Colors[useColorScheme() ?? 'light'];
-  const listPad = useListBottomPadding();
   const { t } = useTranslation();
   const { data: trips, isLoading, refetch } = useTrips();
   const [search, setSearch] = useState('');
@@ -92,10 +91,10 @@ export default function TripsScreen() {
           </Text>
         </View>
       ) : (
-        <FlatList
+        <InsetFlatList
           data={list}
           keyExtractor={(tr) => tr.id}
-          contentContainerStyle={[styles.listContent, { paddingBottom: listPad }]}
+          contentContainerStyle={styles.listContent}
           renderItem={({ item }) => <TripRow trip={item} c={c} t={t} />}
           ItemSeparatorComponent={() => <View style={{ height: Spacing.sm }} />}
         />

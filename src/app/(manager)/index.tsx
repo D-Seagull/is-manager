@@ -2,16 +2,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatAvatar } from '@/components/chat-avatar';
 import { HeaderActions } from '@/components/header-actions';
 import { PresenceStatusSheet } from '@/components/presence-status-sheet';
 import { Colors, Spacing } from '@/constants/theme';
+import { InsetScrollView } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useConversations } from '@/hooks/use-direct-messages';
-import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useGroupUnread } from '@/hooks/use-groups';
 import { useMyTrucks } from '@/hooks/use-my-trucks';
 import { useNewBugCount } from '@/hooks/use-admin';
@@ -44,7 +44,6 @@ export default function HomeScreen() {
   const scheme = useColorScheme() ?? 'light';
   const c = Colors[scheme];
   const insets = useSafeAreaInsets();
-  const listPad = useListBottomPadding(Spacing.lg);
   const user = useUser();
   const role = user?.role;
 
@@ -161,7 +160,7 @@ export default function HomeScreen() {
         <HeaderActions colors={c} />
       </View>
 
-      <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: listPad }]}>
+      <InsetScrollView bottomGap={Spacing.lg} contentContainerStyle={styles.scroll}>
         {/* Hero(es) — the role's primary working surface(s). */}
         {heroes.map((h) => (
           <Pressable
@@ -213,7 +212,7 @@ export default function HomeScreen() {
             </Pressable>
           ))}
         </View>
-      </ScrollView>
+      </InsetScrollView>
 
       {/* Manager card — pinned at the bottom (status / settings / logout). */}
       <ManagerCard insetsBottom={insets.bottom} />

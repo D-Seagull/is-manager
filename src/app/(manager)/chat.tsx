@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
+  // eslint-disable-next-line no-restricted-imports -- the Chat bottom tab bar below the list owns the inset
   FlatList,
   Alert,
   Pressable,

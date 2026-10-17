@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Alert,
+  // eslint-disable-next-line no-restricted-imports -- the footer under the list owns the inset
   FlatList,
   Modal,
   Pressable,

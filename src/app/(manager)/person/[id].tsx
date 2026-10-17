@@ -3,15 +3,15 @@ import * as Linking from 'expo-linking';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatAvatar } from '@/components/chat-avatar';
 import { NotificationsBell } from '@/components/notifications-bell';
 import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetScrollView } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { PersonDetail, useRateDriver, useSetUserActive, useUserDetail, useUserRatings } from '@/hooks/use-people';
 import { fullName } from '@/lib/format';
 import { useUser } from '@/store/auth';
@@ -19,7 +19,6 @@ import { useUser } from '@/store/auth';
 export default function PersonScreen() {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
-  const listPad = useListBottomPadding();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: person, isLoading } = useUserDetail(id);
@@ -56,7 +55,7 @@ export default function PersonScreen() {
       {isLoading || !person ? (
         <View style={styles.center}><ActivityIndicator color={c.primary} /></View>
       ) : (
-        <ScrollView contentContainerStyle={{ padding: Spacing.md, gap: Spacing.md, paddingBottom: listPad }}>
+        <InsetScrollView contentContainerStyle={{ padding: Spacing.md, gap: Spacing.md }}>
           {/* Profile */}
           <View style={[styles.card, styles.profile, { backgroundColor: c.card, borderColor: c.border }]}>
             <View>
@@ -105,7 +104,7 @@ export default function PersonScreen() {
               {person.isActive ? t('people.deactivate', 'Деактивувати') : t('people.activate', 'Активувати')}
             </Text>
           </Pressable>
-        </ScrollView>
+        </InsetScrollView>
       )}
     </View>
   );

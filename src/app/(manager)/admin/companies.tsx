@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
-  FlatList,
   Modal,
   Pressable,
   StyleSheet,
@@ -16,13 +15,12 @@ import {
 import { SectionHeader } from '@/components/section-header';
 import { CompanyStatusBadge } from '@/app/(manager)/admin/index';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetFlatList } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useCompanies, useCreateCompany } from '@/hooks/use-admin';
 
 export default function AdminCompaniesScreen() {
   const c = Colors[useColorScheme() ?? 'light'];
-  const listPad = useListBottomPadding();
   const { t, i18n } = useTranslation();
   const { data: companies, isLoading, refetch } = useCompanies();
   const [search, setSearch] = useState('');
@@ -84,10 +82,10 @@ export default function AdminCompaniesScreen() {
           </Text>
         </View>
       ) : (
-        <FlatList
+        <InsetFlatList
           data={list}
           keyExtractor={(co) => co.id}
-          contentContainerStyle={[styles.list, { paddingBottom: listPad }]}
+          contentContainerStyle={styles.list}
           renderItem={({ item }) => (
             <Pressable
               onPress={() => router.navigate(`/(manager)/admin/company/${item.id}` as never)}

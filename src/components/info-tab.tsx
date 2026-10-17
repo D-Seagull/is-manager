@@ -6,6 +6,7 @@ import {
   Alert,
   Modal,
   Pressable,
+  // eslint-disable-next-line no-restricted-imports -- height-capped picker inside a sheet
   ScrollView,
   StyleSheet,
   Text,
@@ -15,8 +16,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetScrollView } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useCompanyUsers } from '@/hooks/use-company-users';
 import {
   MyTruck,
@@ -33,7 +34,6 @@ import { useUser } from '@/store/auth';
 export function InfoTab({ truck, activeTripId }: { truck: MyTruck; activeTripId?: string | null }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
-  const listPad = useListBottomPadding();
   const user = useUser();
 
   const { data: companyUsers = [] } = useCompanyUsers();
@@ -76,7 +76,7 @@ export function InfoTab({ truck, activeTripId }: { truck: MyTruck; activeTripId?
   const managerName = fullName(truck.manager) || t('info.noManager', 'Без менеджера');
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: c.background }} contentContainerStyle={{ padding: Spacing.md, gap: Spacing.md, paddingBottom: listPad }} keyboardShouldPersistTaps="handled">
+    <InsetScrollView style={{ flex: 1, backgroundColor: c.background }} contentContainerStyle={{ padding: Spacing.md, gap: Spacing.md }} keyboardShouldPersistTaps="handled">
       {/* Assignments */}
       <View style={[styles.card, { backgroundColor: c.card, borderColor: c.border }]}>
         <Row label={t('info.driver', 'Водій')} c={c}>
@@ -160,7 +160,7 @@ export function InfoTab({ truck, activeTripId }: { truck: MyTruck; activeTripId?
         options={[{ id: 'none', label: t('info.noManager', 'Без менеджера') }, ...managers.map((m) => ({ id: m.id, label: fullName(m) || m.phone || m.id }))]}
         onSelect={(id) => setManager(id === 'none' ? null : id)}
       />
-    </ScrollView>
+    </InsetScrollView>
   );
 }
 

@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Alert,
-  FlatList,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -24,6 +23,7 @@ import { SectionHeader } from '@/components/section-header';
 import { StatusDot } from '@/components/status-dot';
 import { useLastSeenText } from '@/components/last-seen';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetFlatList } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useCompanyUsers, type CompanyUser } from '@/hooks/use-company-users';
 import { useCreateDriver, useCreateManager, type DriverExistsElsewhereConflict } from '@/hooks/use-people';
@@ -102,7 +102,7 @@ export function PeopleScreen({ kind }: { kind: 'driver' | 'manager' }) {
           </Text>
         </View>
       ) : (
-        <FlatList
+        <InsetFlatList
           data={list}
           keyExtractor={(u) => u.id}
           renderItem={({ item }) => <PersonRow user={item} kind={kind} />}

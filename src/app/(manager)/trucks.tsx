@@ -2,14 +2,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { useIsFocused } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SectionHeader } from '@/components/section-header';
 import { TruckCard } from '@/components/truck-card';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetFlatList } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useCreateTruck, useTrucks } from '@/hooks/use-my-trucks';
 import { fullName } from '@/lib/format';
 
@@ -20,7 +20,6 @@ export default function TrucksScreen() {
   const [search, setSearch] = useState('');
   const [createOpen, setCreateOpen] = useState(false);
 
-  const listPad = useListBottomPadding();
 
   const isFocused = useIsFocused();
   useEffect(() => {
@@ -84,10 +83,10 @@ export default function TrucksScreen() {
           </Text>
         </View>
       ) : (
-        <FlatList
+        <InsetFlatList
           data={list}
           keyExtractor={(tr) => tr.id}
-          contentContainerStyle={[styles.list, { paddingBottom: listPad }]}
+          contentContainerStyle={styles.list}
           renderItem={({ item }) => <TruckCard truck={item} openTab="info" />}
         />
       )}

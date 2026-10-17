@@ -6,7 +6,6 @@ import {
   Modal,
   Alert,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -17,8 +16,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusDot } from '@/components/status-dot';
 import { TRIP_STATUSES, TRIP_STATUS_COLORS } from '@/constants/trip-status';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetScrollView } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useTripsByTruck, useUpdateTripStatus, useDeleteTrip } from '@/hooks/use-trips';
 import { useUser } from '@/store/auth';
 import { formatDate } from '@/lib/format-date';
@@ -44,7 +43,6 @@ export function TripsTab({
 }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
-  const listPad = useListBottomPadding();
   const { data: trips, isLoading } = useTripsByTruck(truckId);
   const [search, setSearch] = useState('');
 
@@ -104,7 +102,7 @@ export function TripsTab({
           </Text>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={{ padding: Spacing.md, gap: Spacing.lg, paddingBottom: listPad }}>
+        <InsetScrollView contentContainerStyle={{ padding: Spacing.md, gap: Spacing.lg }}>
           {sections.map((s) => (
             <View key={s.key} style={{ gap: Spacing.sm }}>
               <View style={styles.sectionHead}>
@@ -122,7 +120,7 @@ export function TripsTab({
               ))}
             </View>
           ))}
-        </ScrollView>
+        </InsetScrollView>
       )}
     </View>
   );

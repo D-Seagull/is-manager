@@ -6,7 +6,6 @@ import {
   ActivityIndicator,
   Alert,
   Pressable,
-  ScrollView,
   StyleSheet,
   Switch,
   Text,
@@ -15,8 +14,8 @@ import {
 } from 'react-native';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetScrollView } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import {
   Alarm,
   AlarmRecurrence,
@@ -43,7 +42,6 @@ const offsetDate = (min: number) => {
 export function AlarmTab({ truck, activeTripId }: { truck: MyTruck; activeTripId?: string | null }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
-  const listPad = useListBottomPadding();
   const user = useUser();
 
   const { data: alarms = [], isLoading } = useAlarmsByTruck(truck.id);
@@ -155,7 +153,7 @@ export function AlarmTab({ truck, activeTripId }: { truck: MyTruck; activeTripId
         </Pressable>
       </View>
 
-      <ScrollView contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm, paddingBottom: listPad }} keyboardShouldPersistTaps="handled">
+      <InsetScrollView contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm }} keyboardShouldPersistTaps="handled">
         {showForm && (
           <View style={[styles.form, { backgroundColor: c.card, borderColor: c.border }]}>
             {/* Target */}
@@ -249,7 +247,7 @@ export function AlarmTab({ truck, activeTripId }: { truck: MyTruck; activeTripId
             );
           })
         )}
-      </ScrollView>
+      </InsetScrollView>
 
       {pickerMode && (
         <DateTimePicker value={time} mode={pickerMode} is24Hour onChange={onPickerChange} />
