@@ -42,9 +42,11 @@ function useAppStateRefetch() {
 // server `uiLocale` is written on pick for web/cross-device parity but is not
 // auto-applied here — otherwise its UK default would override the phone locale.
 
-export const unstable_settings = {
-  anchor: '(manager)',
-};
+// No `unstable_settings.anchor` here (it came with the Expo template). It
+// mounted a hidden (manager) under `index`; index's <Redirect> then replaced
+// itself with a SECOND (manager), and both stayed mounted — every overlay,
+// socket listener and push handler in that layout ran twice (each trip
+// question popped up twice). The root stack holds one route at a time.
 
 export default function RootLayout() {
   useAppStateRefetch();
