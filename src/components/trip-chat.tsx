@@ -33,6 +33,7 @@ import { Colors, Radius, Spacing } from '@/constants/theme';
 import { PhotoGallery } from '@/components/photo-gallery';
 import { AlbumGrid } from '@/components/album-grid';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useClearChatNotifications } from '@/hooks/use-clear-chat-notifications';
 import { useComposerBottomPadding } from '@/hooks/use-composer-bottom-padding';
 import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { ChatArchiveModal } from '@/components/chat-archive-modal';
@@ -90,6 +91,8 @@ export function TripChat({
   const listRef = useRef<FlatList>(null);
   const [showScrollDown, setShowScrollDown] = useState(false);
   const chat = useTripChat(tripId, { isFocused, nearBottomRef });
+  // Chat open on screen → its message banners leave the notification tray.
+  useClearChatNotifications(tripId ? { tripId } : null, isFocused, chat.messages.length);
   const { data: trip } = useTrip(tripId);
   const { data: documents = [] } = useTripDocuments(tripId);
   const { data: archiveSessions = [] } = useTripChatArchive(tripId);
