@@ -20,7 +20,9 @@ import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { dmKeys } from '@/hooks/use-direct-messages';
 import { groupKeys } from '@/hooks/use-groups';
+import { HAS_ALARM_SOUND } from '@/lib/push';
 import { getSocket } from '@/lib/socket';
+import { playAlarmSound } from '@/lib/sounds';
 import { useAuthStore } from '@/store/auth';
 
 interface Notice {
@@ -35,9 +37,10 @@ interface Notice {
  * right screen when the user taps a background banner. Chat messages arrive
  * over the socket already, so they refresh silently without a modal.
  *
- * While the app is open the backend sends no push — the news comes as the
- * `notice` socket event and is shown the same way (a banner over the open app
- * was the doubled window). The push path stays for older servers and races.
+ * The backend pushes everything; while the app is on screen lib/push.ts keeps
+ * the banner and sound away and the push lands here. (Servers that held the
+ * push back for an open app sent the `notice` socket event instead — shown the
+ * same way.)
  */
 export function PushNoticeOverlay() {
   const { t } = useTranslation();
@@ -77,8 +80,8 @@ export function PushNoticeOverlay() {
     [t],
   );
 
-  // In-app notices: what the backend sends instead of a push while the app is
-  // open. Works in every build, Expo Go on Android included.
+  // In-app notices: what servers that held the push back for an open app sent
+  // instead. Still handled, so any server version works.
   useEffect(() => {
     if (!token) return;
     const socket = getSocket(token);
@@ -139,7 +142,11 @@ export function PushNoticeOverlay() {
       // in-app chime plays on the MEDIA stream — silent with media volume down,
       // so some phones got only the vibration. The heads-up over the modal is
       // fine for an alarm.
-      if (payload?.type !== 'ALARM') void Notifications.dismissNotificationAsync(n.request.identifier);
+      // Binaries without the `alarm` channel (before versionCode 3) get alarms
+      // on `default`; keep their old behaviour: dismiss + in-app chime.
+      const keep = payload?.type === 'ALARM' && HAS_ALARM_SOUND;
+      if (!keep) void Notifications.dismissNotificationAsync(n.request.identifier);
+      if (payload?.type === 'ALARM' && !HAS_ALARM_SOUND) playAlarmSound();
       refresh();
       show(title, body, payload);
     });

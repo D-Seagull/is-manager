@@ -1,15 +1,26 @@
+import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 // Type-only import — erased at compile time, so it never triggers the Android
 // Expo Go module-load crash (that only happens on a runtime require).
 import type { ExpoPushToken } from 'expo-notifications';
-import { Platform } from 'react-native';
+import { AppState, Platform } from 'react-native';
 
 import i18n from './i18n';
 import { registerPushToken, unregisterPushToken } from './push-api';
 
+/**
+ * The `alarm` channel needs is_alarm.mp3 bundled in the binary — Android
+ * builds from versionCode 3 on. A channel's sound is fixed the moment it is
+ * created, so creating it from an OTA running on an older binary would leave
+ * it silent for good (until a reinstall). Older binaries skip it and keep
+ * getting alarms on `default`. Read from the binary, not the update manifest.
+ */
+export const HAS_ALARM_SOUND =
+  Platform.OS !== 'android' || Number(Application.nativeBuildVersion ?? 0) >= 3;
+
 /** Channels this version creates beyond the original two (PushService.channelFor). */
-const ANDROID_CHANNELS = ['chat', 'alarm'];
+const ANDROID_CHANNELS = HAS_ALARM_SOUND ? ['chat', 'alarm'] : ['chat'];
 
 // Lazy-load expo-notifications. On Android Expo Go SDK 53+ importing it
 // statically eagerly runs `DevicePushTokenAutoRegistration` which THROWS
@@ -23,16 +34,29 @@ let Notifications: NotificationsModule | null = null;
 if (!isExpoGoAndroid) {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   Notifications = require('expo-notifications') as NotificationsModule;
-  // Foreground policy: don't show the system banner — the app is open and
-  // PushNoticeOverlay shows our own modal instead. The notification still lands
-  // in the system list for history.
+  /**
+   * The backend sends every push; whether it shows is decided here, the
+   * moment it lands — only the phone knows for sure that the app is on screen
+   * (the server's guess lagged, and a locked phone went silent).
+   *  - on screen: no banner, no tray entry, no sound — the app shows it itself
+   *    (PushNoticeOverlay modal, chat chime from the socket);
+   *  - an alarm still rings through its channel;
+   *  - not on screen (iOS `inactive`: tray pulled down, app switcher): the OS
+   *    shows and sounds it as usual.
+   * Background / closed: this handler doesn't run — the OS shows the push.
+   */
   Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowBanner: false,
-      shouldShowList: true,
-      shouldPlaySound: true,
-      shouldSetBadge: false,
-    }),
+    handleNotification: async (n) => {
+      const onScreen = AppState.currentState === 'active';
+      const alarm =
+        (n.request.content.data as { type?: unknown } | null)?.type === 'ALARM';
+      return {
+        shouldShowBanner: !onScreen,
+        shouldShowList: !onScreen || alarm,
+        shouldPlaySound: !onScreen || alarm,
+        shouldSetBadge: false,
+      };
+    },
   });
 }
 
@@ -96,7 +120,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
     // "Do not disturb" access granted (Account → reliable notifications) it
     // rings through DND too. Without it alarms fell back to `default` and
     // stayed silent on a phone in silent mode. Same channel as the driver app.
-    await Notifications.setNotificationChannelAsync('alarm', {
+    if (HAS_ALARM_SOUND) await Notifications.setNotificationChannelAsync('alarm', {
       name: i18n.t('push.channels.alarm'),
       importance: Notifications.AndroidImportance.MAX,
       sound: 'is_alarm.mp3',
