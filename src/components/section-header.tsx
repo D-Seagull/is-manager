@@ -11,8 +11,10 @@ import { useUser } from '@/store/auth';
 
 /**
  * Shared header for the top-level section screens (Chat, Trips, Fleet…).
- * The ☰ button on the left always returns to the full-screen Menu hub —
- * sections are pushed over the menu, so this is the "home" affordance.
+ * The button on the left goes ONE step back — to wherever you came from (the
+ * menu hub, or another section opened from a notification / a link). It used
+ * to jump straight to the hub every time. With no history (opened cold from a
+ * push) it falls back to the hub.
  * `right` renders an optional trailing control (e.g. the notifications bell).
  */
 export function SectionHeader({
@@ -39,12 +41,14 @@ export function SectionHeader({
       ]}
     >
       <Pressable
-        onPress={() => router.navigate('/(manager)' as never)}
+        onPress={() =>
+          router.canGoBack() ? router.back() : router.navigate('/(manager)' as never)
+        }
         hitSlop={10}
         style={styles.menuBtn}
-        accessibilityLabel="Меню"
+        accessibilityLabel="Назад"
       >
-        <Ionicons name="menu" size={26} color={c.foreground} />
+        <Ionicons name="chevron-back" size={26} color={c.foreground} />
       </Pressable>
       <Text style={[styles.title, { color: c.foreground }]} numberOfLines={1}>
         {title}
