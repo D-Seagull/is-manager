@@ -10,6 +10,7 @@ import {
   Modal,
   Platform,
   Pressable,
+  // eslint-disable-next-line no-restricted-imports -- height-capped driver picker inside a sheet
   ScrollView,
   StyleSheet,
   Text,
@@ -19,6 +20,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetScrollView } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useCompanyUsers } from '@/hooks/use-company-users';
 import {
@@ -273,7 +275,7 @@ export function TripForm({
           </Pressable>
         </View>
 
-        <ScrollView contentContainerStyle={{ padding: Spacing.md, paddingBottom: insets.bottom + Spacing.xl, gap: Spacing.lg }} keyboardShouldPersistTaps="handled">
+        <InsetScrollView bottomGap={Spacing.xl} insetIOS contentContainerStyle={{ padding: Spacing.md, gap: Spacing.lg }} keyboardShouldPersistTaps="handled">
           {/* Driver */}
           <Field label={t('truckPanel.newTrip.driverLabel', 'Водій')} c={c}>
             <Pressable onPress={() => setDriverPickerOpen(true)} style={[styles.input, styles.row, { backgroundColor: c.card, borderColor: c.border }]}>
@@ -323,7 +325,7 @@ export function TripForm({
           <Field label={t('truckPanel.newTrip.notesLabel', 'Нотатки')} c={c}>
             <TextInput value={notes} onChangeText={setNotes} placeholder="…" placeholderTextColor={c.mutedForeground} multiline style={[styles.input, { minHeight: 70, textAlignVertical: 'top', backgroundColor: c.card, borderColor: c.border, color: c.foreground }]} />
           </Field>
-        </ScrollView>
+        </InsetScrollView>
       </KeyboardAvoidingView>
 
       {/* Driver picker */}

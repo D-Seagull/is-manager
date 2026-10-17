@@ -8,7 +8,6 @@ import {
   Linking,
   Modal,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -19,6 +18,7 @@ import { ChatAvatar } from '@/components/chat-avatar';
 import { SectionHeader } from '@/components/section-header';
 import { KpiCard, CompanyStatusBadge } from '@/app/(manager)/admin/index';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetScrollView } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
   useAdminCompany,
@@ -41,7 +41,7 @@ export default function AdminCompanyDetailScreen() {
     <View style={{ flex: 1, backgroundColor: c.background }}>
       <SectionHeader title={data?.name ?? t('admin.detail.title', 'Компанія')} />
 
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <InsetScrollView contentContainerStyle={styles.scroll}>
         {isError && (
           <Text style={{ color: c.destructive }}>
             {t('admin.detail.errorLoad', 'Не вдалося завантажити компанію')}
@@ -120,7 +120,7 @@ export default function AdminCompanyDetailScreen() {
         <ContactsCard data={data} isLoading={isLoading} />
         <PushCoverageCard data={data} isLoading={isLoading} />
         <UsersCard users={data?.users} isLoading={isLoading} />
-      </ScrollView>
+      </InsetScrollView>
     </View>
   );
 }

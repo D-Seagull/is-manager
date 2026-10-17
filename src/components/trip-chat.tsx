@@ -7,12 +7,14 @@ import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Alert,
+  // eslint-disable-next-line no-restricted-imports -- inverted chat timeline — the composer owns the bottom inset
   FlatList,
   Image,
   Keyboard,
   Modal,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -30,9 +32,11 @@ import { MessageReactionsCluster } from '@/components/message-reactions';
 import { ScreenPlaceholder } from '@/components/screen-placeholder';
 import { TripHeader } from '@/components/trip-header';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetFlatList } from '@/components/inset-list';
 import { PhotoGallery } from '@/components/photo-gallery';
 import { AlbumGrid } from '@/components/album-grid';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useClearChatNotifications } from '@/hooks/use-clear-chat-notifications';
 import { useComposerBottomPadding } from '@/hooks/use-composer-bottom-padding';
 import { ChatArchiveModal } from '@/components/chat-archive-modal';
 import { useTripDocuments, useUploadDocuments } from '@/hooks/use-documents';
@@ -89,6 +93,8 @@ export function TripChat({
   const listRef = useRef<FlatList>(null);
   const [showScrollDown, setShowScrollDown] = useState(false);
   const chat = useTripChat(tripId, { isFocused, nearBottomRef });
+  // Chat open on screen → its message banners leave the notification tray.
+  useClearChatNotifications(tripId ? { tripId } : null, isFocused, chat.messages.length);
   const { data: trip } = useTrip(tripId);
   const { data: documents = [] } = useTripDocuments(tripId);
   const { data: archiveSessions = [] } = useTripChatArchive(tripId);
@@ -455,10 +461,15 @@ export function TripChat({
           </Text>
         </View>
       ) : (
-        // Transparent over the chat wallpaper (unlike the DM bar), so give it
-        // a little extra air above the Android nav bar — flush against it the
-        // input looked like it was lying on the nav bar.
-        <View style={[styles.composer, { paddingBottom: composerPad + Spacing.sm }]}>
+        // Transparent over the chat wallpaper (unlike the DM bar). The air
+        // above the Android nav bar now comes from useComposerBottomPadding
+        // (every composer gets it); iOS keeps the extra bit this screen had.
+        <View
+          style={[
+            styles.composer,
+            { paddingBottom: composerPad + (Platform.OS === 'ios' ? Spacing.sm : 0) },
+          ]}
+        >
           {!editing && (
             <>
               <Pressable onPress={showAttachSheet} disabled={uploadDocs.isPending} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed || uploadDocs.isPending ? 0.5 : 1 }]}>
@@ -805,7 +816,7 @@ function TripDocsSheet({
             <Text style={{ color: c.mutedForeground }}>{t('documents.empty', 'Документів немає')}</Text>
           </View>
         ) : (
-          <FlatList
+          <InsetFlatList
             data={filtered}
             keyExtractor={(d) => d.id}
             contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm }}

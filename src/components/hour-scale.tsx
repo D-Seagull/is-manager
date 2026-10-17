@@ -1,4 +1,5 @@
 import { useState } from 'react';
+// eslint-disable-next-line no-restricted-imports -- horizontal strip
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 
 import { Colors, Radius } from '@/constants/theme';

@@ -294,7 +294,10 @@
     }
   },
   "push": {
-    "noticeTitle": "Powiadomienie"
+    "noticeTitle": "Powiadomienie",
+    "channels": {
+      "chat": "Wiadomości i trasy"
+    }
   },
   "settings": {
     "name": {
@@ -362,7 +365,13 @@
       "error": "Nie udało się usunąć konta"
     },
     "privacyPolicy": "Polityka prywatności",
-    "terms": "Regulamin"
+    "terms": "Regulamin",
+    "reliable": {
+      "title": "Niezawodne powiadomienia",
+      "notifications": "Powiadomienia na ekranie blokady",
+      "battery": "Bateria: bez ograniczeń",
+      "hint": "Aby powiadomienia zawsze docierały: zezwól na ekranie blokady i wyłącz oszczędzanie baterii dla IS Manager. Na Xiaomi / Redmi włącz też „Autostart”."
+    }
   },
   "status": {
     "ONLINE": "online",

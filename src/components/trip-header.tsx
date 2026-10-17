@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Modal,
   Pressable,
+  // eslint-disable-next-line no-restricted-imports -- height-capped stops panel inside the trip header
   ScrollView,
   StyleSheet,
   Text,

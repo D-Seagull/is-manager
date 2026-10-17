@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
-  FlatList,
   Image,
   Modal,
   Pressable,
@@ -16,8 +15,8 @@ import {
 import { ChatAvatar } from '@/components/chat-avatar';
 import { SectionHeader } from '@/components/section-header';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetFlatList } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import {
   useBugReports,
   useUpdateBugStatus,
@@ -38,7 +37,6 @@ const ROLE_COLOR: Record<string, string> = {
 
 export default function AdminBugReportsScreen() {
   const c = Colors[useColorScheme() ?? 'light'];
-  const listPad = useListBottomPadding();
   const { t } = useTranslation();
   const [filter, setFilter] = useState<Filter>('NEW');
   const status = filter === 'all' ? undefined : filter;
@@ -89,10 +87,10 @@ export default function AdminBugReportsScreen() {
           <Text style={{ color: c.mutedForeground }}>{t('admin.bugReports.empty', 'Немає репортів')}</Text>
         </View>
       ) : (
-        <FlatList
+        <InsetFlatList
           data={reports}
           keyExtractor={(r) => r.id}
-          contentContainerStyle={[styles.list, { paddingBottom: listPad }]}
+          contentContainerStyle={styles.list}
           renderItem={({ item }) => <ReportCard report={item} onOpenImage={setLightbox} />}
         />
       )}

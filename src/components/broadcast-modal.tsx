@@ -8,6 +8,7 @@ import {
   Modal,
   Platform,
   Pressable,
+  // eslint-disable-next-line no-restricted-imports -- the footer under the form owns the inset
   ScrollView,
   StyleSheet,
   Text,

@@ -289,7 +289,10 @@
     }
   },
   "push": {
-    "noticeTitle": "Benachrichtigung"
+    "noticeTitle": "Benachrichtigung",
+    "channels": {
+      "chat": "Nachrichten und Fahrten"
+    }
   },
   "settings": {
     "name": {
@@ -357,7 +360,13 @@
       "error": "Konto konnte nicht gelöscht werden"
     },
     "privacyPolicy": "Datenschutzerklärung",
-    "terms": "Nutzungsbedingungen"
+    "terms": "Nutzungsbedingungen",
+    "reliable": {
+      "title": "Zuverlässige Benachrichtigungen",
+      "notifications": "Benachrichtigungen auf dem Sperrbildschirm",
+      "battery": "Akku: keine Einschränkungen",
+      "hint": "Damit Benachrichtigungen immer ankommen: auf dem Sperrbildschirm erlauben und den Energiesparmodus für IS Manager ausschalten. Auf Xiaomi / Redmi zusätzlich „Autostart“ aktivieren."
+    }
   },
   "status": {
     "ONLINE": "online",

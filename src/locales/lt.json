@@ -294,7 +294,10 @@
     }
   },
   "push": {
-    "noticeTitle": "Pranešimas"
+    "noticeTitle": "Pranešimas",
+    "channels": {
+      "chat": "Žinutės ir reisai"
+    }
   },
   "settings": {
     "name": {
@@ -362,7 +365,13 @@
       "error": "Nepavyko ištrinti paskyros"
     },
     "privacyPolicy": "Privatumo politika",
-    "terms": "Naudojimo sąlygos"
+    "terms": "Naudojimo sąlygos",
+    "reliable": {
+      "title": "Patikimi pranešimai",
+      "notifications": "Pranešimai užrakinimo ekrane",
+      "battery": "Baterija: be apribojimų",
+      "hint": "Kad pranešimai visada pasiektų: leiskite juos užrakinimo ekrane ir išjunkite baterijos taupymą IS Manager. Xiaomi / Redmi taip pat įjunkite „Automatinis paleidimas“."
+    }
   },
   "status": {
     "ONLINE": "prisijungęs",

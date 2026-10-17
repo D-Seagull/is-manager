@@ -6,10 +6,10 @@ import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Alert,
-  FlatList,
   Image,
   Modal,
   Pressable,
+  // eslint-disable-next-line no-restricted-imports -- height-capped picker inside a sheet
   ScrollView,
   StyleSheet,
   Text,
@@ -19,9 +19,9 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetFlatList } from '@/components/inset-list';
 import { PhotoGallery } from '@/components/photo-gallery';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useDeleteDocument, useTruckDocuments, useUploadDocuments } from '@/hooks/use-documents';
 import { useTripsByTruck } from '@/hooks/use-trips';
 import { openRemoteFile, readableFileName } from '@/lib/open-file';
@@ -33,7 +33,6 @@ import { formatDate } from '@/lib/format-date';
 export function DocumentsTab({ truckId }: { truckId: string }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
-  const listPad = useListBottomPadding();
 
   const { data: docs = [], isLoading } = useTruckDocuments(truckId);
   const { data: trips = [] } = useTripsByTruck(truckId);
@@ -188,10 +187,10 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
           <Text style={{ color: c.mutedForeground, marginTop: Spacing.sm }}>{t('truckPanel.documents.noAttachments', 'Немає документів')}</Text>
         </View>
       ) : (
-        <FlatList
+        <InsetFlatList
           data={filtered}
           keyExtractor={(d) => d.id}
-          contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm, paddingBottom: listPad }}
+          contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm }}
           renderItem={({ item }) => (
             <View style={[styles.row, { backgroundColor: c.card, borderColor: c.border }]}>
               <Pressable onPress={() => openDoc(item)} style={styles.rowMain}>

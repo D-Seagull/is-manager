@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
-  FlatList,
   Pressable,
   StyleSheet,
   Text,
@@ -15,14 +14,13 @@ import {
 import { ChatAvatar } from '@/components/chat-avatar';
 import { SectionHeader } from '@/components/section-header';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetFlatList } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useOnlineUsers } from '@/hooks/use-admin';
 import { roleBadgeIcon } from '@/lib/roles';
 
 export default function AdminOnlineUsersScreen() {
   const c = Colors[useColorScheme() ?? 'light'];
-  const listPad = useListBottomPadding();
   const { t } = useTranslation();
   const { data, isLoading, refetch } = useOnlineUsers();
   const [search, setSearch] = useState('');
@@ -84,10 +82,10 @@ export default function AdminOnlineUsersScreen() {
           </Text>
         </View>
       ) : (
-        <FlatList
+        <InsetFlatList
           data={list}
           keyExtractor={(u) => u.id}
-          contentContainerStyle={[styles.list, { paddingBottom: listPad }]}
+          contentContainerStyle={styles.list}
           renderItem={({ item: u }) => (
             <View style={[styles.row, { backgroundColor: c.card, borderColor: c.border }]}>
               <View>

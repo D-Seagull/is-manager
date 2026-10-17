@@ -8,7 +8,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -17,6 +16,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetScrollView } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useCompany, useUpdateCompany } from '@/hooks/use-people';
 import { useUser } from '@/store/auth';
@@ -83,7 +83,7 @@ export default function SettingsScreen() {
         <View style={styles.center}><ActivityIndicator color={c.primary} /></View>
       ) : (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-          <ScrollView contentContainerStyle={{ padding: Spacing.md, paddingBottom: insets.bottom + Spacing.xl, gap: Spacing.lg }} keyboardShouldPersistTaps="handled">
+          <InsetScrollView bottomGap={Spacing.xl} insetIOS contentContainerStyle={{ padding: Spacing.md, gap: Spacing.lg }} keyboardShouldPersistTaps="handled">
             {company?.name ? (
               <View style={[styles.card, { backgroundColor: c.card, borderColor: c.border }]}>
                 <Text style={{ fontSize: 12, color: c.mutedForeground }}>{t('settings.company.name', 'Компанія')}</Text>
@@ -104,7 +104,7 @@ export default function SettingsScreen() {
               </Pressable>
               {savedHint ? <Text style={{ color: c.primary, fontSize: 12, textAlign: 'center' }}>{t('settings.saved', 'Збережено')}</Text> : null}
             </View>
-          </ScrollView>
+          </InsetScrollView>
         </KeyboardAvoidingView>
       )}
     </View>

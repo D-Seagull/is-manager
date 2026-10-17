@@ -2,12 +2,12 @@ import { Ionicons } from '@expo/vector-icons';
 import type { TFunction } from 'i18next';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { InsetFlatList } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import {
   ChatArchiveSession,
   SessionEndReason,
@@ -42,7 +42,6 @@ export function ChatArchiveModal({
 }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
-  const listPad = useListBottomPadding();
   const insets = useSafeAreaInsets();
   const [selected, setSelected] = useState<ChatArchiveSession | null>(null);
   const { data: sessions = [], isLoading } = useTripChatArchive(visible ? tripId : null);
@@ -84,10 +83,10 @@ export function ChatArchiveModal({
         ) : sessions.length === 0 ? (
           <View style={styles.center}><Text style={{ color: c.mutedForeground }}>{t('chat.archive.noSessions', 'Немає архівних розмов')}</Text></View>
         ) : (
-          <FlatList
+          <InsetFlatList
             data={sessions}
             keyExtractor={(s) => s.id}
-            contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm, paddingBottom: listPad }}
+            contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm }}
             renderItem={({ item: s }) => (
               <Pressable
                 onPress={() => setSelected(s)}
@@ -132,17 +131,16 @@ function ArchivedMessages({
   t: TFunction;
 }) {
   const { data: messages = [], isLoading } = useArchivedSessionMessages(tripId, sessionId);
-  const listPad = useListBottomPadding();
 
   if (isLoading) return <View style={styles.center}><ActivityIndicator color={c.primary} /></View>;
   if (messages.length === 0)
     return <View style={styles.center}><Text style={{ color: c.mutedForeground }}>{t('chat.archive.noMessages', 'Повідомлень немає')}</Text></View>;
 
   return (
-    <FlatList
+    <InsetFlatList
       data={messages}
       keyExtractor={(m) => m.id}
-      contentContainerStyle={{ padding: Spacing.md, gap: 6, paddingBottom: listPad }}
+      contentContainerStyle={{ padding: Spacing.md, gap: 6 }}
       renderItem={({ item: m }) => {
         if (m.isSystem) {
           return (

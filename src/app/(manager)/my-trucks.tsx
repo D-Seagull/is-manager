@@ -2,15 +2,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { useIsFocused } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { BroadcastModal } from '@/components/broadcast-modal';
 import { ScreenPlaceholder } from '@/components/screen-placeholder';
 import { SectionHeader } from '@/components/section-header';
 import { TruckCard } from '@/components/truck-card';
 import { Colors, Spacing } from '@/constants/theme';
+import { InsetFlatList } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
 import { useMyTrucks } from '@/hooks/use-my-trucks';
 import { useTripUnread } from '@/hooks/use-notifications';
 
@@ -21,7 +21,6 @@ export default function MyTrucksScreen() {
   const { data: tripUnread } = useTripUnread();
   const [broadcastOpen, setBroadcastOpen] = useState(false);
 
-  const listPad = useListBottomPadding();
 
   const isFocused = useIsFocused();
   useEffect(() => {
@@ -66,10 +65,10 @@ export default function MyTrucksScreen() {
           subtitle={t('myTrucks.empty.subtitle', 'За вами ще не закріплено жодної машини.')}
         />
       ) : (
-        <FlatList
+        <InsetFlatList
           data={sortedTrucks}
           keyExtractor={(tr) => tr.id}
-          contentContainerStyle={[styles.list, { paddingBottom: listPad }]}
+          contentContainerStyle={styles.list}
           renderItem={({ item }) => <TruckCard truck={item} />}
         />
       )}
