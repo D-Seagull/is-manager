@@ -6,6 +6,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { ChatAvatar } from '@/components/chat-avatar';
 import { StatusDot } from '@/components/status-dot';
 import { LastSeen } from '@/components/last-seen';
+import { LicensePlate } from '@/components/license-plate';
 import { TRIP_STATUS_COLORS } from '@/constants/trip-status';
 import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -16,7 +17,8 @@ import { useUser } from '@/store/auth';
 
 export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat' | 'info' }) {
   const { t } = useTranslation();
-  const c = Colors[useColorScheme() ?? 'light'];
+  const scheme = useColorScheme() ?? 'light';
+  const c = Colors[scheme];
   const me = useUser();
   const updateTruck = useUpdateTruck();
   // Взяти трак (стати його менеджером) / звільнити — доступно всім у застосунку
@@ -28,10 +30,21 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
   const activeTrip = truck.trips?.[0];
   const driver = truck.currentDriver;
 
-  // Unread trip-chat messages for this truck (active trip) → red marker.
+  // Unread trip-chat messages on this truck — every trip, as on the web (the
+  // list also sorts by this, so a truck that floats up always shows why).
   const { data: tripUnread } = useTripUnread();
-  const unread =
-    tripUnread?.items.find((i) => i.truckId === truck.id)?.activeTripUnread ?? 0;
+  const unreadItem = tripUnread?.items.find((i) => i.truckId === truck.id);
+  const unread = unreadItem?.totalUnread ?? 0;
+  const hasUnread = unread > 0;
+  const latest = hasUnread ? unreadItem?.latestMessage : null;
+  // The driver's name is right above the preview — repeat it only when someone
+  // else wrote (another manager), where it actually tells you something.
+  const sameName = (a?: string | null, b?: string | null) =>
+    (a ?? '').trim().toLowerCase() === (b ?? '').trim().toLowerCase();
+  const showSender = !!latest && !sameName(latest.senderName, fullName(driver));
+  // Unread → the whole card tinted blue with a blue dot, like the web list.
+  const tint = scheme === 'dark' ? '26' : '14';
+  const tintPressed = scheme === 'dark' ? '3A' : '24';
 
   // Primary badge: active trip status if present (тільки /trucks/my), else the
   // truck's own status (загальний список /trucks).
@@ -58,13 +71,17 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
       }
       style={({ pressed }) => [
         styles.card,
-        { backgroundColor: pressed ? c.muted : c.card, borderColor: c.border },
+        hasUnread
+          ? {
+              backgroundColor: `${c.primary}${pressed ? tintPressed : tint}`,
+              borderColor: `${c.primary}59`,
+            }
+          : { backgroundColor: pressed ? c.muted : c.card, borderColor: c.border },
       ]}
     >
       <View style={styles.cardTop}>
-        <View style={[styles.plate, { backgroundColor: c.muted }]}>
-          <Text style={[styles.plateText, { color: c.foreground }]}>{truck.plate}</Text>
-        </View>
+        {hasUnread && <View style={[styles.unreadDot, { backgroundColor: c.primary }]} />}
+        <LicensePlate plate={truck.plate} />
         <View style={[styles.badge, { backgroundColor: badge.bg }]}>
           <Text style={[styles.badgeText, { color: badge.fg }]}>{badge.label}</Text>
         </View>
@@ -89,7 +106,16 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
               <Text style={[styles.driverName, { color: c.foreground }]} numberOfLines={1}>
                 {fullName(driver)}
               </Text>
-              {driver.phone ? (
+              {/* Unread → the latest message takes the phone's line, so the
+                  card keeps its height. */}
+              {latest ? (
+                <Text style={[styles.driverSub, { color: c.mutedForeground, paddingRight: 40 }]} numberOfLines={1}>
+                  {showSender ? (
+                    <Text style={{ color: c.foreground, fontWeight: '600' }}>{latest.senderName}: </Text>
+                  ) : null}
+                  {latest.content}
+                </Text>
+              ) : driver.phone ? (
                 <Text style={[styles.driverSub, { color: c.mutedForeground }]} numberOfLines={1}>
                   {driver.phone}
                 </Text>
@@ -158,8 +184,7 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
   },
   cardTop: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
-  plate: { borderRadius: 8, paddingHorizontal: Spacing.sm, paddingVertical: 5 },
-  plateText: { fontSize: 14, fontWeight: '700', letterSpacing: 0.5, fontVariant: ['tabular-nums'] },
+  unreadDot: { width: 8, height: 8, borderRadius: 4 },
   badge: { marginLeft: 'auto', borderRadius: 8, paddingHorizontal: Spacing.sm, paddingVertical: 4 },
   takeBtn: { position: 'absolute', right: Spacing.md, bottom: Spacing.md, width: 34, height: 34, borderRadius: 17, borderWidth: StyleSheet.hairlineWidth, alignItems: 'center', justifyContent: 'center' },
   badgeText: { fontSize: 11, fontWeight: '700' },
