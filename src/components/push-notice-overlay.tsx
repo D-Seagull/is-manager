@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Platform, Pressable, StyleSheet, Text } from 'react-native';
 
@@ -20,7 +20,9 @@ import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { dmKeys } from '@/hooks/use-direct-messages';
 import { groupKeys } from '@/hooks/use-groups';
+import { getSocket } from '@/lib/socket';
 import { playAlarmSound } from '@/lib/sounds';
+import { useAuthStore } from '@/store/auth';
 
 interface Notice {
   title: string;
@@ -29,16 +31,67 @@ interface Notice {
 }
 
 /**
- * Shows a centered dismissible modal on a foreground push, refreshes the
- * relevant caches on receive/tap, and navigates to the right screen when the
- * user taps a background banner. Chat messages arrive over the socket already,
- * so they refresh silently without a modal.
+ * Shows a centered dismissible modal for news that arrives while the app is
+ * open, refreshes the relevant caches on receive/tap, and navigates to the
+ * right screen when the user taps a background banner. Chat messages arrive
+ * over the socket already, so they refresh silently without a modal.
+ *
+ * While the app is open the backend sends no push — the news comes as the
+ * `notice` socket event and is shown the same way (a banner over the open app
+ * was the doubled window). The push path stays for older servers and races.
  */
 export function PushNoticeOverlay() {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const qc = useQueryClient();
+  const token = useAuthStore((s) => s.token);
   const [notice, setNotice] = useState<Notice | null>(null);
+
+  const refresh = useCallback(() => {
+    qc.invalidateQueries({ queryKey: ['trucks-my'] });
+    qc.invalidateQueries({ queryKey: ['trucks-all'] });
+    qc.invalidateQueries({ queryKey: ['trips-all'] });
+    qc.invalidateQueries({ queryKey: dmKeys.conversations });
+    qc.invalidateQueries({ queryKey: dmKeys.unreadSummary });
+    qc.invalidateQueries({ queryKey: groupKeys.unread });
+    qc.invalidateQueries({ queryKey: ['trip-unread'] });
+  }, [qc]);
+
+  /** News that arrived while the app is open → our modal, except what the
+   *  app already shows on its own. */
+  const show = useCallback(
+    (title: string | null, body: string | null, payload?: Record<string, unknown>) => {
+      // Chat messages (trip / group / DM) already arrive via the socket and
+      // show in-app — don't interrupt with a modal.
+      if (
+        payload?.type === 'MESSAGE' ||
+        payload?.type === 'GROUP_MESSAGE' ||
+        payload?.type === 'DM_MESSAGE'
+      )
+        return;
+      // Trip status / "driver hasn't set off" — the colored TripStatusBanner
+      // already shows it from the socket while the app is open.
+      if (payload?.type === 'TRIP_STATUS' || payload?.type === 'TRIP_NOT_DEPARTED')
+        return;
+      setNotice({ title: title ?? t('push.noticeTitle', 'Сповіщення'), body: body ?? '', data: payload });
+    },
+    [t],
+  );
+
+  // In-app notices: what the backend sends instead of a push while the app is
+  // open. Works in every build, Expo Go on Android included.
+  useEffect(() => {
+    if (!token) return;
+    const socket = getSocket(token);
+    const onNotice = (n: { title?: string; body?: string; data?: Record<string, unknown> }) => {
+      refresh();
+      show(n.title ?? null, n.body ?? null, n.data);
+    };
+    socket.on('notice', onNotice);
+    return () => {
+      socket.off('notice', onNotice);
+    };
+  }, [token, refresh, show]);
 
   useEffect(() => {
     if (!__DEV__) return;
@@ -49,16 +102,6 @@ export function PushNoticeOverlay() {
 
   useEffect(() => {
     if (!Notifications) return;
-
-    const refresh = () => {
-      qc.invalidateQueries({ queryKey: ['trucks-my'] });
-      qc.invalidateQueries({ queryKey: ['trucks-all'] });
-      qc.invalidateQueries({ queryKey: ['trips-all'] });
-      qc.invalidateQueries({ queryKey: dmKeys.conversations });
-      qc.invalidateQueries({ queryKey: dmKeys.unreadSummary });
-      qc.invalidateQueries({ queryKey: groupKeys.unread });
-      qc.invalidateQueries({ queryKey: ['trip-unread'] });
-    };
 
     // Route a background-banner tap to the most relevant screen. Most manager
     // pushes carry a truckId (truck/trip/status/manager-change) → open the truck
@@ -95,20 +138,7 @@ export function PushNoticeOverlay() {
       refresh();
 
       if (payload?.type === 'ALARM') playAlarmSound();
-      // Chat messages (trip / group / DM) already arrive via the socket and
-      // show in-app — don't interrupt with a modal.
-      if (
-        payload?.type === 'MESSAGE' ||
-        payload?.type === 'GROUP_MESSAGE' ||
-        payload?.type === 'DM_MESSAGE'
-      )
-        return;
-      // Trip status / "driver hasn't set off" — the colored TripStatusBanner
-      // already shows it from the socket while the app is open.
-      if (payload?.type === 'TRIP_STATUS' || payload?.type === 'TRIP_NOT_DEPARTED')
-        return;
-
-      setNotice({ title: title ?? t('push.noticeTitle', 'Сповіщення'), body: body ?? '', data: payload });
+      show(title, body, payload);
     });
 
     // Background/closed → user taps the system banner → app foregrounds.
@@ -133,7 +163,7 @@ export function PushNoticeOverlay() {
       recvSub.remove();
       respSub.remove();
     };
-  }, [qc, t]);
+  }, [refresh, show]);
 
   return (
     <Modal visible={!!notice} transparent animationType="fade" onRequestClose={() => setNotice(null)}>
