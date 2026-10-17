@@ -20,6 +20,9 @@
         "NSCameraUsageDescription": "Додатку потрібен доступ до камери, щоб знімати фото документів і надсилати їх у чат.",
         "NSPhotoLibraryUsageDescription": "Додатку потрібен доступ до фотографій, щоб прикріплювати зображення в чат і документи та встановлювати аватар.",
         "ITSAppUsesNonExemptEncryption": false
+      },
+      "entitlements": {
+        "com.apple.developer.usernotifications.time-sensitive": true
       }
     },
     "android": {
@@ -34,7 +37,8 @@
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "android.permission.RECORD_AUDIO",
-        "android.permission.MODIFY_AUDIO_SETTINGS"
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.ACCESS_NOTIFICATION_POLICY"
       ]
     },
     "web": {
@@ -70,7 +74,8 @@
           "icon": "./src/assets/images/notification-icon.png",
           "color": "#3B82F6",
           "sounds": [
-            "./src/assets/sounds/push_message.mp3"
+            "./src/assets/sounds/push_message.mp3",
+            "./src/assets/sounds/is_alarm.mp3"
           ]
         }
       ],

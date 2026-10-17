@@ -9,7 +9,7 @@ import i18n from './i18n';
 import { registerPushToken, unregisterPushToken } from './push-api';
 
 /** Channels this version creates beyond the original two (PushService.channelFor). */
-const ANDROID_CHANNELS = ['chat'];
+const ANDROID_CHANNELS = ['chat', 'alarm'];
 
 // Lazy-load expo-notifications. On Android Expo Go SDK 53+ importing it
 // statically eagerly runs `DevicePushTokenAutoRegistration` which THROWS
@@ -90,6 +90,23 @@ export async function registerForPushNotifications(): Promise<string | null> {
       sound: 'push_message.mp3',
       vibrationPattern: [0, 250, 250, 250],
       lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+    });
+    // `alarm`: alarms set for this manager. Played on the ALARM audio stream,
+    // so it rings on silent and vibrate like the system alarm clock; with
+    // "Do not disturb" access granted (Account → reliable notifications) it
+    // rings through DND too. Without it alarms fell back to `default` and
+    // stayed silent on a phone in silent mode. Same channel as the driver app.
+    await Notifications.setNotificationChannelAsync('alarm', {
+      name: i18n.t('push.channels.alarm'),
+      importance: Notifications.AndroidImportance.MAX,
+      sound: 'is_alarm.mp3',
+      vibrationPattern: [0, 800, 400, 800, 400, 800, 400, 800],
+      lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+      bypassDnd: true,
+      audioAttributes: {
+        usage: Notifications.AndroidAudioUsage.ALARM,
+        contentType: Notifications.AndroidAudioContentType.SONIFICATION,
+      },
     });
   }
 

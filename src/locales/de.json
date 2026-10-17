@@ -291,7 +291,8 @@
   "push": {
     "noticeTitle": "Benachrichtigung",
     "channels": {
-      "chat": "Nachrichten und Fahrten"
+      "chat": "Nachrichten und Fahrten",
+      "alarm": "Wecker"
     }
   },
   "settings": {

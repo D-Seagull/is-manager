@@ -21,7 +21,6 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { dmKeys } from '@/hooks/use-direct-messages';
 import { groupKeys } from '@/hooks/use-groups';
 import { getSocket } from '@/lib/socket';
-import { playAlarmSound } from '@/lib/sounds';
 import { useAuthStore } from '@/store/auth';
 
 interface Notice {
@@ -133,11 +132,15 @@ export function PushNoticeOverlay() {
     // the modal remains.
     const recvSub = Notifications.addNotificationReceivedListener((n) => {
       const { title, body, data } = n.request.content;
-      void Notifications.dismissNotificationAsync(n.request.identifier);
       const payload = (data as Record<string, unknown> | undefined) ?? undefined;
+      // An alarm keeps its system notification: the `alarm` channel rings on
+      // the ALARM stream (through silent mode, at alarm volume). Dismissing it
+      // like the other pushes cut the ring off after the first buzz, and our
+      // in-app chime plays on the MEDIA stream — silent with media volume down,
+      // so some phones got only the vibration. The heads-up over the modal is
+      // fine for an alarm.
+      if (payload?.type !== 'ALARM') void Notifications.dismissNotificationAsync(n.request.identifier);
       refresh();
-
-      if (payload?.type === 'ALARM') playAlarmSound();
       show(title, body, payload);
     });
 

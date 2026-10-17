@@ -296,7 +296,8 @@
   "push": {
     "noticeTitle": "Powiadomienie",
     "channels": {
-      "chat": "Wiadomości i trasy"
+      "chat": "Wiadomości i trasy",
+      "alarm": "Budzik"
     }
   },
   "settings": {
