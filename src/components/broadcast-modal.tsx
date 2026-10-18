@@ -18,6 +18,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { bottomBarPadding } from '@/lib/insets';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
   useBroadcastTemplates,
@@ -183,7 +184,7 @@ export function BroadcastModal({ visible, onClose }: { visible: boolean; onClose
         </ScrollView>
 
         {/* Send */}
-        <View style={[styles.footer, { backgroundColor: c.card, borderTopColor: c.border, paddingBottom: Math.max(insets.bottom, Spacing.md) }]}>
+        <View style={[styles.footer, { backgroundColor: c.card, borderTopColor: c.border, paddingBottom: bottomBarPadding(insets, Spacing.md) }]}>
           <Pressable
             onPress={handleSend}
             disabled={!canSend}

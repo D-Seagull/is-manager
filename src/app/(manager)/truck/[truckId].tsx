@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router, useIsFocused, useLocalSearchParams } from 'expo-router';
+import { useIsFocused, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -15,6 +15,7 @@ import { TripChat } from '@/components/trip-chat';
 import { TripForm } from '@/components/trip-form';
 import { TripsTab } from '@/components/trips-tab';
 import { Colors, Spacing } from '@/constants/theme';
+import { useBackToSection } from '@/hooks/use-back-to-parent';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useTruck } from '@/hooks/use-my-trucks';
 import { useTripUnread } from '@/hooks/use-notifications';
@@ -64,22 +65,28 @@ export default function TruckDetailScreen() {
   const [newTripOpen, setNewTripOpen] = useState(false);
   // A trip picked from the Trips tab opens its chat; falls back to the active trip.
   const [selectedTripId, setSelectedTripId] = useState<string | null>(null);
+  // Back = up to the list the panel was opened from (My Trucks / Fleet /
+  // Trips / person card), skipping trucks or chats stacked on top by a push
+  // or the bell; opened from the Menu or cold → My Trucks.
+  const goBack = useBackToSection('/(manager)/my-trucks' as never);
 
   return (
     <View style={[styles.root, { backgroundColor: c.background }]}>
-      {/* Header — back to My Trucks + plate. */}
+      {/* Header — back up to the list + plate. */}
       <View
         style={[
           styles.header,
           { backgroundColor: c.card, borderBottomColor: c.border, paddingTop: insets.top + Spacing.xs },
         ]}
       >
-        <Pressable onPress={() => router.back()} hitSlop={10} style={styles.backBtn}>
+        <Pressable onPress={goBack} hitSlop={10} style={styles.backBtn}>
           <Ionicons name="chevron-back" size={26} color={c.foreground} />
         </Pressable>
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text style={[styles.plate, { color: c.foreground }]} numberOfLines={1}>
-            {plate || t('nav.items.trucks', 'Вантажівка')}
+            {/* A push / the bell opens this by id only — take the plate from the
+                truck itself; blank while it loads, never the list's name. */}
+            {plate || truck?.plate || (truckLoading ? '' : t('nav.items.trucks', 'Вантажівка'))}
           </Text>
           {driverName ? (
             <Text style={[styles.driverSub, { color: c.mutedForeground }]} numberOfLines={1}>

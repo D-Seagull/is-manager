@@ -23,6 +23,7 @@ import { SectionHeader } from '@/components/section-header';
 import { StatusDot } from '@/components/status-dot';
 import { useLastSeenText } from '@/components/last-seen';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { bottomBarPadding } from '@/lib/insets';
 import { InsetFlatList } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useCompanyUsers, type CompanyUser } from '@/hooks/use-company-users';
@@ -111,7 +112,7 @@ export function PeopleScreen({ kind }: { kind: 'driver' | 'manager' }) {
       )}
 
       {kind === 'manager' ? (
-        <View style={[styles.segmentBar, { borderTopColor: c.border, backgroundColor: c.card, paddingBottom: Math.max(insets.bottom, Spacing.sm) }]}>
+        <View style={[styles.segmentBar, { borderTopColor: c.border, backgroundColor: c.card, paddingBottom: bottomBarPadding(insets, Spacing.sm) }]}>
           <SegBtn active={mode === 'team'} label={t('people.myTeam', 'Моя команда')} onPress={() => setMode('team')} c={c} />
           <SegBtn active={mode === 'all'} label={t('people.allManagers', 'Усі менеджери')} onPress={() => setMode('all')} c={c} />
         </View>

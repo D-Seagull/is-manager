@@ -23,6 +23,7 @@ import { PresenceStatusSheet } from '@/components/presence-status-sheet';
 import { SectionHeader } from '@/components/section-header';
 import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing, ThemeColors } from '@/constants/theme';
+import { bottomBarPadding } from '@/lib/insets';
 import { InsetScrollView } from '@/components/inset-list';
 import { ReliableNotifications } from '@/components/reliable-notifications';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -451,7 +452,7 @@ export default function AccountScreen() {
         {/* Reliable notifications (Android): lock screen + battery. */}
         {Platform.OS === 'android' && (
           <SectionCard colors={c} title={t('settings.reliable.title', 'Надійні сповіщення')}>
-            <ReliableNotifications colors={c} />
+            <ReliableNotifications colors={c} alarm />
           </SectionCard>
         )}
 
@@ -544,7 +545,7 @@ export default function AccountScreen() {
       >
         <Pressable style={styles.modalBackdrop} onPress={() => setLangPickerOpen(false)}>
           <Pressable
-            style={[styles.modalSheet, { backgroundColor: c.card, paddingBottom: Math.max(insets.bottom, Spacing.sm) + Spacing.xl }]}
+            style={[styles.modalSheet, { backgroundColor: c.card, paddingBottom: bottomBarPadding(insets, Spacing.sm) + Spacing.xl }]}
             onPress={(e) => e.stopPropagation()}
           >
             <Text style={[styles.modalTitle, { color: c.foreground }]}>

@@ -21,6 +21,7 @@ import { ScreenPlaceholder } from '@/components/screen-placeholder';
 import { SectionHeader } from '@/components/section-header';
 import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { bottomBarPadding } from '@/lib/insets';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useCompanyUsers, type CompanyUser } from '@/hooks/use-company-users';
 import { useConversations, type Conversation, useHideConversation } from '@/hooks/use-direct-messages';
@@ -75,7 +76,7 @@ export default function ChatScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: c.background }]}>
-      <SectionHeader title={t('nav.items.chat', 'Чат')} />
+      <SectionHeader title={t('nav.items.chat', 'Чат')} backTo={'/(manager)' as never} />
 
       <View style={styles.content}>
         {tab === 'groups' ? (
@@ -92,7 +93,7 @@ export default function ChatScreen() {
           {
             backgroundColor: c.card,
             borderTopColor: c.border,
-            paddingBottom: Math.max(insets.bottom, Spacing.sm),
+            paddingBottom: bottomBarPadding(insets, Spacing.sm),
           },
         ]}
       >

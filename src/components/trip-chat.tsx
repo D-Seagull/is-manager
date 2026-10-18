@@ -85,7 +85,6 @@ export function TripChat({
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
   // Safe-area pad when the keyboard is closed, small gap when it's open.
-  const composerPad = useComposerBottomPadding();
   const me = useUser();
   const myId = me?.id ?? '';
 
@@ -110,6 +109,9 @@ export function TripChat({
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [replyingTo, setReplyingTo] = useState<ReplyTarget | null>(null);
   const [editing, setEditing] = useState<EditingState | null>(null);
+  // Re-read the keyboard when the composer's mode changes: Reply / Edit come
+  // from a sheet that can hide the keyboard without telling this window.
+  const composerPad = useComposerBottomPadding(replyingTo?.id ?? editing?.id ?? null);
   // Index into `galleryPhotos` of the photo open in the gallery, or null.
   const [galleryIndex, setGalleryIndex] = useState<number | null>(null);
   const [sheetFor, setSheetFor] = useState<ChatMessage | null>(null);
@@ -261,7 +263,7 @@ export function TripChat({
       { text: t('documents.uploadSheet.gallery', 'Галерея'), onPress: () => pickAndUpload('gallery') },
       { text: t('documents.uploadSheet.file', 'Файл'), onPress: () => pickAndUpload('document') },
       { text: t('common.cancel', 'Скасувати'), style: 'cancel' },
-    ]);
+    ], { cancelable: true }); // Android: a tap outside closes it
   };
 
   const handleSend = () => {

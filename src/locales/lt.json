@@ -296,7 +296,8 @@
   "push": {
     "noticeTitle": "Pranešimas",
     "channels": {
-      "chat": "Žinutės ir reisai"
+      "chat": "Žinutės ir reisai",
+      "alarm": "Žadintuvas"
     }
   },
   "settings": {

@@ -291,7 +291,8 @@
   "push": {
     "noticeTitle": "Notification",
     "channels": {
-      "chat": "Messages and trips"
+      "chat": "Messages and trips",
+      "alarm": "Alarm"
     }
   },
   "settings": {

@@ -1,9 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useIsFocused } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useIsFocused, useLocalSearchParams } from 'expo-router';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { openRemoteFile, readableFileName } from '@/lib/open-file';
@@ -11,7 +10,6 @@ import { fullName } from "@/lib/format";
 import {
   ActivityIndicator,
   Alert,
-  BackHandler,
   // eslint-disable-next-line no-restricted-imports -- inverted chat timeline — the composer owns the bottom inset
   FlatList,
   Image,
@@ -43,6 +41,7 @@ import { InsetFlatList } from '@/components/inset-list';
 import { PhotoGallery } from '@/components/photo-gallery';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppActive } from '@/hooks/use-app-active';
+import { useBackToParent } from '@/hooks/use-back-to-parent';
 import { useClearChatNotifications } from '@/hooks/use-clear-chat-notifications';
 import { useComposerBottomPadding } from '@/hooks/use-composer-bottom-padding';
 import { useChatEvents } from '@/hooks/use-chat-events';
@@ -96,7 +95,6 @@ export default function DmScreen() {
   const c = Colors[scheme];
   const insets = useSafeAreaInsets();
   // Safe-area pad when the keyboard is closed, small gap when it's open.
-  const composerPad = useComposerBottomPadding();
   const { userId: peerId, messageId: focusMessageId } = useLocalSearchParams<{
     userId: string;
     messageId?: string;
@@ -104,18 +102,9 @@ export default function DmScreen() {
   const me = useUser();
   const myId = me?.id ?? '';
 
-  // These screens are pushed from the Chat tab but live as drawer routes, so
-  // a plain back pops to the drawer's initial screen (Trips). Step back to
-  // the Chat list explicitly — for both the header chevron and Android's
-  // hardware back button.
-  const goBackToChat = () => router.navigate('/(manager)/chat' as never);
-  useEffect(() => {
-    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
-      router.navigate('/(manager)/chat' as never);
-      return true;
-    });
-    return () => sub.remove();
-  }, []);
+  // Back = up to the Chat list, however the DM was opened (list, push, bell,
+  // person card) — header chevron and Android back alike.
+  const goBackToChat = useBackToParent('/(manager)/chat' as never);
 
   // Drawer keeps screens mounted, so this DM screen stays alive after you
   // navigate away. Only mark messages read while it's actually focused —
@@ -193,6 +182,9 @@ export default function DmScreen() {
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [replyingTo, setReplyingTo] = useState<ReplyTarget | null>(null);
   const [editing, setEditing] = useState<EditingState | null>(null);
+  // Re-read the keyboard when the composer's mode changes: Reply / Edit come
+  // from a sheet that can hide the keyboard without telling this window.
+  const composerPad = useComposerBottomPadding(replyingTo?.id ?? editing?.id ?? null);
 
   // Photo viewer + documents folder overlays.
   // Index into `galleryPhotos` of the photo open in the gallery, or null.
@@ -326,7 +318,7 @@ export default function DmScreen() {
       { text: t('documents.uploadSheet.gallery'), onPress: () => pickAndUpload('gallery') },
       { text: t('documents.uploadSheet.file'), onPress: () => pickAndUpload('document') },
       { text: t('common.cancel'), style: 'cancel' },
-    ]);
+    ], { cancelable: true }); // Android: a tap outside closes it
   };
 
   const openDoc = useCallback(

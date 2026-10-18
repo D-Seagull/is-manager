@@ -20,6 +20,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
+import { bottomBarPadding } from '@/lib/insets';
 import { InsetScrollView } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useCompanyUsers } from '@/hooks/use-company-users';
@@ -331,7 +332,7 @@ export function TripForm({
       {/* Driver picker */}
       <Modal transparent visible={driverPickerOpen} animationType="fade" onRequestClose={() => setDriverPickerOpen(false)}>
         <Pressable style={styles.backdrop} onPress={() => setDriverPickerOpen(false)}>
-          <Pressable style={[styles.sheet, { backgroundColor: c.card, paddingBottom: Math.max(insets.bottom, Spacing.sm) + Spacing.lg }]} onPress={(e) => e.stopPropagation()}>
+          <Pressable style={[styles.sheet, { backgroundColor: c.card, paddingBottom: bottomBarPadding(insets, Spacing.sm) + Spacing.lg }]} onPress={(e) => e.stopPropagation()}>
             <Text style={[styles.sheetTitle, { color: c.foreground }]}>{t('truckPanel.newTrip.selectDriver', 'Оберіть водія')}</Text>
             <ScrollView style={{ maxHeight: 360 }}>
               {drivers.map((d) => {
@@ -351,7 +352,7 @@ export function TripForm({
       {/* Stop-type picker (insert new / change existing) */}
       <Modal transparent visible={typeMenu !== null} animationType="fade" onRequestClose={() => setTypeMenu(null)}>
         <Pressable style={styles.backdrop} onPress={() => setTypeMenu(null)}>
-          <Pressable style={[styles.sheet, { backgroundColor: c.card, paddingBottom: Math.max(insets.bottom, Spacing.sm) + Spacing.lg }]} onPress={(e) => e.stopPropagation()}>
+          <Pressable style={[styles.sheet, { backgroundColor: c.card, paddingBottom: bottomBarPadding(insets, Spacing.sm) + Spacing.lg }]} onPress={(e) => e.stopPropagation()}>
             <Text style={[styles.sheetTitle, { color: c.foreground }]}>
               {typeMenu?.mode === 'change' ? t('stopRow.changeType', 'Змінити тип') : t('truckPanel.newTrip.addStop', 'Додати стоп')}
             </Text>

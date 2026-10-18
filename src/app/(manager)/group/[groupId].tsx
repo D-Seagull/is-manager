@@ -1,15 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useIsFocused } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useIsFocused, useLocalSearchParams } from 'expo-router';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Alert,
-  BackHandler,
   // eslint-disable-next-line no-restricted-imports -- inverted chat timeline — the composer owns the bottom inset
   FlatList,
   Image,
@@ -36,6 +34,7 @@ import { InsetFlatList } from '@/components/inset-list';
 import { PhotoGallery } from '@/components/photo-gallery';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppActive } from '@/hooks/use-app-active';
+import { useBackToParent } from '@/hooks/use-back-to-parent';
 import { useClearChatNotifications } from '@/hooks/use-clear-chat-notifications';
 import { useComposerBottomPadding } from '@/hooks/use-composer-bottom-padding';
 import { useChatEvents, useJoinGroupRoom } from '@/hooks/use-chat-events';
@@ -93,7 +92,6 @@ export default function GroupChatScreen() {
   const c = Colors[scheme];
   const insets = useSafeAreaInsets();
   // Safe-area pad when the keyboard is closed, small gap when it's open.
-  const composerPad = useComposerBottomPadding();
   const {
     groupId,
     name,
@@ -102,18 +100,9 @@ export default function GroupChatScreen() {
   const me = useUser();
   const myId = me?.id ?? '';
 
-  // Pushed from the Chat screen's Groups tab but lives as a drawer route, so a
-  // plain back pops to the drawer's initial screen (Trips). Step back to the
-  // Groups tab explicitly — for the header chevron and Android hardware back.
-  const goBackToGroups = () =>
-    router.navigate('/(manager)/chat' as never);
-  useEffect(() => {
-    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
-      router.navigate('/(manager)/chat' as never);
-      return true;
-    });
-    return () => sub.remove();
-  }, []);
+  // Back = up to the Chat list (its Groups tab stays picked when the list is
+  // below us), however the group was opened — chevron and Android back alike.
+  const goBackToGroups = useBackToParent('/(manager)/chat' as never);
 
   // ─── Data ──────────────────────────────────────────────────────────
   const { data: messages = [], isLoading } = useGroupMessages(groupId);
@@ -169,6 +158,9 @@ export default function GroupChatScreen() {
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [replyingTo, setReplyingTo] = useState<ReplyTarget | null>(null);
   const [editing, setEditing] = useState<EditingState | null>(null);
+  // Re-read the keyboard when the composer's mode changes: Reply / Edit come
+  // from a sheet that can hide the keyboard without telling this window.
+  const composerPad = useComposerBottomPadding(replyingTo?.id ?? editing?.id ?? null);
 
   // Photo viewer + documents folder overlays.
   // Index into `galleryPhotos` of the photo open in the gallery, or null.
@@ -301,7 +293,7 @@ export default function GroupChatScreen() {
       { text: t('documents.uploadSheet.gallery'), onPress: () => pickAndUpload('gallery') },
       { text: t('documents.uploadSheet.file'), onPress: () => pickAndUpload('document') },
       { text: t('common.cancel'), style: 'cancel' },
-    ]);
+    ], { cancelable: true }); // Android: a tap outside closes it
   };
 
   const openDoc = useCallback(

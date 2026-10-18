@@ -35,7 +35,7 @@ export function ReliableNotifications({
   alarm = false,
 }: {
   colors: ThemeColors;
-  /** Show the Do-not-disturb row: only the driver app has an alarm. */
+  /** Show the Do-not-disturb row (lets the alarm channel ring through DND). */
   alarm?: boolean;
 }) {
   const { t } = useTranslation();
