@@ -370,6 +370,7 @@
     "reliable": {
       "title": "Niezawodne powiadomienia",
       "notifications": "Powiadomienia na ekranie blokady",
+      "dnd": "Budzik w trybie „Nie przeszkadzać”",
       "battery": "Bateria: bez ograniczeń",
       "hint": "Aby powiadomienia zawsze docierały: zezwól na ekranie blokady i wyłącz oszczędzanie baterii dla IS Manager. Na Xiaomi / Redmi włącz też „Autostart”."
     }
@@ -506,7 +507,11 @@
   "trucks": {
     "take": "Weź ciężarówkę",
     "release": "Zwolnij ciężarówkę",
-    "searchPlaceholder": "Szukaj po numerze lub kierowcy…"
+    "searchPlaceholder": "Szukaj po numerze lub kierowcy…",
+    "addTruck": "Nowa ciężarówka",
+    "createError": "Nie udało się dodać ciężarówki",
+    "plate": "Numer rejestracyjny",
+    "platePlaceholder": "np. BE 9130"
   },
   "bugReport": {
     "title": "Zgłoś problem",

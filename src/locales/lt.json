@@ -370,6 +370,7 @@
     "reliable": {
       "title": "Patikimi pranešimai",
       "notifications": "Pranešimai užrakinimo ekrane",
+      "dnd": "Žadintuvas režimu „Netrukdyti“",
       "battery": "Baterija: be apribojimų",
       "hint": "Kad pranešimai visada pasiektų: leiskite juos užrakinimo ekrane ir išjunkite baterijos taupymą IS Manager. Xiaomi / Redmi taip pat įjunkite „Automatinis paleidimas“."
     }
@@ -506,7 +507,11 @@
   "trucks": {
     "take": "Paimti vilkiką",
     "release": "Atlaisvinti vilkiką",
-    "searchPlaceholder": "Ieškoti pagal numerį ar vairuotoją…"
+    "searchPlaceholder": "Ieškoti pagal numerį ar vairuotoją…",
+    "addTruck": "Naujas sunkvežimis",
+    "createError": "Nepavyko pridėti sunkvežimio",
+    "plate": "Valstybinis numeris",
+    "platePlaceholder": "pvz. BE 9130"
   },
   "bugReport": {
     "title": "Pranešti apie problemą",

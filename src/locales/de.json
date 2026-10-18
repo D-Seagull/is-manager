@@ -365,6 +365,7 @@
     "reliable": {
       "title": "Zuverlässige Benachrichtigungen",
       "notifications": "Benachrichtigungen auf dem Sperrbildschirm",
+      "dnd": "Wecker im Modus „Nicht stören“",
       "battery": "Akku: keine Einschränkungen",
       "hint": "Damit Benachrichtigungen immer ankommen: auf dem Sperrbildschirm erlauben und den Energiesparmodus für IS Manager ausschalten. Auf Xiaomi / Redmi zusätzlich „Autostart“ aktivieren."
     }
@@ -501,7 +502,11 @@
   "trucks": {
     "take": "Lkw übernehmen",
     "release": "Lkw freigeben",
-    "searchPlaceholder": "Nach Kennzeichen oder Fahrer suchen…"
+    "searchPlaceholder": "Nach Kennzeichen oder Fahrer suchen…",
+    "addTruck": "Neuer LKW",
+    "createError": "LKW konnte nicht hinzugefügt werden",
+    "plate": "Kennzeichen",
+    "platePlaceholder": "z. B. BE 9130"
   },
   "bugReport": {
     "title": "Problem melden",

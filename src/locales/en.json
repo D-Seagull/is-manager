@@ -365,6 +365,7 @@
     "reliable": {
       "title": "Reliable notifications",
       "notifications": "Notifications on the lock screen",
+      "dnd": "Alarm in Do Not Disturb",
       "battery": "Battery: no restrictions",
       "hint": "So notifications always get through: allow them on the lock screen and turn off battery saving for IS Manager. On Xiaomi / Redmi also enable “Autostart”."
     }
@@ -501,7 +502,11 @@
   "trucks": {
     "take": "Take truck",
     "release": "Release truck",
-    "searchPlaceholder": "Search by plate or driver…"
+    "searchPlaceholder": "Search by plate or driver…",
+    "addTruck": "New truck",
+    "createError": "Couldn't add the truck",
+    "plate": "Plate number",
+    "platePlaceholder": "e.g. BE 9130"
   },
   "bugReport": {
     "title": "Report a problem",
