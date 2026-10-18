@@ -76,7 +76,7 @@ export default function ChatScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: c.background }]}>
-      <SectionHeader title={t('nav.items.chat', 'Чат')} />
+      <SectionHeader title={t('nav.items.chat', 'Чат')} backTo={'/(manager)' as never} />
 
       <View style={styles.content}>
         {tab === 'groups' ? (
