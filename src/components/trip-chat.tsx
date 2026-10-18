@@ -263,7 +263,7 @@ export function TripChat({
       { text: t('documents.uploadSheet.gallery', 'Галерея'), onPress: () => pickAndUpload('gallery') },
       { text: t('documents.uploadSheet.file', 'Файл'), onPress: () => pickAndUpload('document') },
       { text: t('common.cancel', 'Скасувати'), style: 'cancel' },
-    ]);
+    ], { cancelable: true }); // Android: a tap outside closes it
   };
 
   const handleSend = () => {

@@ -117,7 +117,7 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
       { text: t('documents.uploadSheet.gallery', 'Галерея'), onPress: () => pickAndUpload('gallery', tripId) },
       { text: t('documents.uploadSheet.file', 'Файл'), onPress: () => pickAndUpload('document', tripId) },
       { text: t('common.cancel', 'Скасувати'), style: 'cancel' },
-    ]);
+    ], { cancelable: true }); // Android: a tap outside closes it
   };
 
   const startUpload = () => {
