@@ -3,7 +3,7 @@ import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Platform, Pressable, StyleSheet, Text } from 'react-native';
+import { AppState, Modal, Platform, Pressable, StyleSheet, Text } from 'react-native';
 
 // In Android Expo Go SDK 53+ importing expo-notifications THROWS at module load
 // via DevicePushTokenAutoRegistration. iOS Expo Go still works, and EAS
@@ -144,7 +144,13 @@ export function PushNoticeOverlay() {
       // fine for an alarm.
       // Binaries without the `alarm` channel (before versionCode 3) get alarms
       // on `default`; keep their old behaviour: dismiss + in-app chime.
-      const keep = payload?.type === 'ALARM' && HAS_ALARM_SOUND;
+      // This listener also runs while the app is alive OFF screen (phone
+      // locked with the app open, app just sent to the background) — only an
+      // app on screen may take the notification away. Dismissing it off
+      // screen wiped every banner from a locked phone.
+      const keep =
+        AppState.currentState !== 'active' ||
+        (payload?.type === 'ALARM' && HAS_ALARM_SOUND);
       if (!keep) void Notifications.dismissNotificationAsync(n.request.identifier);
       if (payload?.type === 'ALARM' && !HAS_ALARM_SOUND) playAlarmSound();
       refresh();
