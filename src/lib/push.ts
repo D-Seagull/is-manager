@@ -166,33 +166,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
     console.warn('[push] backend register failed', e);
   }
 
-  // EXPERIMENT: also register the raw FCM token, so the backend can send a
-  // notification message straight through FCM (shown by Google Play services
-  // without waking the app — see the backend's FcmService). Pushes still go
-  // through Expo; this only feeds the delivery test in Account.
-  if (Platform.OS === 'android') {
-    try {
-      const device = await Notifications.getDevicePushTokenAsync();
-      if (typeof device.data === 'string' && device.data) {
-        await registerPushToken(device.data, 'android-fcm', ANDROID_CHANNELS);
-        fcmToken = device.data;
-      }
-    } catch (e) {
-      console.warn('[push] FCM token register failed', e);
-    }
-  }
-
   return token;
-}
-
-/** The raw FCM token registered by the experiment above (Android). */
-let fcmToken: string | null = null;
-
-/** Unregister the experiment's FCM token too (logout). */
-export async function deregisterFcmToken() {
-  const old = fcmToken;
-  fcmToken = null;
-  if (old) await deregisterPushToken(old);
 }
 
 export async function deregisterPushToken(token: string) {

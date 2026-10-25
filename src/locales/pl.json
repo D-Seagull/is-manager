@@ -375,16 +375,6 @@
       "dnd": "Budzik w trybie „Nie przeszkadzać”",
       "battery": "Bateria: bez ograniczeń",
       "hint": "Aby powiadomienia zawsze docierały: zezwól na ekranie blokady i wyłącz oszczędzanie baterii dla IS Manager. Na Xiaomi / Redmi włącz też „Autostart”."
-    },
-    "pushTest": {
-      "title": "Test dostarczania",
-      "expo": "Przez Expo",
-      "fcm": "Przez FCM",
-      "scheduled": "Push przyjdzie za {{sec}} s — zablokuj telefon i poczekaj.",
-      "fcmOff": "FCM nie jest jeszcze skonfigurowany na serwerze.",
-      "noTokens": "Brak zarejestrowanego tokenu dla tego telefonu. Uruchom aplikację ponownie.",
-      "error": "Nie udało się wysłać testu.",
-      "hint": "Naciśnij, zablokuj telefon i porównaj, kiedy pojawi się baner — jest w nim godzina wysłania. Test przychodzi za {{sec}} s."
     }
   },
   "status": {

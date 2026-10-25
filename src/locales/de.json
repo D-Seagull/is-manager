@@ -370,16 +370,6 @@
       "dnd": "Wecker im Modus „Nicht stören“",
       "battery": "Akku: keine Einschränkungen",
       "hint": "Damit Benachrichtigungen immer ankommen: auf dem Sperrbildschirm erlauben und den Energiesparmodus für IS Manager ausschalten. Auf Xiaomi / Redmi zusätzlich „Autostart“ aktivieren."
-    },
-    "pushTest": {
-      "title": "Zustelltest",
-      "expo": "Über Expo",
-      "fcm": "Über FCM",
-      "scheduled": "Der Push kommt in {{sec}} s — sperren Sie das Telefon und warten Sie.",
-      "fcmOff": "FCM ist auf dem Server noch nicht eingerichtet.",
-      "noTokens": "Für dieses Telefon ist kein Token registriert. Starten Sie die App neu.",
-      "error": "Test konnte nicht gesendet werden.",
-      "hint": "Tippen, Telefon sperren und vergleichen, wann das Banner erscheint — darin steht die Sendezeit. Der Test kommt in {{sec}} s."
     }
   },
   "status": {
