@@ -297,7 +297,9 @@
     "noticeTitle": "Pranešimas",
     "channels": {
       "chat": "Žinutės ir reisai",
-      "alarm": "Žadintuvas"
+      "alarm": "Žadintuvas",
+      "other": "Kiti pranešimai",
+      "fallback": "Žinutės (atsarginis)"
     }
   },
   "settings": {
@@ -373,6 +375,16 @@
       "dnd": "Žadintuvas režimu „Netrukdyti“",
       "battery": "Baterija: be apribojimų",
       "hint": "Kad pranešimai visada pasiektų: leiskite juos užrakinimo ekrane ir išjunkite baterijos taupymą IS Manager. Xiaomi / Redmi taip pat įjunkite „Automatinis paleidimas“."
+    },
+    "pushTest": {
+      "title": "Pristatymo patikra (testas)",
+      "expo": "Per Expo",
+      "fcm": "Per FCM",
+      "scheduled": "Pranešimas ateis po {{sec}} s — užrakinkite telefoną ir palaukite.",
+      "fcmOff": "FCM serveryje dar nesukonfigūruotas.",
+      "noTokens": "Šiam telefonui nėra užregistruoto žetono. Paleiskite programėlę iš naujo.",
+      "error": "Nepavyko išsiųsti testo.",
+      "hint": "Paspauskite, užrakinkite telefoną ir palyginkite, kada pasirodys pranešimas — jame nurodytas išsiuntimo laikas. Testas ateina po {{sec}} s."
     }
   },
   "status": {

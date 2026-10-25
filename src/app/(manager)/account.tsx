@@ -25,7 +25,9 @@ import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing, ThemeColors } from '@/constants/theme';
 import { bottomBarPadding } from '@/lib/insets';
 import { InsetScrollView } from '@/components/inset-list';
+import * as Updates from 'expo-updates';
 import { ReliableNotifications } from '@/components/reliable-notifications';
+import { PushDeliveryTest } from '@/components/push-delivery-test';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeMode, type ThemeMode } from '@/hooks/use-theme';
 import {
@@ -453,6 +455,13 @@ export default function AccountScreen() {
         {Platform.OS === 'android' && (
           <SectionCard colors={c} title={t('settings.reliable.title', 'Надійні сповіщення')}>
             <ReliableNotifications colors={c} alarm />
+          </SectionCard>
+        )}
+
+        {/* EXPERIMENT (preview builds): Expo vs direct-FCM delivery test. */}
+        {Platform.OS === 'android' && (__DEV__ || Updates.channel === 'preview') && (
+          <SectionCard colors={c} title={t('settings.pushTest.title')}>
+            <PushDeliveryTest colors={c} />
           </SectionCard>
         )}
 

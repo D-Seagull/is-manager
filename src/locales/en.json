@@ -292,7 +292,9 @@
     "noticeTitle": "Notification",
     "channels": {
       "chat": "Messages and trips",
-      "alarm": "Alarm"
+      "alarm": "Alarm",
+      "other": "Other notifications",
+      "fallback": "Messages (fallback)"
     }
   },
   "settings": {
@@ -368,6 +370,16 @@
       "dnd": "Alarm in Do Not Disturb",
       "battery": "Battery: no restrictions",
       "hint": "So notifications always get through: allow them on the lock screen and turn off battery saving for IS Manager. On Xiaomi / Redmi also enable “Autostart”."
+    },
+    "pushTest": {
+      "title": "Delivery check (test)",
+      "expo": "Via Expo",
+      "fcm": "Via FCM",
+      "scheduled": "The push arrives in {{sec}} s — lock the phone and wait.",
+      "fcmOff": "FCM isn't set up on the server yet.",
+      "noTokens": "No token registered for this phone. Restart the app.",
+      "error": "Couldn't send the test.",
+      "hint": "Tap, lock the phone and compare when the banner shows up — it says when it was sent. The test arrives in {{sec}} s."
     }
   },
   "status": {

@@ -1,6 +1,10 @@
 import { useEffect, useRef } from 'react';
 
-import { deregisterPushToken, registerForPushNotifications } from '@/lib/push';
+import {
+  deregisterFcmToken,
+  deregisterPushToken,
+  registerForPushNotifications,
+} from '@/lib/push';
 import { useAuthStore } from '@/store/auth';
 
 /**
@@ -20,6 +24,7 @@ export function usePushNotifications() {
         void deregisterPushToken(old);
         expoTokenRef.current = null;
       }
+      void deregisterFcmToken();
       return;
     }
 
