@@ -157,10 +157,20 @@
   "groups": {
     "empty": {
       "title": "Noch keine Gruppen",
-      "subtitle": "Die Fahrergruppe Ihres Unternehmens erscheint hier."
+      "subtitle": "Erstellen Sie die erste Gruppe mit der „+“-Taste oben."
     },
-    "memberCount_one": "{{count}} Fahrer",
-    "memberCount_other": "{{count}} Fahrer"
+    "memberCount_one": "{{count}} Mitglied",
+    "memberCount_other": "{{count}} Mitglieder",
+    "create": {
+      "title": "Neue Gruppe",
+      "subtitle": "Eine Gruppe für den Austausch mit anderen Managern Ihrer Firma.",
+      "namePlaceholder": "Gruppenname",
+      "members": "Mitglieder: {{count}}",
+      "searchPlaceholder": "Nach Namen suchen",
+      "noPeople": "Niemand gefunden",
+      "submit": "Erstellen",
+      "error": "Gruppe konnte nicht erstellt werden."
+    }
   },
   "home": {
     "myTrucksSub": "Ihr Fuhrpark & Fahrten",
@@ -292,7 +302,9 @@
     "noticeTitle": "Benachrichtigung",
     "channels": {
       "chat": "Nachrichten und Fahrten",
-      "alarm": "Wecker"
+      "alarm": "Wecker",
+      "other": "Weitere Benachrichtigungen",
+      "fallback": "Nachrichten (Reserve)"
     }
   },
   "settings": {
@@ -365,6 +377,7 @@
     "reliable": {
       "title": "Zuverlässige Benachrichtigungen",
       "notifications": "Benachrichtigungen auf dem Sperrbildschirm",
+      "dnd": "Wecker im Modus „Nicht stören“",
       "battery": "Akku: keine Einschränkungen",
       "hint": "Damit Benachrichtigungen immer ankommen: auf dem Sperrbildschirm erlauben und den Energiesparmodus für IS Manager ausschalten. Auf Xiaomi / Redmi zusätzlich „Autostart“ aktivieren."
     }
@@ -501,7 +514,11 @@
   "trucks": {
     "take": "Lkw übernehmen",
     "release": "Lkw freigeben",
-    "searchPlaceholder": "Nach Kennzeichen oder Fahrer suchen…"
+    "searchPlaceholder": "Nach Kennzeichen oder Fahrer suchen…",
+    "addTruck": "Neuer LKW",
+    "createError": "LKW konnte nicht hinzugefügt werden",
+    "plate": "Kennzeichen",
+    "platePlaceholder": "z. B. BE 9130"
   },
   "bugReport": {
     "title": "Problem melden",

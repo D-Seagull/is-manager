@@ -157,10 +157,20 @@
   "groups": {
     "empty": {
       "title": "No groups yet",
-      "subtitle": "Your company's driver group will appear here."
+      "subtitle": "Create your first group with the “+” button at the top."
     },
-    "memberCount_one": "{{count}} driver",
-    "memberCount_other": "{{count}} drivers"
+    "memberCount_one": "{{count}} member",
+    "memberCount_other": "{{count}} members",
+    "create": {
+      "title": "New group",
+      "subtitle": "A group to talk with other managers of your company.",
+      "namePlaceholder": "Group name",
+      "members": "Members: {{count}}",
+      "searchPlaceholder": "Search by name",
+      "noPeople": "No one found",
+      "submit": "Create",
+      "error": "Couldn’t create the group."
+    }
   },
   "home": {
     "myTrucksSub": "Your fleet & trips",
@@ -292,7 +302,9 @@
     "noticeTitle": "Notification",
     "channels": {
       "chat": "Messages and trips",
-      "alarm": "Alarm"
+      "alarm": "Alarm",
+      "other": "Other notifications",
+      "fallback": "Messages (fallback)"
     }
   },
   "settings": {
@@ -365,6 +377,7 @@
     "reliable": {
       "title": "Reliable notifications",
       "notifications": "Notifications on the lock screen",
+      "dnd": "Alarm in Do Not Disturb",
       "battery": "Battery: no restrictions",
       "hint": "So notifications always get through: allow them on the lock screen and turn off battery saving for IS Manager. On Xiaomi / Redmi also enable “Autostart”."
     }
@@ -501,7 +514,11 @@
   "trucks": {
     "take": "Take truck",
     "release": "Release truck",
-    "searchPlaceholder": "Search by plate or driver…"
+    "searchPlaceholder": "Search by plate or driver…",
+    "addTruck": "New truck",
+    "createError": "Couldn't add the truck",
+    "plate": "Plate number",
+    "platePlaceholder": "e.g. BE 9130"
   },
   "bugReport": {
     "title": "Report a problem",

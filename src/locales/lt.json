@@ -159,12 +159,22 @@
   "groups": {
     "empty": {
       "title": "Grupių dar nėra",
-      "subtitle": "Čia atsiras jūsų įmonės vairuotojų grupė."
+      "subtitle": "Sukurkite pirmą grupę mygtuku „+“ viršuje."
     },
-    "memberCount_one": "{{count}} vairuotojas",
-    "memberCount_few": "{{count}} vairuotojai",
-    "memberCount_many": "{{count}} vairuotojo",
-    "memberCount_other": "{{count}} vairuotojų"
+    "memberCount_one": "{{count}} narys",
+    "memberCount_few": "{{count}} nariai",
+    "memberCount_many": "{{count}} nario",
+    "memberCount_other": "{{count}} narių",
+    "create": {
+      "title": "Nauja grupė",
+      "subtitle": "Grupė bendrauti su kitais jūsų įmonės vadybininkais.",
+      "namePlaceholder": "Grupės pavadinimas",
+      "members": "Nariai: {{count}}",
+      "searchPlaceholder": "Ieškoti pagal vardą",
+      "noPeople": "Nieko nerasta",
+      "submit": "Sukurti",
+      "error": "Nepavyko sukurti grupės."
+    }
   },
   "home": {
     "myTrucksSub": "Jūsų autoparkas ir reisai",
@@ -297,7 +307,9 @@
     "noticeTitle": "Pranešimas",
     "channels": {
       "chat": "Žinutės ir reisai",
-      "alarm": "Žadintuvas"
+      "alarm": "Žadintuvas",
+      "other": "Kiti pranešimai",
+      "fallback": "Žinutės (atsarginis)"
     }
   },
   "settings": {
@@ -370,6 +382,7 @@
     "reliable": {
       "title": "Patikimi pranešimai",
       "notifications": "Pranešimai užrakinimo ekrane",
+      "dnd": "Žadintuvas režimu „Netrukdyti“",
       "battery": "Baterija: be apribojimų",
       "hint": "Kad pranešimai visada pasiektų: leiskite juos užrakinimo ekrane ir išjunkite baterijos taupymą IS Manager. Xiaomi / Redmi taip pat įjunkite „Automatinis paleidimas“."
     }
@@ -506,7 +519,11 @@
   "trucks": {
     "take": "Paimti vilkiką",
     "release": "Atlaisvinti vilkiką",
-    "searchPlaceholder": "Ieškoti pagal numerį ar vairuotoją…"
+    "searchPlaceholder": "Ieškoti pagal numerį ar vairuotoją…",
+    "addTruck": "Naujas sunkvežimis",
+    "createError": "Nepavyko pridėti sunkvežimio",
+    "plate": "Valstybinis numeris",
+    "platePlaceholder": "pvz. BE 9130"
   },
   "bugReport": {
     "title": "Pranešti apie problemą",

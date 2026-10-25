@@ -159,12 +159,22 @@
   "groups": {
     "empty": {
       "title": "Brak grup",
-      "subtitle": "Grupa kierowców Twojej firmy pojawi się tutaj."
+      "subtitle": "Utwórz pierwszą grupę przyciskiem „+” u góry."
     },
-    "memberCount_one": "{{count}} kierowca",
-    "memberCount_few": "{{count}} kierowcy",
-    "memberCount_many": "{{count}} kierowców",
-    "memberCount_other": "{{count}} kierowcy"
+    "memberCount_one": "{{count}} uczestnik",
+    "memberCount_few": "{{count}} uczestnicy",
+    "memberCount_many": "{{count}} uczestników",
+    "memberCount_other": "{{count}} uczestnika",
+    "create": {
+      "title": "Nowa grupa",
+      "subtitle": "Grupa do rozmów z innymi menedżerami Twojej firmy.",
+      "namePlaceholder": "Nazwa grupy",
+      "members": "Uczestnicy: {{count}}",
+      "searchPlaceholder": "Szukaj po nazwisku",
+      "noPeople": "Nikogo nie znaleziono",
+      "submit": "Utwórz",
+      "error": "Nie udało się utworzyć grupy."
+    }
   },
   "home": {
     "myTrucksSub": "Twoja flota i trasy",
@@ -297,7 +307,9 @@
     "noticeTitle": "Powiadomienie",
     "channels": {
       "chat": "Wiadomości i trasy",
-      "alarm": "Budzik"
+      "alarm": "Budzik",
+      "other": "Inne powiadomienia",
+      "fallback": "Wiadomości (zapasowy)"
     }
   },
   "settings": {
@@ -370,6 +382,7 @@
     "reliable": {
       "title": "Niezawodne powiadomienia",
       "notifications": "Powiadomienia na ekranie blokady",
+      "dnd": "Budzik w trybie „Nie przeszkadzać”",
       "battery": "Bateria: bez ograniczeń",
       "hint": "Aby powiadomienia zawsze docierały: zezwól na ekranie blokady i wyłącz oszczędzanie baterii dla IS Manager. Na Xiaomi / Redmi włącz też „Autostart”."
     }
@@ -506,7 +519,11 @@
   "trucks": {
     "take": "Weź ciężarówkę",
     "release": "Zwolnij ciężarówkę",
-    "searchPlaceholder": "Szukaj po numerze lub kierowcy…"
+    "searchPlaceholder": "Szukaj po numerze lub kierowcy…",
+    "addTruck": "Nowa ciężarówka",
+    "createError": "Nie udało się dodać ciężarówki",
+    "plate": "Numer rejestracyjny",
+    "platePlaceholder": "np. BE 9130"
   },
   "bugReport": {
     "title": "Zgłoś problem",

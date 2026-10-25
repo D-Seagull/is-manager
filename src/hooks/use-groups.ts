@@ -153,6 +153,32 @@ export function useGroups() {
 }
 
 /**
+ * Create a managers' group and add the picked members — the web's "New group"
+ * dialog (POST /groups, then POST /groups/:id/managers/:managerId each). The
+ * creator is added by the server.
+ */
+export function useCreateGroup() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ name, memberIds }: { name: string; memberIds: string[] }) => {
+      const res = await api.post<{ id: string; name: string }>('/groups', {
+        name,
+        type: 'MANAGERS',
+      });
+      const group = res.data;
+      await Promise.all(
+        memberIds.map((managerId) => api.post(`/groups/${group.id}/managers/${managerId}`)),
+      );
+      return group;
+    },
+    // Also when adding a member failed half-way: the group itself exists.
+    onSettled: () => {
+      void qc.invalidateQueries({ queryKey: groupKeys.list });
+    },
+  });
+}
+
+/**
  * Per-group unread counts for the current manager's groups (non-DRIVERS).
  * Backs the unread badges on the Groups tab + list rows.
  */

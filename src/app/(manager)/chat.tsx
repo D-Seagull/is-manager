@@ -17,6 +17,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatAvatar } from '@/components/chat-avatar';
+import { CreateGroupModal } from '@/components/create-group-modal';
 import { ScreenPlaceholder } from '@/components/screen-placeholder';
 import { SectionHeader } from '@/components/section-header';
 import { StatusDot } from '@/components/status-dot';
@@ -56,6 +57,7 @@ export default function ChatScreen() {
   const { data: conversations, refetch: refetchConvs } = useConversations();
   const { data: groups, refetch: refetchGroups } = useGroups();
   const { data: groupUnread, refetch: refetchGroupUnread } = useGroupUnread();
+  const [createGroupOpen, setCreateGroupOpen] = useState(false);
 
   const mgrUnread = (conversations ?? [])
     .filter((cv) => cv.user.role !== 'DRIVER')
@@ -76,7 +78,22 @@ export default function ChatScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: c.background }]}>
-      <SectionHeader title={t('nav.items.chat', 'Чат')} backTo={'/(manager)' as never} />
+      <SectionHeader
+        title={t('nav.items.chat', 'Чат')}
+        backTo={'/(manager)' as never}
+        right={
+          tab === 'groups' ? (
+            <Pressable
+              onPress={() => setCreateGroupOpen(true)}
+              hitSlop={10}
+              style={{ padding: 4 }}
+              accessibilityLabel={t('groups.create.title')}
+            >
+              <Ionicons name="add" size={24} color={c.foreground} />
+            </Pressable>
+          ) : null
+        }
+      />
 
       <View style={styles.content}>
         {tab === 'groups' ? (
@@ -119,6 +136,8 @@ export default function ChatScreen() {
           onPress={() => setTab('drivers')}
         />
       </View>
+
+      <CreateGroupModal visible={createGroupOpen} onClose={() => setCreateGroupOpen(false)} />
     </View>
   );
 }
