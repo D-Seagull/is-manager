@@ -159,12 +159,22 @@
   "groups": {
     "empty": {
       "title": "Групп пока нет",
-      "subtitle": "Здесь появится группа водителей вашей компании."
+      "subtitle": "Создайте первую группу кнопкой «+» вверху."
     },
-    "memberCount_one": "{{count}} водитель",
-    "memberCount_few": "{{count}} водителя",
-    "memberCount_many": "{{count}} водителей",
-    "memberCount_other": "{{count}} водителя"
+    "memberCount_one": "{{count}} участник",
+    "memberCount_few": "{{count}} участника",
+    "memberCount_many": "{{count}} участников",
+    "memberCount_other": "{{count}} участника",
+    "create": {
+      "title": "Новая группа",
+      "subtitle": "Группа для общения с другими менеджерами вашей компании.",
+      "namePlaceholder": "Название группы",
+      "members": "Участники: {{count}}",
+      "searchPlaceholder": "Поиск по имени",
+      "noPeople": "Никого не найдено",
+      "submit": "Создать",
+      "error": "Не удалось создать группу."
+    }
   },
   "home": {
     "myTrucksSub": "Ваш автопарк и рейсы",

@@ -157,10 +157,20 @@
   "groups": {
     "empty": {
       "title": "No groups yet",
-      "subtitle": "Your company's driver group will appear here."
+      "subtitle": "Create your first group with the “+” button at the top."
     },
-    "memberCount_one": "{{count}} driver",
-    "memberCount_other": "{{count}} drivers"
+    "memberCount_one": "{{count}} member",
+    "memberCount_other": "{{count}} members",
+    "create": {
+      "title": "New group",
+      "subtitle": "A group to talk with other managers of your company.",
+      "namePlaceholder": "Group name",
+      "members": "Members: {{count}}",
+      "searchPlaceholder": "Search by name",
+      "noPeople": "No one found",
+      "submit": "Create",
+      "error": "Couldn’t create the group."
+    }
   },
   "home": {
     "myTrucksSub": "Your fleet & trips",

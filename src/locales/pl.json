@@ -159,12 +159,22 @@
   "groups": {
     "empty": {
       "title": "Brak grup",
-      "subtitle": "Grupa kierowców Twojej firmy pojawi się tutaj."
+      "subtitle": "Utwórz pierwszą grupę przyciskiem „+” u góry."
     },
-    "memberCount_one": "{{count}} kierowca",
-    "memberCount_few": "{{count}} kierowcy",
-    "memberCount_many": "{{count}} kierowców",
-    "memberCount_other": "{{count}} kierowcy"
+    "memberCount_one": "{{count}} uczestnik",
+    "memberCount_few": "{{count}} uczestnicy",
+    "memberCount_many": "{{count}} uczestników",
+    "memberCount_other": "{{count}} uczestnika",
+    "create": {
+      "title": "Nowa grupa",
+      "subtitle": "Grupa do rozmów z innymi menedżerami Twojej firmy.",
+      "namePlaceholder": "Nazwa grupy",
+      "members": "Uczestnicy: {{count}}",
+      "searchPlaceholder": "Szukaj po nazwisku",
+      "noPeople": "Nikogo nie znaleziono",
+      "submit": "Utwórz",
+      "error": "Nie udało się utworzyć grupy."
+    }
   },
   "home": {
     "myTrucksSub": "Twoja flota i trasy",
