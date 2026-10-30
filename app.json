@@ -112,7 +112,7 @@
     "extra": {
       "router": {},
       "API_URL": "https://api.isfleet.eu",
-      "SENTRY_DSN": "",
+      "SENTRY_DSN": "https://f0e763f758a9bc1e3f1a7e4c57d1541a@o4512086189080576.ingest.de.sentry.io/4512347012530256",
       "eas": {
         "projectId": "dbf59c29-bdcf-4465-9f3c-e4e73effc375"
       }
