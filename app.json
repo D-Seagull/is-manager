@@ -95,6 +95,14 @@
             "photo"
           ]
         }
+      ],
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://de.sentry.io/",
+          "organization": "dmytro-chaika",
+          "project": "is-manager"
+        }
       ]
     ],
     "experiments": {
@@ -104,6 +112,7 @@
     "extra": {
       "router": {},
       "API_URL": "https://api.isfleet.eu",
+      "SENTRY_DSN": "",
       "eas": {
         "projectId": "dbf59c29-bdcf-4465-9f3c-e4e73effc375"
       }

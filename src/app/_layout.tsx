@@ -16,7 +16,12 @@ import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-cont
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { ThemeProvider } from '@/hooks/use-theme';
 import { queryClient } from '@/lib/query';
+import { initSentry, setSentryUser, wrapRoot } from '@/lib/sentry';
 import { useOtaUpdates } from '@/lib/updates';
+import { useAuthStore } from '@/store/auth';
+
+// Before anything renders, so errors during startup are reported too.
+initSentry();
 
 // Tell React Query when the app returns to foreground from background.
 // We track the PREVIOUS state so we only trigger on a real background→active
@@ -42,15 +47,25 @@ function useAppStateRefetch() {
 // server `uiLocale` is written on pick for web/cross-device parity but is not
 // auto-applied here — otherwise its UK default would override the phone locale.
 
+// Crash reports carry only the signed-in user id (lib/sentry); cleared on
+// logout or when the session is dropped.
+function useSentryUser() {
+  const id = useAuthStore((s) => s.user?.id);
+  useEffect(() => {
+    setSentryUser(id);
+  }, [id]);
+}
+
 // No `unstable_settings.anchor` here (it came with the Expo template). It
 // mounted a hidden (manager) under `index`; index's <Redirect> then replaced
 // itself with a SECOND (manager), and both stayed mounted — every overlay,
 // socket listener and push handler in that layout ran twice (each trip
 // question popped up twice). The root stack holds one route at a time.
 
-export default function RootLayout() {
+function RootLayout() {
   useAppStateRefetch();
   useOtaUpdates();
+  useSentryUser();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
@@ -75,6 +90,8 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+export default wrapRoot(RootLayout);
 
 function NavTheme({ children }: { children: React.ReactNode }) {
   const scheme = useColorScheme();
