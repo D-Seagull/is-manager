@@ -265,6 +265,14 @@
     "unreadCount": "Neperskaityta: {{count}}"
   },
   "people": {
+    "loginCode": "Prisijungimo kodas",
+    "loginCodeTitle": "Vairuotojo prisijungimo kodas",
+    "loginCodeDesc": "Padiktuokite kodą vairuotojui telefonu — jis įves jį kodo ekrane vietoj SMS kodo.",
+    "loginCodeExpires": "Vienkartinis, galioja iki {{time}}.",
+    "loginCodeCopy": "Kopijuoti",
+    "loginCodeCopied": "Kodas nukopijuotas",
+    "loginCodeNew": "Naujas kodas",
+    "loginCodeError": "Nepavyko sukurti prisijungimo kodo",
     "myTeam": "Mano komanda",
     "allManagers": "Visi vadovai",
     "teamEmpty": "Jūsų komandoje nėra kitų vadovų",

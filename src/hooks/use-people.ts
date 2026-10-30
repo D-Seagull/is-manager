@@ -23,6 +23,8 @@ export interface PersonDetail {
   statusUntil?: string | null;
   isActive: boolean;
   currentTruck?: { id: string; plate: string; status: string } | null;
+  // Закріплений менеджер водія (для DRIVER на /users/:id).
+  manager?: PersonMini | null;
   // Менеджерські поля (бекенд повертає їх для MANAGER/TEAMLEAD/ADMIN на /users/:id).
   teamlead?: PersonMini | null;
   assignedTrucks?: {
@@ -138,6 +140,21 @@ export function useSetUserActive() {
     onSuccess: (_d, { id }) => {
       qc.invalidateQueries({ queryKey: ['company-users'] });
       qc.invalidateQueries({ queryKey: ['user', id] });
+    },
+  });
+}
+
+/**
+ * Код входу для водія, якому не приходить SMS: закріплений менеджер створює
+ * одноразовий код і диктує його. Бекенд відмовляє всім іншим.
+ */
+export function useIssueDriverLoginCode() {
+  return useMutation({
+    mutationFn: async (driverId: string) => {
+      const res = await api.post<{ code: string; expiresAt: string }>(
+        `/auth/driver/${driverId}/login-code`,
+      );
+      return res.data;
     },
   });
 }

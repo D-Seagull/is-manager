@@ -260,6 +260,14 @@
     "unreadCount": "Ungelesen: {{count}}"
   },
   "people": {
+    "loginCode": "Anmeldecode",
+    "loginCodeTitle": "Anmeldecode für Fahrer",
+    "loginCodeDesc": "Sagen Sie dem Fahrer den Code am Telefon durch — er gibt ihn statt des SMS-Codes im Code-Bildschirm ein.",
+    "loginCodeExpires": "Einmalig, gültig bis {{time}}.",
+    "loginCodeCopy": "Kopieren",
+    "loginCodeCopied": "Code kopiert",
+    "loginCodeNew": "Neuer Code",
+    "loginCodeError": "Anmeldecode konnte nicht erstellt werden",
     "myTeam": "Mein Team",
     "allManagers": "Alle Manager",
     "teamEmpty": "Ihr Team hat keine weiteren Manager",

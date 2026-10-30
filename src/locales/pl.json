@@ -265,6 +265,14 @@
     "unreadCount": "Nieprzeczytane: {{count}}"
   },
   "people": {
+    "loginCode": "Kod logowania",
+    "loginCodeTitle": "Kod logowania kierowcy",
+    "loginCodeDesc": "Podyktuj kod kierowcy przez telefon — wpisze go na ekranie kodu zamiast kodu z SMS-a.",
+    "loginCodeExpires": "Jednorazowy, ważny do {{time}}.",
+    "loginCodeCopy": "Kopiuj",
+    "loginCodeCopied": "Kod skopiowany",
+    "loginCodeNew": "Nowy kod",
+    "loginCodeError": "Nie udało się utworzyć kodu logowania",
     "myTeam": "Mój zespół",
     "allManagers": "Wszyscy menedżerowie",
     "teamEmpty": "W Twoim zespole nie ma innych menedżerów",
