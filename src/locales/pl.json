@@ -145,9 +145,12 @@
     "addDriver": "Nowy kierowca",
     "inviteHint": "Kierowca loguje się numerem telefonu za pomocą kodu SMS.",
     "existsElsewhereTitle": "Kierowca już istnieje",
-    "existsElsewhereBody": "Kierowca „{{name}}” jest już zarejestrowany w innej firmie. Przenieść go do Twojej firmy?",
-    "confirmTransfer": "Tak, przenieś",
-    "cancelTransfer": "Anuluj"
+    "existsElsewhereBody": "Kierowca „{{name}}” jest już zarejestrowany w innej firmie. Wysłać mu SMS z prośbą o przejście? Dołączy do Twojej firmy dopiero po akceptacji.",
+    "confirmTransfer": "Wyślij prośbę",
+    "cancelTransfer": "Anuluj",
+    "transferPendingTitle": "Czekamy na kierowcę",
+    "transferPendingBody": "Kierowca otrzymał SMS z linkiem potwierdzającym. Pojawi się na Twojej liście, gdy tylko zaakceptuje. Link jest ważny 24 godziny.",
+    "transferPendingOk": "OK"
   },
   "forgot": {
     "title": "Odzyskiwanie hasła",
@@ -262,6 +265,14 @@
     "unreadCount": "Nieprzeczytane: {{count}}"
   },
   "people": {
+    "loginCode": "Kod logowania",
+    "loginCodeTitle": "Kod logowania kierowcy",
+    "loginCodeDesc": "Podyktuj kod kierowcy przez telefon — wpisze go na ekranie kodu zamiast kodu z SMS-a.",
+    "loginCodeExpires": "Jednorazowy, ważny do {{time}}.",
+    "loginCodeCopy": "Kopiuj",
+    "loginCodeCopied": "Kod skopiowany",
+    "loginCodeNew": "Nowy kod",
+    "loginCodeError": "Nie udało się utworzyć kodu logowania",
     "myTeam": "Mój zespół",
     "allManagers": "Wszyscy menedżerowie",
     "teamEmpty": "W Twoim zespole nie ma innych menedżerów",

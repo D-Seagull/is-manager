@@ -143,9 +143,12 @@
     "addDriver": "Neuer Fahrer",
     "inviteHint": "Der Fahrer meldet sich mit seiner Telefonnummer per SMS-Code an.",
     "existsElsewhereTitle": "Fahrer existiert bereits",
-    "existsElsewhereBody": "Der Fahrer „{{name}}“ ist bereits bei einem anderen Unternehmen registriert. Zu Ihrem Unternehmen verschieben?",
-    "confirmTransfer": "Ja, verschieben",
-    "cancelTransfer": "Abbrechen"
+    "existsElsewhereBody": "Fahrer „{{name}}“ ist bereits bei einem anderen Unternehmen registriert. Eine SMS mit der Bitte um Wechsel senden? Er kommt erst zu Ihrem Unternehmen, wenn er zustimmt.",
+    "confirmTransfer": "Anfrage senden",
+    "cancelTransfer": "Abbrechen",
+    "transferPendingTitle": "Warten auf den Fahrer",
+    "transferPendingBody": "Der Fahrer hat eine SMS mit einem Bestätigungslink erhalten. Sobald er zustimmt, erscheint er in Ihrer Liste. Der Link ist 24 Stunden gültig.",
+    "transferPendingOk": "OK"
   },
   "forgot": {
     "title": "Passwort zurücksetzen",
@@ -257,6 +260,14 @@
     "unreadCount": "Ungelesen: {{count}}"
   },
   "people": {
+    "loginCode": "Anmeldecode",
+    "loginCodeTitle": "Anmeldecode für Fahrer",
+    "loginCodeDesc": "Sagen Sie dem Fahrer den Code am Telefon durch — er gibt ihn statt des SMS-Codes im Code-Bildschirm ein.",
+    "loginCodeExpires": "Einmalig, gültig bis {{time}}.",
+    "loginCodeCopy": "Kopieren",
+    "loginCodeCopied": "Code kopiert",
+    "loginCodeNew": "Neuer Code",
+    "loginCodeError": "Anmeldecode konnte nicht erstellt werden",
     "myTeam": "Mein Team",
     "allManagers": "Alle Manager",
     "teamEmpty": "Ihr Team hat keine weiteren Manager",

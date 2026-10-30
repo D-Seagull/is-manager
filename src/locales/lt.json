@@ -145,9 +145,12 @@
     "addDriver": "Naujas vairuotojas",
     "inviteHint": "Vairuotojas prisijungia telefono numeriu su SMS kodu.",
     "existsElsewhereTitle": "Vairuotojas jau egzistuoja",
-    "existsElsewhereBody": "Vairuotojas „{{name}}“ jau užregistruotas kitoje įmonėje. Perkelti jį į jūsų įmonę?",
-    "confirmTransfer": "Taip, perkelti",
-    "cancelTransfer": "Atšaukti"
+    "existsElsewhereBody": "Vairuotojas „{{name}}“ jau užregistruotas kitoje įmonėje. Išsiųsti jam SMS su prašymu pereiti? Į jūsų įmonę jis pateks tik sutikęs.",
+    "confirmTransfer": "Siųsti prašymą",
+    "cancelTransfer": "Atšaukti",
+    "transferPendingTitle": "Laukiame vairuotojo patvirtinimo",
+    "transferPendingBody": "Vairuotojas gavo SMS su patvirtinimo nuoroda. Kai tik jis sutiks, atsiras jūsų sąraše. Nuoroda galioja 24 valandas.",
+    "transferPendingOk": "Gerai"
   },
   "forgot": {
     "title": "Slaptažodžio atkūrimas",
@@ -262,6 +265,14 @@
     "unreadCount": "Neperskaityta: {{count}}"
   },
   "people": {
+    "loginCode": "Prisijungimo kodas",
+    "loginCodeTitle": "Vairuotojo prisijungimo kodas",
+    "loginCodeDesc": "Padiktuokite kodą vairuotojui telefonu — jis įves jį kodo ekrane vietoj SMS kodo.",
+    "loginCodeExpires": "Vienkartinis, galioja iki {{time}}.",
+    "loginCodeCopy": "Kopijuoti",
+    "loginCodeCopied": "Kodas nukopijuotas",
+    "loginCodeNew": "Naujas kodas",
+    "loginCodeError": "Nepavyko sukurti prisijungimo kodo",
     "myTeam": "Mano komanda",
     "allManagers": "Visi vadovai",
     "teamEmpty": "Jūsų komandoje nėra kitų vadovų",

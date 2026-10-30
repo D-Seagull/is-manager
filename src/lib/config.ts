@@ -28,6 +28,12 @@ export const WEB_URL = readString("WEB_URL", "https://app.isfleet.eu");
 export const PRIVACY_URL = WEB_URL + "/privacy";
 export const TERMS_URL = WEB_URL + "/terms";
 
+/**
+ * Sentry crash reporting (lib/sentry). Set per app in app.json → expo.extra
+ * (SENTRY_DSN) so it reaches both EAS builds and OTA updates. Empty = off.
+ */
+export const SENTRY_DSN = readString("SENTRY_DSN", "");
+
 // Boot-time sanity log — confirms which API the app is talking to. Remove
 // this once the network setup is stable.
 console.log("[config]", { API_URL });

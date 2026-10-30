@@ -7,6 +7,7 @@ import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, TextInput, View 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatAvatar } from '@/components/chat-avatar';
+import { LoginCodeButton } from '@/components/login-code-button';
 import { NotificationsBell } from '@/components/notifications-bell';
 import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing } from '@/constants/theme';
@@ -23,6 +24,7 @@ export default function PersonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: person, isLoading } = useUserDetail(id);
   const setActive = useSetUserActive();
+  const me = useUser();
 
   const langLabels: Record<string, string> = { EN: 'English', UK: 'Українська', PL: 'Polski', LT: 'Lietuvių', RU: 'Русский' };
 
@@ -81,6 +83,11 @@ export default function PersonScreen() {
               </Pressable>
             ) : null}
           </View>
+
+          {/* Код входу — лише закріплений менеджер водія (бекенд теж перевіряє). */}
+          {person.role === 'DRIVER' && person.isActive && me?.id && person.manager?.id === me.id ? (
+            <LoginCodeButton driverId={person.id} c={c} />
+          ) : null}
 
           {/* Info */}
           <View style={[styles.card, { backgroundColor: c.card, borderColor: c.border }]}>

@@ -190,15 +190,22 @@ function CreateModal({ kind, visible, onClose }: { kind: 'driver' | 'manager'; v
 
   // Phone matched a driver already registered with another company — the
   // backend refuses to create/move anything until we resend with
-  // confirmTransfer: true (see users.service.ts createDriver).
+  // confirmTransfer: true (see users.service.ts createDriver). Even then it
+  // only texts the driver a consent link: they join once they accept.
   const saveDriver = async (confirmTransfer = false) => {
     try {
-      await createDriver.mutateAsync({
+      const created = await createDriver.mutateAsync({
         firstName: firstName.trim(),
         lastName: lastName.trim() || null,
         phone: phone.trim(),
         confirmTransfer,
       });
+      if ((created as { code?: string } | undefined)?.code === 'DRIVER_TRANSFER_PENDING') {
+        Alert.alert(
+          t('drivers.transferPendingTitle', 'Чекаємо на підтвердження водія'),
+          t('drivers.transferPendingBody', 'Водій отримав SMS із посиланням. Щойно він погодиться, він з’явиться у вашому списку. Посилання дійсне 24 години.'),
+        );
+      }
       onClose();
     } catch (e) {
       const inner = isAxiosError(e) ? (e.response?.data as { message?: unknown } | undefined)?.message : undefined;
@@ -207,10 +214,10 @@ function CreateModal({ kind, visible, onClose }: { kind: 'driver' | 'manager'; v
         const name = fullName(driver) || driver.id;
         Alert.alert(
           t('drivers.existsElsewhereTitle', 'Водій вже є в системі'),
-          t('drivers.existsElsewhereBody', { name, defaultValue: `Водій «${name}» вже зареєстрований в іншій компанії. Перенести його до вашої компанії?` }),
+          t('drivers.existsElsewhereBody', { name, defaultValue: `Водій «${name}» вже зареєстрований в іншій компанії. Надіслати йому SMS із запитом на перехід? Він з’явиться у вашій компанії лише після того, як погодиться.` }),
           [
             { text: t('drivers.cancelTransfer', 'Скасувати'), style: 'cancel' },
-            { text: t('drivers.confirmTransfer', 'Так, перенести'), onPress: () => saveDriver(true) },
+            { text: t('drivers.confirmTransfer', 'Надіслати запит'), onPress: () => saveDriver(true) },
           ],
         );
         return;

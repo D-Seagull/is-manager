@@ -143,9 +143,12 @@
     "addDriver": "New driver",
     "inviteHint": "The driver signs in with their phone number via an SMS code.",
     "existsElsewhereTitle": "Driver already exists",
-    "existsElsewhereBody": "Driver \"{{name}}\" is already registered with another company. Move them to your company?",
-    "confirmTransfer": "Yes, move them",
-    "cancelTransfer": "Cancel"
+    "existsElsewhereBody": "Driver \"{{name}}\" is already registered with another company. Send them an SMS asking to move? They join your company only after they accept.",
+    "confirmTransfer": "Send request",
+    "cancelTransfer": "Cancel",
+    "transferPendingTitle": "Waiting for the driver",
+    "transferPendingBody": "The driver got an SMS with a confirmation link. They appear in your list as soon as they accept. The link is valid for 24 hours.",
+    "transferPendingOk": "OK"
   },
   "forgot": {
     "title": "Password recovery",
@@ -257,6 +260,14 @@
     "unreadCount": "Unread: {{count}}"
   },
   "people": {
+    "loginCode": "Login code",
+    "loginCodeTitle": "Driver login code",
+    "loginCodeDesc": "Read the code out to the driver over the phone — they type it on the code screen instead of the SMS one.",
+    "loginCodeExpires": "Single-use, valid until {{time}}.",
+    "loginCodeCopy": "Copy",
+    "loginCodeCopied": "Code copied",
+    "loginCodeNew": "New code",
+    "loginCodeError": "Couldn't create a login code",
     "myTeam": "My team",
     "allManagers": "All managers",
     "teamEmpty": "Your team has no other managers",
