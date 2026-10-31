@@ -88,3 +88,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+/**
+ * The list version of the dot: green while the person is in the app and
+ * available, a moon / palm when they set Sleep / Vacation (shown even with
+ * the app closed), nothing otherwise — the caller shows "last seen" instead.
+ * Same rule as the web's My Trucks.
+ */
+export function ListStatusDot({ user, size = 10, ring = '#000' }: Omit<StatusDotProps, 'isOnline'>) {
+  const presence = useUserPresence(user?.id);
+  // An expired Sleep / Vacation timer resolves to ONLINE, so it isn't "resting".
+  const resolved = resolveDisplayStatus(user, true);
+  const resting = resolved === 'SLEEP' || resolved === 'VACATION';
+  const available = presence === 'online' && resolved === 'ONLINE';
+  if (!resting && !available) return null;
+  // `isOnline` pins the resting statuses — they show with the app closed too.
+  return <StatusDot user={user} isOnline size={size} ring={ring} />;
+}

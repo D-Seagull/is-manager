@@ -26,14 +26,18 @@ function sameDay(a: Date, b: Date) {
   );
 }
 
-/** "12:30" today, "учора 12:30", older "12 жовт. 12:30". */
+/**
+ * "12:30" today, "учора 12:30", older "12 жовт. 12:30". `always` drops the
+ * 15-minute grace period (My Trucks lists everyone's last visit).
+ */
 export function useLastSeenText(
   user: { id?: string; lastSeenAt?: string | null } | null | undefined,
+  always = false,
 ): string | null {
   const { t } = useTranslation();
   const now = useMinuteTick();
   const at = useLastSeen(user?.id, user?.lastSeenAt);
-  if (!at || now - at.getTime() < SHOW_AFTER_MS) return null;
+  if (!at || (!always && now - at.getTime() < SHOW_AFTER_MS)) return null;
 
   const time = formatTime(at, { hour: '2-digit', minute: '2-digit' });
   const when = sameDay(at, new Date(now))
@@ -54,13 +58,16 @@ export function LastSeen({
   user,
   style,
   prefix = '',
+  always = false,
 }: {
   user: { id?: string; lastSeenAt?: string | null } | null | undefined;
   style?: StyleProp<TextStyle>;
+  /** Show it right away, without the 15-minute grace period. */
+  always?: boolean;
   /** e.g. ' · ' when it follows other text on the same line. */
   prefix?: string;
 }) {
-  const text = useLastSeenText(user);
+  const text = useLastSeenText(user, always);
   if (!text) return null;
   return (
     <Text style={style} numberOfLines={1}>

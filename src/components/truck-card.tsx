@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ChatAvatar } from '@/components/chat-avatar';
-import { StatusDot } from '@/components/status-dot';
+import { ListStatusDot } from '@/components/status-dot';
 import { LastSeen } from '@/components/last-seen';
 import { LicensePlate } from '@/components/license-plate';
 import { TRIP_STATUS_COLORS } from '@/constants/trip-status';
@@ -99,7 +99,7 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
             <View style={styles.driverAvatar}>
               <ChatAvatar user={driver} size={34} />
               <View style={styles.dotWrap}>
-                <StatusDot user={driver} size={9} ring={c.card} />
+                <ListStatusDot user={driver} size={9} ring={c.card} />
               </View>
             </View>
             <View style={{ flex: 1, minWidth: 0 }}>
@@ -120,7 +120,7 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
                   {driver.phone}
                 </Text>
               ) : null}
-              <LastSeen user={driver} style={[styles.driverSub, { color: c.mutedForeground }]} />
+              <LastSeen user={driver} always style={[styles.driverSub, { color: c.mutedForeground }]} />
             </View>
           </>
         ) : (
@@ -136,9 +136,17 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
       </View>
 
       {truck.truckNotes && truck.truckNotes.length > 0 ? (
-        <Text style={[styles.note, { color: c.destructive, paddingRight: 40 }]} numberOfLines={1}>
-          {truck.truckNotes[0].content}
-        </Text>
+        <View style={[styles.noteWrap, { paddingRight: 40 }]}>
+          <View style={[styles.noteChip, { backgroundColor: scheme === 'dark' ? 'rgba(247,144,9,0.16)' : '#FFFAEB' }]}>
+            <Ionicons name="build-outline" size={13} color={scheme === 'dark' ? '#FDB022' : '#B54708'} />
+            <Text
+              style={[styles.noteText, { color: scheme === 'dark' ? '#FDB022' : '#B54708' }]}
+              numberOfLines={1}
+            >
+              {truck.truckNotes[0].content}
+            </Text>
+          </View>
+        </View>
       ) : null}
 
       {/* Взяти / звільнити трак — правий нижній кут */}
@@ -204,5 +212,15 @@ const styles = StyleSheet.create({
   noDriver: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
   driverName: { fontSize: 14, fontWeight: '600' },
   driverSub: { fontSize: 12, marginTop: 1 },
-  note: { fontSize: 12, fontStyle: 'italic' },
+  noteWrap: { flexDirection: 'row' },
+  noteChip: {
+    flexShrink: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    height: 24,
+    borderRadius: 12,
+    paddingHorizontal: 10,
+  },
+  noteText: { flexShrink: 1, fontSize: 12, fontWeight: '600' },
 });
