@@ -16,6 +16,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { PersonDetail, useAuthFeatures, useRateDriver, useSetUserActive, useUserDetail, useUserRatings } from '@/hooks/use-people';
 import { fullName } from '@/lib/format';
 import { useUser } from '@/store/auth';
+import { MANAGER_LOGIN_CODE_ENABLED } from '@/lib/config';
 
 export default function PersonScreen() {
   const { t } = useTranslation();
@@ -85,9 +86,9 @@ export default function PersonScreen() {
             ) : null}
           </View>
 
-          {/* Код входу — лише на dev (MANAGER_LOGIN_CODE_ENABLED) і лише менеджеру
-              вантажівки водія; бекенд перевіряє обидва. */}
-          {features?.managerLoginCode && person.role === 'DRIVER' && person.isActive && me?.id && person.currentTruck?.managerId === me.id ? (
+          {/* Код входу — лише коли увімкнено і тут (app.json), і на бекенді, і лише
+              менеджеру вантажівки водія; бекенд перевіряє теж. */}
+          {MANAGER_LOGIN_CODE_ENABLED && features?.managerLoginCode && person.role === 'DRIVER' && person.isActive && me?.id && person.currentTruck?.managerId === me.id ? (
             <LoginCodeButton driverId={person.id} c={c} />
           ) : null}
 
