@@ -41,9 +41,7 @@
         "monochromeImage": "./src/assets/images/adaptive-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "permissions": [
-        "android.permission.ACCESS_NOTIFICATION_POLICY"
-      ]
+      "permissions": ["android.permission.ACCESS_NOTIFICATION_POLICY"]
     },
     "web": {
       "output": "static",
@@ -91,9 +89,7 @@
           "photosPermission": "Додатку потрібен доступ до фотографій, щоб прикріплювати зображення в чат і документи та встановлювати аватар.",
           "savePhotosPermission": "Додатку потрібен доступ до фотографій, щоб зберігати фото з чату у вашу галерею.",
           "isAccessMediaLocationEnabled": false,
-          "granularPermissions": [
-            "photo"
-          ]
+          "granularPermissions": ["photo"]
         }
       ],
       [
@@ -113,7 +109,7 @@
       "router": {},
       "API_URL": "https://api.isfleet.eu",
       "SENTRY_DSN": "",
-      "MANAGER_LOGIN_CODE_ENABLED": "false",
+      "MANAGER_LOGIN_CODE_ENABLED": "true",
       "eas": {
         "projectId": "dbf59c29-bdcf-4465-9f3c-e4e73effc375"
       }
