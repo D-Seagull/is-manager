@@ -22,9 +22,8 @@ export interface PersonDetail {
   status?: UserStatus | null;
   statusUntil?: string | null;
   isActive: boolean;
-  currentTruck?: { id: string; plate: string; status: string } | null;
-  // Закріплений менеджер водія (для DRIVER на /users/:id).
-  manager?: PersonMini | null;
+  // managerId — актуальний менеджер водія (менеджер його вантажівки).
+  currentTruck?: { id: string; plate: string; status: string; managerId?: string | null } | null;
   // Менеджерські поля (бекенд повертає їх для MANAGER/TEAMLEAD/ADMIN на /users/:id).
   teamlead?: PersonMini | null;
   assignedTrucks?: {
@@ -156,6 +155,15 @@ export function useIssueDriverLoginCode() {
       );
       return res.data;
     },
+  });
+}
+
+/** Серверні перемикачі (код входу від менеджера — лише на dev). */
+export function useAuthFeatures() {
+  return useQuery<{ managerLoginCode: boolean }>({
+    queryKey: ['auth-features'],
+    queryFn: async () => (await api.get('/auth/features')).data,
+    staleTime: Infinity,
   });
 }
 

@@ -13,7 +13,7 @@ import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { InsetScrollView } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { PersonDetail, useRateDriver, useSetUserActive, useUserDetail, useUserRatings } from '@/hooks/use-people';
+import { PersonDetail, useAuthFeatures, useRateDriver, useSetUserActive, useUserDetail, useUserRatings } from '@/hooks/use-people';
 import { fullName } from '@/lib/format';
 import { useUser } from '@/store/auth';
 
@@ -25,6 +25,7 @@ export default function PersonScreen() {
   const { data: person, isLoading } = useUserDetail(id);
   const setActive = useSetUserActive();
   const me = useUser();
+  const { data: features } = useAuthFeatures();
 
   const langLabels: Record<string, string> = { EN: 'English', UK: 'Українська', PL: 'Polski', LT: 'Lietuvių', RU: 'Русский' };
 
@@ -84,8 +85,9 @@ export default function PersonScreen() {
             ) : null}
           </View>
 
-          {/* Код входу — лише закріплений менеджер водія (бекенд теж перевіряє). */}
-          {person.role === 'DRIVER' && person.isActive && me?.id && person.manager?.id === me.id ? (
+          {/* Код входу — лише на dev (MANAGER_LOGIN_CODE_ENABLED) і лише менеджеру
+              вантажівки водія; бекенд перевіряє обидва. */}
+          {features?.managerLoginCode && person.role === 'DRIVER' && person.isActive && me?.id && person.currentTruck?.managerId === me.id ? (
             <LoginCodeButton driverId={person.id} c={c} />
           ) : null}
 
