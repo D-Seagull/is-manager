@@ -113,6 +113,7 @@
       "router": {},
       "API_URL": "https://api.isfleet.eu",
       "SENTRY_DSN": "",
+      "MANAGER_LOGIN_CODE_ENABLED": "false",
       "eas": {
         "projectId": "dbf59c29-bdcf-4465-9f3c-e4e73effc375"
       }

@@ -34,6 +34,13 @@ export const TERMS_URL = WEB_URL + "/terms";
  */
 export const SENTRY_DSN = readString("SENTRY_DSN", "");
 
+/**
+ * Managers mint a driver sign-in code on the driver card (app.json → extra,
+ * changeable by OTA). Shows only when it is on here AND on the backend.
+ */
+export const MANAGER_LOGIN_CODE_ENABLED =
+  readString("MANAGER_LOGIN_CODE_ENABLED", "false") === "true";
+
 // Boot-time sanity log — confirms which API the app is talking to. Remove
 // this once the network setup is stable.
 console.log("[config]", { API_URL });
