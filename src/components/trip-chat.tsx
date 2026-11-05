@@ -53,6 +53,7 @@ import { fullName } from '@/lib/format';
 import { formatTime } from '@/lib/format-date';
 import { systemMessageText } from '@/lib/system-message';
 import { useUser } from '@/store/auth';
+import { uploadErrorText } from '@/lib/upload-error';
 
 type ReplyTarget = {
   id: string;
@@ -253,7 +254,7 @@ export function TripChat({
       if (files.length === 0) return;
       await uploadDocs.mutateAsync({ tripId, files });
     } catch (e) {
-      Alert.alert(t('documents.uploadFailed', 'Помилка завантаження'), (e as Error).message);
+      Alert.alert(t('documents.uploadFailed', 'Помилка завантаження'), uploadErrorText(e, t));
     }
   };
 

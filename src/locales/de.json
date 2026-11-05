@@ -137,7 +137,9 @@
       "camera": "Kamera",
       "gallery": "Galerie",
       "file": "Datei"
-    }
+    },
+    "fileTooLarge": "Datei zu groß: bis 20 MB pro Dokument, 10 MB für ein Profilbild, bis zu 10 Dateien auf einmal.",
+    "fileTypeNotSupported": "Dieser Dateityp wird nicht unterstützt. Erlaubt: Fotos, PDF, Word, Excel, TXT, CSV."
   },
   "drivers": {
     "addDriver": "Neuer Fahrer",
