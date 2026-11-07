@@ -144,13 +144,8 @@
   "drivers": {
     "addDriver": "Neuer Fahrer",
     "inviteHint": "Der Fahrer meldet sich mit seiner Telefonnummer per SMS-Code an.",
-    "existsElsewhereTitle": "Fahrer existiert bereits",
-    "existsElsewhereBody": "Fahrer „{{name}}“ ist bereits bei einem anderen Unternehmen registriert. Eine SMS mit der Bitte um Wechsel senden? Er kommt erst zu Ihrem Unternehmen, wenn er zustimmt.",
-    "confirmTransfer": "Anfrage senden",
-    "cancelTransfer": "Abbrechen",
-    "transferPendingTitle": "Warten auf den Fahrer",
-    "transferPendingBody": "Der Fahrer hat eine SMS mit einem Bestätigungslink erhalten. Sobald er zustimmt, erscheint er in Ihrer Liste. Der Link ist 24 Stunden gültig.",
-    "transferPendingOk": "OK"
+    "transferPendingOk": "OK",
+    "transferNote": "Ist diese Nummer bereits bei einem anderen Unternehmen registriert, erhält der Fahrer eine SMS mit einer Anfrage und kommt erst nach seiner Zustimmung zu Ihnen."
   },
   "forgot": {
     "title": "Passwort zurücksetzen",
