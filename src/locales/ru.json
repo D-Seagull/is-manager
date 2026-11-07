@@ -63,6 +63,9 @@
     "templateError": "Не удалось сохранить шаблон."
   },
   "chat": {
+    "outboxFailedTitle": "Не удалось отправить",
+    "outboxRetry": "Повторить",
+    "outboxDiscard": "Удалить",
     "messagePlaceholder": "Сообщение…",
     "editPlaceholder": "Редактировать…",
     "companyDeactivatedNotice": "К сожалению, сейчас вы не можете использовать приложение в полном объёме.",

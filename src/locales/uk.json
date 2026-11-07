@@ -63,6 +63,9 @@
     "templateError": "Не вдалося зберегти шаблон."
   },
   "chat": {
+    "outboxFailedTitle": "Не вдалося надіслати",
+    "outboxRetry": "Повторити",
+    "outboxDiscard": "Видалити",
     "messagePlaceholder": "Повідомлення…",
     "editPlaceholder": "Редагувати…",
     "companyDeactivatedNotice": "На жаль, зараз ви не можете використовувати застосунок у повному обсязі.",

@@ -63,6 +63,9 @@
     "templateError": "Vorlage konnte nicht gespeichert werden."
   },
   "chat": {
+    "outboxFailedTitle": "Senden fehlgeschlagen",
+    "outboxRetry": "Erneut versuchen",
+    "outboxDiscard": "Löschen",
     "messagePlaceholder": "Nachricht…",
     "editPlaceholder": "Nachricht bearbeiten…",
     "companyDeactivatedNotice": "Leider können Sie die App im Moment nicht vollständig nutzen.",

@@ -31,6 +31,7 @@ import { MessageQuote } from '@/components/message-quote';
 import { MessageReactionsCluster } from '@/components/message-reactions';
 import { ScreenPlaceholder } from '@/components/screen-placeholder';
 import { TripHeader } from '@/components/trip-header';
+import { OutboxMark } from '@/components/outbox-mark';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { InsetFlatList } from '@/components/inset-list';
 import { PhotoGallery } from '@/components/photo-gallery';
@@ -642,7 +643,8 @@ const MsgBubble = memo(function MsgBubble({ msg, isOwn, myId, onLongPress, onOpe
       <View style={[styles.meta, isOwn && styles.metaOwn]}>
         {msg.editedAt && !isDeleted && <Text style={[styles.metaText, { color: c.mutedForeground, fontStyle: 'italic' }]}>{t('chat.editedShort', 'ред.')}</Text>}
         <Text style={[styles.metaText, { color: c.mutedForeground }]}>{time}</Text>
-        {isOwn && !isDeleted && <Text style={[styles.metaText, { color: msg.isRead ? c.primary : c.mutedForeground }]}>{msg.isRead ? '✓✓' : '✓'}</Text>}
+        {isOwn && !isDeleted && <OutboxMark msg={msg} />}
+        {isOwn && !isDeleted && !msg.pending && !msg.failed && <Text style={[styles.metaText, { color: msg.isRead ? c.primary : c.mutedForeground }]}>{msg.isRead ? '✓✓' : '✓'}</Text>}
       </View>
     </View>
   );

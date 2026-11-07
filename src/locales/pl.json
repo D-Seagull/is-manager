@@ -63,6 +63,9 @@
     "templateError": "Nie udało się zapisać szablonu."
   },
   "chat": {
+    "outboxFailedTitle": "Nie udało się wysłać",
+    "outboxRetry": "Ponów",
+    "outboxDiscard": "Usuń",
     "messagePlaceholder": "Wiadomość…",
     "editPlaceholder": "Edytuj wiadomość…",
     "companyDeactivatedNotice": "Niestety, obecnie nie możesz w pełni korzystać z aplikacji.",

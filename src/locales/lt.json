@@ -63,6 +63,9 @@
     "templateError": "Nepavyko išsaugoti šablono."
   },
   "chat": {
+    "outboxFailedTitle": "Nepavyko išsiųsti",
+    "outboxRetry": "Bandyti dar kartą",
+    "outboxDiscard": "Ištrinti",
     "messagePlaceholder": "Žinutė…",
     "editPlaceholder": "Redaguoti žinutę…",
     "companyDeactivatedNotice": "Deja, šiuo metu negalite naudotis programėle visa apimtimi.",

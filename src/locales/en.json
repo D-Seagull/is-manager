@@ -63,6 +63,9 @@
     "templateError": "Couldn't save the template."
   },
   "chat": {
+    "outboxFailedTitle": "Could not send",
+    "outboxRetry": "Retry",
+    "outboxDiscard": "Delete",
     "messagePlaceholder": "Message…",
     "editPlaceholder": "Edit the message…",
     "companyDeactivatedNotice": "Unfortunately, you can't use the app in full right now.",
