@@ -5,17 +5,19 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
-import { useIssueDriverLoginCode } from '@/hooks/use-people';
+import { useIssueDriverLoginCode, useLoginCodeRequest } from '@/hooks/use-people';
 import { formatTime } from '@/lib/format-date';
 
 /**
- * «Код входу» для закріпленого менеджера водія (дзеркало вебу): коли SMS не
- * доходить (UA-номери в роумінгу DE/AT), менеджер створює одноразовий код і
- * диктує його. Водій вводить його на звичайному екрані коду.
+ * «Згенерувати код» для менеджера вантажівки водія (дзеркало вебу). Видно
+ * лише поки водій просить допомоги («Попросити код у менеджера» на екрані
+ * входу) — і на ОДИН код: генерація закриває запит, кнопка зникає. Менеджер
+ * диктує код, водій вводить його на звичайному екрані коду.
  */
 export function LoginCodeButton({ driverId, c }: { driverId: string; c: (typeof Colors)['light'] }) {
   const { t } = useTranslation();
   const issue = useIssueDriverLoginCode();
+  const request = useLoginCodeRequest(driverId);
   const [open, setOpen] = useState(false);
 
   const generate = async () => {
@@ -24,6 +26,7 @@ export function LoginCodeButton({ driverId, c }: { driverId: string; c: (typeof 
       setOpen(true);
     } catch (e) {
       Alert.alert(t('common.error', 'Помилка'), (e as Error).message || t('people.loginCodeError', 'Не вдалося створити код входу'));
+      void request.refetch();
     }
   };
 
@@ -31,10 +34,12 @@ export function LoginCodeButton({ driverId, c }: { driverId: string; c: (typeof 
 
   return (
     <>
-      <Pressable onPress={generate} disabled={issue.isPending} style={[styles.row, { backgroundColor: c.card, borderColor: c.border }]}>
-        {issue.isPending ? <ActivityIndicator color={c.primary} /> : <Ionicons name="key-outline" size={17} color={c.primary} />}
-        <Text style={{ color: c.primary, fontSize: 14, fontWeight: '600' }}>{t('people.loginCode', 'Код входу')}</Text>
-      </Pressable>
+      {request.data?.pending && !open ? (
+        <Pressable onPress={generate} disabled={issue.isPending} style={[styles.row, { backgroundColor: c.card, borderColor: c.border }]}>
+          {issue.isPending ? <ActivityIndicator color={c.primary} /> : <Ionicons name="key-outline" size={17} color={c.primary} />}
+          <Text style={{ color: c.primary, fontSize: 14, fontWeight: '600' }}>{t('people.loginCode', 'Згенерувати код')}</Text>
+        </Pressable>
+      ) : null}
 
       <Modal visible={open && !!data} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
         <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>
@@ -56,9 +61,6 @@ export function LoginCodeButton({ driverId, c }: { driverId: string; c: (typeof 
               >
                 <Ionicons name="copy-outline" size={16} color={c.foreground} />
                 <Text style={[styles.btnText, { color: c.foreground }]}>{t('people.loginCodeCopy', 'Копіювати')}</Text>
-              </Pressable>
-              <Pressable onPress={generate} disabled={issue.isPending} style={[styles.btn, { borderColor: c.border }]}>
-                <Text style={[styles.btnText, { color: c.foreground }]}>{t('people.loginCodeNew', 'Новий код')}</Text>
               </Pressable>
             </View>
           </Pressable>
