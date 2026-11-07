@@ -138,7 +138,10 @@ export function useSetUserActive() {
  * Код входу для водія, якому не приходить SMS: закріплений менеджер створює
  * одноразовий код і диктує його. Бекенд відмовляє всім іншим.
  */
+const loginCodeRequestKey = (driverId: string) => ['login-code-request', driverId] as const;
+
 export function useIssueDriverLoginCode() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (driverId: string) => {
       const res = await api.post<{ code: string; expiresAt: string }>(
@@ -146,29 +149,28 @@ export function useIssueDriverLoginCode() {
       );
       return res.data;
     },
+    // Один запит — один код: бекенд закриває запит, кнопка зникає одразу.
+    onSuccess: async (_d, driverId) => {
+      const queryKey = loginCodeRequestKey(driverId);
+      await qc.cancelQueries({ queryKey });
+      qc.setQueryData(queryKey, { pending: false });
+    },
   });
 }
 
-/** Серверні перемикачі (код входу від менеджера — лише на dev). */
-export function useAuthFeatures() {
-  return useQuery<{ managerLoginCode: boolean }>({
-    queryKey: ['auth-features'],
-    queryFn: async () => (await api.get('/auth/features')).data,
-    staleTime: Infinity,
-  });
-}
 
 /**
- * Чи просить водій зараз ЦЬОГО менеджера про код входу («Попросити код у
- * менеджера» в застосунку водія)? Кнопка «Код входу» видна лише тоді.
- * Опитується, поки картка відкрита (як на вебі).
+ * Чи просить водій зараз ЦЬОГО менеджера про код («Попросити код у
+ * менеджера» на екрані входу)? Кнопка «Згенерувати код» видна лише тоді.
+ * Опитується, поки картка відкрита (як на вебі). Вимкнена функція чи чужий
+ * водій — бекенд просто відповідає `pending: false`.
  */
-export function useLoginCodeRequest(driverId: string | undefined, enabled: boolean) {
+export function useLoginCodeRequest(driverId: string | undefined) {
   return useQuery<{ pending: boolean; expiresAt?: string }>({
-    queryKey: ['login-code-request', driverId],
+    queryKey: loginCodeRequestKey(driverId ?? ''),
     queryFn: async () => (await api.get(`/auth/driver/${driverId}/login-code-request`)).data,
-    enabled: enabled && !!driverId,
-    refetchInterval: 10_000,
+    enabled: !!driverId,
+    refetchInterval: 5_000,
   });
 }
 
