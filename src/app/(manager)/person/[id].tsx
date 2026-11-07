@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { CallSheet } from '@/components/call-sheet';
 import { ChatAvatar } from '@/components/chat-avatar';
 import { LoginCodeButton } from '@/components/login-code-button';
 import { NotificationsBell } from '@/components/notifications-bell';
@@ -26,6 +27,7 @@ export default function PersonScreen() {
   const { data: person, isLoading } = useUserDetail(id);
   const setActive = useSetUserActive();
   const me = useUser();
+  const [callOpen, setCallOpen] = useState(false);
 
   const langLabels: Record<string, string> = { EN: 'English', UK: 'Українська', PL: 'Polski', LT: 'Lietuvių', RU: 'Русский' };
 
@@ -78,7 +80,7 @@ export default function PersonScreen() {
               <Text style={[styles.actText, { color: c.primaryForeground }]}>{t('people.message', 'Написати')}</Text>
             </Pressable>
             {person.phone ? (
-              <Pressable onPress={() => Linking.openURL(`tel:${person.phone}`)} style={[styles.actBtnOutline, { borderColor: c.border }]}>
+              <Pressable onPress={() => setCallOpen(true)} style={[styles.actBtnOutline, { borderColor: c.border }]}>
                 <Ionicons name="call-outline" size={17} color={c.foreground} />
                 <Text style={[styles.actText, { color: c.foreground }]}>{t('people.call', 'Дзвінок')}</Text>
               </Pressable>
@@ -94,7 +96,8 @@ export default function PersonScreen() {
 
           {/* Info */}
           <View style={[styles.card, { backgroundColor: c.card, borderColor: c.border }]}>
-            {person.phone ? <InfoRow icon="call-outline" label={t('login.phone', 'Телефон')} value={person.phone} c={c} onPress={() => Linking.openURL(`tel:${person.phone}`)} /> : null}
+            {person.phone ? <InfoRow icon="call-outline" label={t('login.phone', 'Телефон')} value={person.phone} c={c} onPress={() => setCallOpen(true)} /> : null}
+            {person.phone ? <CallSheet visible={callOpen} phone={person.phone} name={fullName(person)} onClose={() => setCallOpen(false)} /> : null}
             {person.email ? <InfoRow icon="mail-outline" label={t('login.email', 'Email')} value={person.email} c={c} onPress={() => Linking.openURL(`mailto:${person.email}`)} /> : null}
             {person.language ? <InfoRow icon="language-outline" label={t('settings.language.title', 'Мова')} value={langLabels[person.language] ?? person.language} c={c} /> : null}
             {person.currentTruck ? <InfoRow iconNode={<MaterialCommunityIcons name="truck-outline" size={16} color={c.mutedForeground} />} label={t('nav.items.trucks', 'Вантажівка')} value={person.currentTruck.plate} c={c} /> : null}

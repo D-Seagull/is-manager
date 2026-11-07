@@ -199,7 +199,9 @@
     "invalidCredentials": "Ungültige E-Mail oder Passwort",
     "genericError": "Anmeldefehler",
     "networkError": "Keine Verbindung zum Server. Bitte versuchen Sie es erneut.",
-    "driverNotAllowed": "Diese App ist nur für Manager. Melden Sie sich mit einem Manager-Konto an."
+    "driverNotAllowed": "Diese App ist nur für Manager. Melden Sie sich mit einem Manager-Konto an.",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort verbergen"
   },
   "manager": {
     "noManager": "No manager assigned yet.",
@@ -520,6 +522,12 @@
   },
   "trucks": {
     "take": "Lkw übernehmen",
+    "copyPlateDriver": "Kennzeichen und Fahrer kopieren",
+    "copied": "Kopiert",
+    "selectedCount": "Ausgewählt: {{count}}",
+    "takeSelected": "Ausgewählte übernehmen",
+    "copySelected": "Ausgewählte kopieren",
+    "cancelSelection": "Abbrechen",
     "release": "Lkw freigeben",
     "searchPlaceholder": "Nach Kennzeichen oder Fahrer suchen…",
     "addTruck": "Neuer LKW",
@@ -656,5 +664,11 @@
     "shareFailed": "Foto konnte nicht geteilt werden",
     "permissionTitle": "Kein Zugriff auf die Galerie",
     "permissionBody": "Erlauben Sie das Speichern von Fotos in den Telefoneinstellungen."
+  },
+  "call": {
+    "title": "Kontakt",
+    "phone": "Telefon",
+    "failedPhone": "Anruf nicht möglich",
+    "failedApp": "App nicht installiert"
   }
 }

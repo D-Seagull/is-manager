@@ -203,7 +203,9 @@
     "invalidCredentials": "Neteisingas el. paštas arba slaptažodis",
     "genericError": "Prisijungimo klaida",
     "networkError": "Nėra ryšio su serveriu. Bandykite dar kartą.",
-    "driverNotAllowed": "Ši programa skirta tik vadovams. Prisijunkite su vadovo paskyra."
+    "driverNotAllowed": "Ši programa skirta tik vadovams. Prisijunkite su vadovo paskyra.",
+    "showPassword": "Rodyti slaptažodį",
+    "hidePassword": "Slėpti slaptažodį"
   },
   "manager": {
     "noManager": "Vadovas dar nepriskirtas.",
@@ -525,6 +527,12 @@
   },
   "trucks": {
     "take": "Paimti vilkiką",
+    "copyPlateDriver": "Kopijuoti numerį ir vairuotoją",
+    "copied": "Nukopijuota",
+    "selectedCount": "Pasirinkta: {{count}}",
+    "takeSelected": "Paimti pasirinktus",
+    "copySelected": "Kopijuoti pasirinktus",
+    "cancelSelection": "Atšaukti",
     "release": "Atlaisvinti vilkiką",
     "searchPlaceholder": "Ieškoti pagal numerį ar vairuotoją…",
     "addTruck": "Naujas sunkvežimis",
@@ -661,5 +669,11 @@
     "shareFailed": "Nepavyko pasidalinti nuotrauka",
     "permissionTitle": "Nėra prieigos prie galerijos",
     "permissionBody": "Leiskite išsaugoti nuotraukas telefono nustatymuose."
+  },
+  "call": {
+    "title": "Susisiekti",
+    "phone": "Telefonas",
+    "failedPhone": "Nepavyko paskambinti",
+    "failedApp": "Programėlė neįdiegta"
   }
 }

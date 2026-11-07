@@ -1,8 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
+import * as Clipboard from 'expo-clipboard';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { CallSheet } from '@/components/call-sheet';
 import { ChatAvatar } from '@/components/chat-avatar';
 import { ListStatusDot } from '@/components/status-dot';
 import { LastSeen } from '@/components/last-seen';
@@ -15,20 +18,51 @@ import { useTripUnread } from '@/hooks/use-notifications';
 import { fullName } from '@/lib/format';
 import { useUser } from '@/store/auth';
 
-export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat' | 'info' }) {
+export function TruckCard({
+  truck,
+  openTab,
+  showCall,
+  selectionMode,
+  selected,
+  onToggleSelect,
+  onStartSelect,
+}: {
+  truck: MyTruck;
+  openTab?: 'chat' | 'info';
+  /** Кнопка дзвінка водію — лише у «Мої вантажівки». */
+  showCall?: boolean;
+  /** Режим вибору кількох машин (довге натискання вмикає його). */
+  selectionMode?: boolean;
+  selected?: boolean;
+  onToggleSelect?: () => void;
+  onStartSelect?: () => void;
+}) {
   const { t } = useTranslation();
   const scheme = useColorScheme() ?? 'light';
   const c = Colors[scheme];
   const me = useUser();
   const updateTruck = useUpdateTruck();
+  const [callOpen, setCallOpen] = useState(false);
   // Взяти трак (стати його менеджером) / звільнити — доступно всім у застосунку
   // менеджера (MANAGER/TEAMLEAD/ADMIN), як у вебі.
   const mine = !!me && truck.managerId === me.id;
   const toggleTake = () =>
     updateTruck.mutate({ id: truck.id, data: { managerId: mine ? null : me?.id ?? null } });
 
+  const [copied, setCopied] = useState(false);
+  const copyLine = async () => {
+    try {
+      await Clipboard.setStringAsync(truckCopyLine(truck));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* copy is nice-to-have */
+    }
+  };
+
   const activeTrip = truck.trips?.[0];
   const driver = truck.currentDriver;
+  const canCall = !!showCall && !!driver?.phone;
 
   // Unread trip-chat messages on this truck — every trip, as on the web (the
   // list also sorts by this, so a truck that floats up always shows why).
@@ -62,8 +96,11 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
 
   return (
     <Pressable
+      onLongPress={onStartSelect}
       onPress={() =>
-        router.push({
+        selectionMode
+          ? onToggleSelect?.()
+          : router.push({
           pathname: '/(manager)/truck/[truckId]',
           // Мої вантажівки → чат (дефолт), загальний список → інфо.
           params: { truckId: truck.id, plate: truck.plate, ...(openTab ? { tab: openTab } : {}) },
@@ -71,7 +108,9 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
       }
       style={({ pressed }) => [
         styles.card,
-        hasUnread
+        selected
+          ? { backgroundColor: `${c.primary}1A`, borderColor: c.primary }
+          : hasUnread
           ? {
               backgroundColor: `${c.primary}${pressed ? tintPressed : tint}`,
               borderColor: `${c.primary}59`,
@@ -80,8 +119,28 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
       ]}
     >
       <View style={styles.cardTop}>
+        {selectionMode && (
+          <Ionicons
+            name={selected ? 'checkmark-circle' : 'ellipse-outline'}
+            size={22}
+            color={selected ? c.primary : c.mutedForeground}
+          />
+        )}
         {hasUnread && <View style={[styles.unreadDot, { backgroundColor: c.primary }]} />}
         <LicensePlate plate={truck.plate} />
+        {!selectionMode && (
+          <Pressable
+            onPress={copyLine}
+            hitSlop={10}
+            accessibilityLabel={t('trucks.copyPlateDriver', 'Копіювати номер і водія')}
+          >
+            <Ionicons
+              name={copied ? 'checkmark' : 'copy-outline'}
+              size={17}
+              color={copied ? c.primary : c.mutedForeground}
+            />
+          </Pressable>
+        )}
         <View style={[styles.badge, { backgroundColor: badge.bg }]}>
           <Text style={[styles.badgeText, { color: badge.fg }]}>{badge.label}</Text>
         </View>
@@ -109,7 +168,7 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
               {/* Unread → the latest message takes the phone's line, so the
                   card keeps its height. */}
               {latest ? (
-                <Text style={[styles.driverSub, { color: c.mutedForeground, paddingRight: 40 }]} numberOfLines={1}>
+                <Text style={[styles.driverSub, { color: c.mutedForeground, paddingRight: canCall ? 82 : 40 }]} numberOfLines={1}>
                   {showSender ? (
                     <Text style={{ color: c.foreground, fontWeight: '600' }}>{latest.senderName}: </Text>
                   ) : null}
@@ -136,7 +195,7 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
       </View>
 
       {truck.truckNotes && truck.truckNotes.length > 0 ? (
-        <View style={[styles.noteWrap, { paddingRight: 40 }]}>
+        <View style={[styles.noteWrap, { paddingRight: canCall ? 82 : 40 }]}>
           <View style={[styles.noteChip, { backgroundColor: scheme === 'dark' ? 'rgba(247,144,9,0.16)' : '#FFFAEB' }]}>
             <Ionicons name="build-outline" size={13} color={scheme === 'dark' ? '#FDB022' : '#B54708'} />
             <Text
@@ -149,7 +208,31 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
         </View>
       ) : null}
 
+      {/* Дзвінок водію: телефон / Viber / WhatsApp — ліворуч від кнопки «взяти» */}
+      {!selectionMode && canCall && driver?.phone ? (
+        <Pressable
+          onPress={() => setCallOpen(true)}
+          hitSlop={8}
+          style={({ pressed }) => [
+            styles.callBtn,
+            { borderColor: c.border, backgroundColor: c.background, opacity: pressed ? 0.5 : 1 },
+          ]}
+          accessibilityLabel={t('call.title', 'Зв’язатися')}
+        >
+          <Ionicons name="call-outline" size={18} color={c.primary} />
+        </Pressable>
+      ) : null}
+      {canCall && driver?.phone ? (
+        <CallSheet
+          visible={callOpen}
+          phone={driver.phone}
+          name={fullName(driver)}
+          onClose={() => setCallOpen(false)}
+        />
+      ) : null}
+
       {/* Взяти / звільнити трак — правий нижній кут */}
+      {!selectionMode && (
       <Pressable
         onPress={toggleTake}
         disabled={updateTruck.isPending}
@@ -166,8 +249,14 @@ export function TruckCard({ truck, openTab }: { truck: MyTruck; openTab?: 'chat'
           color={mine ? c.primary : c.mutedForeground}
         />
       </Pressable>
+      )}
     </Pressable>
   );
+}
+
+/** «AB1234 Іван Петренко» — номер і водій одним рядком для копіювання. */
+export function truckCopyLine(truck: MyTruck): string {
+  return [truck.plate, fullName(truck.currentDriver)].filter(Boolean).join(' ');
 }
 
 export function truckStatusStyle(
@@ -194,6 +283,7 @@ const styles = StyleSheet.create({
   cardTop: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   unreadDot: { width: 8, height: 8, borderRadius: 4 },
   badge: { marginLeft: 'auto', borderRadius: 8, paddingHorizontal: Spacing.sm, paddingVertical: 4 },
+  callBtn: { position: 'absolute', right: Spacing.md + 34 + Spacing.sm, bottom: Spacing.md, width: 34, height: 34, borderRadius: 17, borderWidth: StyleSheet.hairlineWidth, alignItems: 'center', justifyContent: 'center' },
   takeBtn: { position: 'absolute', right: Spacing.md, bottom: Spacing.md, width: 34, height: 34, borderRadius: 17, borderWidth: StyleSheet.hairlineWidth, alignItems: 'center', justifyContent: 'center' },
   badgeText: { fontSize: 11, fontWeight: '700' },
   unreadBadge: {

@@ -199,7 +199,9 @@
     "invalidCredentials": "Invalid email or password",
     "genericError": "Sign-in error",
     "networkError": "No connection to the server. Please try again.",
-    "driverNotAllowed": "This app is for managers only. Sign in with a manager account."
+    "driverNotAllowed": "This app is for managers only. Sign in with a manager account.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "manager": {
     "noManager": "No manager assigned yet.",
@@ -520,6 +522,12 @@
   },
   "trucks": {
     "take": "Take truck",
+    "copyPlateDriver": "Copy plate and driver",
+    "copied": "Copied",
+    "selectedCount": "Selected: {{count}}",
+    "takeSelected": "Take selected",
+    "copySelected": "Copy selected",
+    "cancelSelection": "Cancel",
     "release": "Release truck",
     "searchPlaceholder": "Search by plate or driver…",
     "addTruck": "New truck",
@@ -656,5 +664,11 @@
     "shareFailed": "Couldn't share the photo",
     "permissionTitle": "No access to the gallery",
     "permissionBody": "Allow saving photos in the phone's settings."
+  },
+  "call": {
+    "title": "Contact",
+    "phone": "Phone",
+    "failedPhone": "Could not place the call",
+    "failedApp": "App is not installed"
   }
 }

@@ -203,7 +203,9 @@
     "invalidCredentials": "Nieprawidłowy e-mail lub hasło",
     "genericError": "Błąd logowania",
     "networkError": "Brak połączenia z serwerem. Spróbuj ponownie.",
-    "driverNotAllowed": "Ta aplikacja jest tylko dla menedżerów. Zaloguj się na konto menedżera."
+    "driverNotAllowed": "Ta aplikacja jest tylko dla menedżerów. Zaloguj się na konto menedżera.",
+    "showPassword": "Pokaż hasło",
+    "hidePassword": "Ukryj hasło"
   },
   "manager": {
     "noManager": "Nie przypisano jeszcze menedżera.",
@@ -525,6 +527,12 @@
   },
   "trucks": {
     "take": "Weź ciężarówkę",
+    "copyPlateDriver": "Kopiuj numer i kierowcę",
+    "copied": "Skopiowano",
+    "selectedCount": "Wybrano: {{count}}",
+    "takeSelected": "Przejmij wybrane",
+    "copySelected": "Kopiuj wybrane",
+    "cancelSelection": "Anuluj",
     "release": "Zwolnij ciężarówkę",
     "searchPlaceholder": "Szukaj po numerze lub kierowcy…",
     "addTruck": "Nowa ciężarówka",
@@ -661,5 +669,11 @@
     "shareFailed": "Nie udało się udostępnić zdjęcia",
     "permissionTitle": "Brak dostępu do galerii",
     "permissionBody": "Zezwól na zapisywanie zdjęć w ustawieniach telefonu."
+  },
+  "call": {
+    "title": "Skontaktuj się",
+    "phone": "Telefon",
+    "failedPhone": "Nie udało się zadzwonić",
+    "failedApp": "Aplikacja nie jest zainstalowana"
   }
 }
