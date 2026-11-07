@@ -158,6 +158,20 @@ export function useAuthFeatures() {
   });
 }
 
+/**
+ * Чи просить водій зараз ЦЬОГО менеджера про код входу («Попросити код у
+ * менеджера» в застосунку водія)? Кнопка «Код входу» видна лише тоді.
+ * Опитується, поки картка відкрита (як на вебі).
+ */
+export function useLoginCodeRequest(driverId: string | undefined, enabled: boolean) {
+  return useQuery<{ pending: boolean; expiresAt?: string }>({
+    queryKey: ['login-code-request', driverId],
+    queryFn: async () => (await api.get(`/auth/driver/${driverId}/login-code-request`)).data,
+    enabled: enabled && !!driverId,
+    refetchInterval: 10_000,
+  });
+}
+
 export interface Company {
   id: string;
   name: string;

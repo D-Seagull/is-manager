@@ -13,7 +13,7 @@ import { StatusDot } from '@/components/status-dot';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { InsetScrollView } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { PersonDetail, useAuthFeatures, useRateDriver, useSetUserActive, useUserDetail, useUserRatings } from '@/hooks/use-people';
+import { PersonDetail, useAuthFeatures, useLoginCodeRequest, useRateDriver, useSetUserActive, useUserDetail, useUserRatings } from '@/hooks/use-people';
 import { fullName } from '@/lib/format';
 import { canManageUser } from '@/lib/roles';
 import { useUser } from '@/store/auth';
@@ -28,6 +28,16 @@ export default function PersonScreen() {
   const setActive = useSetUserActive();
   const me = useUser();
   const { data: features } = useAuthFeatures();
+  // Кнопка «Код входу»: увімкнено тут (app.json) і на бекенді, лише менеджеру
+  // вантажівки водія і лише поки водій просить код — бекенд перевіряє теж.
+  const canIssueLoginCode =
+    MANAGER_LOGIN_CODE_ENABLED &&
+    !!features?.managerLoginCode &&
+    person?.role === 'DRIVER' &&
+    !!person?.isActive &&
+    !!me?.id &&
+    person?.currentTruck?.managerId === me.id;
+  const { data: loginCodeRequest } = useLoginCodeRequest(person?.id, canIssueLoginCode);
 
   const langLabels: Record<string, string> = { EN: 'English', UK: 'Українська', PL: 'Polski', LT: 'Lietuvių', RU: 'Русский' };
 
@@ -87,9 +97,8 @@ export default function PersonScreen() {
             ) : null}
           </View>
 
-          {/* Код входу — лише коли увімкнено і тут (app.json), і на бекенді, і лише
-              менеджеру вантажівки водія; бекенд перевіряє теж. */}
-          {MANAGER_LOGIN_CODE_ENABLED && features?.managerLoginCode && person.role === 'DRIVER' && person.isActive && me?.id && person.currentTruck?.managerId === me.id ? (
+          {/* Код входу — лише поки водій просить код (див. canIssueLoginCode). */}
+          {canIssueLoginCode && loginCodeRequest?.pending ? (
             <LoginCodeButton driverId={person.id} c={c} />
           ) : null}
 
