@@ -146,13 +146,8 @@
   "drivers": {
     "addDriver": "Naujas vairuotojas",
     "inviteHint": "Vairuotojas prisijungia telefono numeriu su SMS kodu.",
-    "existsElsewhereTitle": "Vairuotojas jau egzistuoja",
-    "existsElsewhereBody": "Vairuotojas „{{name}}“ jau užregistruotas kitoje įmonėje. Išsiųsti jam SMS su prašymu pereiti? Į jūsų įmonę jis pateks tik sutikęs.",
-    "confirmTransfer": "Siųsti prašymą",
-    "cancelTransfer": "Atšaukti",
-    "transferPendingTitle": "Laukiame vairuotojo patvirtinimo",
-    "transferPendingBody": "Vairuotojas gavo SMS su patvirtinimo nuoroda. Kai tik jis sutiks, atsiras jūsų sąraše. Nuoroda galioja 24 valandas.",
-    "transferPendingOk": "Gerai"
+    "transferPendingOk": "Gerai",
+    "transferNote": "Jei šis numeris jau užregistruotas kitoje įmonėje, vairuotojas gaus SMS su prašymu ir prisijungs prie jūsų tik sutikęs."
   },
   "forgot": {
     "title": "Slaptažodžio atkūrimas",

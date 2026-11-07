@@ -1,5 +1,4 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { isAxiosError } from 'axios';
 import { useIsFocused } from 'expo-router';
 import { router } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -27,7 +26,7 @@ import { bottomBarPadding } from '@/lib/insets';
 import { InsetFlatList } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useCompanyUsers, type CompanyUser } from '@/hooks/use-company-users';
-import { useCreateDriver, useCreateManager, type DriverExistsElsewhereConflict } from '@/hooks/use-people';
+import { useCreateDriver, useCreateManager } from '@/hooks/use-people';
 import { fullName } from '@/lib/format';
 import { useUser } from '@/store/auth';
 
@@ -188,42 +187,16 @@ function CreateModal({ kind, visible, onClose }: { kind: 'driver' | 'manager'; v
 
   const canSave = kind === 'driver' ? firstName.trim() && phone.trim() : email.trim() && phone.trim();
 
-  // Phone matched a driver already registered with another company — the
-  // backend refuses to create/move anything until we resend with
-  // confirmTransfer: true (see users.service.ts createDriver). Even then it
-  // only texts the driver a consent link: they join once they accept.
-  const saveDriver = async (confirmTransfer = false) => {
-    try {
-      const created = await createDriver.mutateAsync({
-        firstName: firstName.trim(),
-        lastName: lastName.trim() || null,
-        phone: phone.trim(),
-        confirmTransfer,
-      });
-      if ((created as { code?: string } | undefined)?.code === 'DRIVER_TRANSFER_PENDING') {
-        Alert.alert(
-          t('drivers.transferPendingTitle', 'Чекаємо на підтвердження водія'),
-          t('drivers.transferPendingBody', 'Водій отримав SMS із посиланням. Щойно він погодиться, він з’явиться у вашому списку. Посилання дійсне 24 години.'),
-        );
-      }
-      onClose();
-    } catch (e) {
-      const inner = isAxiosError(e) ? (e.response?.data as { message?: unknown } | undefined)?.message : undefined;
-      if (inner && typeof inner === 'object' && (inner as DriverExistsElsewhereConflict).code === 'DRIVER_EXISTS_ELSEWHERE') {
-        const driver = (inner as DriverExistsElsewhereConflict).driver;
-        const name = fullName(driver) || driver.id;
-        Alert.alert(
-          t('drivers.existsElsewhereTitle', 'Водій вже є в системі'),
-          t('drivers.existsElsewhereBody', { name, defaultValue: `Водій «${name}» вже зареєстрований в іншій компанії. Надіслати йому SMS із запитом на перехід? Він з’явиться у вашій компанії лише після того, як погодиться.` }),
-          [
-            { text: t('drivers.cancelTransfer', 'Скасувати'), style: 'cancel' },
-            { text: t('drivers.confirmTransfer', 'Надіслати запит'), onPress: () => saveDriver(true) },
-          ],
-        );
-        return;
-      }
-      throw e;
-    }
+  // The server answers the same for every number (P1-6). One already
+  // registered with another company gets a consent SMS instead — see the
+  // hint under the form.
+  const saveDriver = async () => {
+    await createDriver.mutateAsync({
+      firstName: firstName.trim(),
+      lastName: lastName.trim() || null,
+      phone: phone.trim(),
+    });
+    onClose();
   };
 
   const handleSave = async () => {
@@ -265,7 +238,10 @@ function CreateModal({ kind, visible, onClose }: { kind: 'driver' | 'manager'; v
           {kind === 'manager' ? (
             <Text style={{ fontSize: 12, color: c.mutedForeground }}>{t('managers.inviteHint', 'Менеджер отримає лист із паролем на вказаний email.')}</Text>
           ) : (
-            <Text style={{ fontSize: 12, color: c.mutedForeground }}>{t('drivers.inviteHint', 'Водій входитиме за номером телефону через код із SMS.')}</Text>
+            <Text style={{ fontSize: 12, color: c.mutedForeground }}>
+              {t('drivers.inviteHint', 'Водій входитиме за номером телефону через код із SMS.')}{' '}
+              {t('drivers.transferNote', 'Якщо цей номер уже зареєстрований в іншій компанії, водій отримає SMS із запитом і з’явиться у вас лише після того, як погодиться.')}
+            </Text>
           )}
         </View>
       </KeyboardAvoidingView>
