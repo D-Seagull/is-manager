@@ -30,6 +30,7 @@ import { DriverDocument } from '@/lib/documents-api';
 import { compressPhotos, PICKER_QUALITY } from '@/lib/compress-photo';
 import { fullName } from '@/lib/format';
 import { formatDate } from '@/lib/format-date';
+import { uploadErrorText } from '@/lib/upload-error';
 
 export function DocumentsTab({ truckId }: { truckId: string }) {
   const { t } = useTranslation();
@@ -105,7 +106,7 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
       setUploading(true);
       await upload.mutateAsync({ tripId, files });
     } catch (e) {
-      Alert.alert(t('documents.uploadFailed', 'Помилка завантаження'), (e as Error).message);
+      Alert.alert(t('documents.uploadFailed', 'Помилка завантаження'), uploadErrorText(e, t));
     } finally {
       setUploading(false);
     }

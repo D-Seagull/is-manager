@@ -42,6 +42,7 @@ import { setAppLanguage } from '@/lib/i18n';
 import { PRIVACY_URL, TERMS_URL } from '@/lib/config';
 import { useAlertPrefs } from '@/store/alert-prefs';
 import { useAuthStore, useUser } from '@/store/auth';
+import { uploadErrorText } from '@/lib/upload-error';
 
 // Keyed by UILocale — the UI-language preference, the only enum with German.
 const LANGUAGE_LABELS: Record<UILocale, string> = {
@@ -182,7 +183,10 @@ export default function AccountScreen() {
       });
       setUser(me);
     } catch (err) {
-      Alert.alert(t('common.error', 'Помилка'), t('settings.errors.uploadAvatar', 'Не вдалося завантажити фото'));
+      Alert.alert(
+        t('common.error', 'Помилка'),
+        uploadErrorText(err, t, t('settings.errors.uploadAvatar', 'Не вдалося завантажити фото')),
+      );
       console.warn('[account] uploadAvatar failed', err);
     } finally {
       setAvatarBusy(null);

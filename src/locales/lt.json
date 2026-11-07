@@ -139,7 +139,9 @@
       "camera": "Kamera",
       "gallery": "Galerija",
       "file": "Failas"
-    }
+    },
+    "fileTooLarge": "Failas per didelis: iki 20 MB dokumentui, 10 MB profilio nuotraukai, iki 10 failų vienu metu.",
+    "fileTypeNotSupported": "Šis failo tipas nepalaikomas. Leidžiama: nuotraukos, PDF, Word, Excel, TXT, CSV."
   },
   "drivers": {
     "addDriver": "Naujas vairuotojas",

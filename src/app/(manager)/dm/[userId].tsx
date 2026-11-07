@@ -71,6 +71,7 @@ import { EDIT_WINDOW_MS } from '@/lib/constants';
 import { formatDate, formatTime } from '@/lib/format-date';
 import { getSocket } from '@/lib/socket';
 import { useUser } from '@/store/auth';
+import { uploadErrorText } from '@/lib/upload-error';
 
 type ReplyTarget = {
   id: string;
@@ -308,7 +309,7 @@ export default function DmScreen() {
       if (files.length === 0) return;
       await uploadDocs.mutateAsync({ files });
     } catch (e) {
-      Alert.alert(t('documents.uploadFailed'), (e as Error).message);
+      Alert.alert(t('documents.uploadFailed'), uploadErrorText(e, t));
     }
   };
 

@@ -15,6 +15,7 @@ import { InsetScrollView } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { PersonDetail, useAuthFeatures, useRateDriver, useSetUserActive, useUserDetail, useUserRatings } from '@/hooks/use-people';
 import { fullName } from '@/lib/format';
+import { canManageUser } from '@/lib/roles';
 import { useUser } from '@/store/auth';
 import { MANAGER_LOGIN_CODE_ENABLED } from '@/lib/config';
 
@@ -107,13 +108,16 @@ export default function PersonScreen() {
           {/* Ratings */}
           <RatingsSection person={person} c={c} />
 
-          {/* Deactivate */}
-          <Pressable onPress={toggleActive} style={[styles.card, styles.dangerRow, { backgroundColor: c.card, borderColor: c.border }]}>
-            <Ionicons name={person.isActive ? 'person-remove-outline' : 'person-add-outline'} size={17} color={person.isActive ? c.destructive : c.primary} />
-            <Text style={{ color: person.isActive ? c.destructive : c.primary, fontSize: 14, fontWeight: '600' }}>
-              {person.isActive ? t('people.deactivate', 'Деактивувати') : t('people.activate', 'Активувати')}
-            </Text>
-          </Pressable>
+          {/* Deactivate — only for people ranked below me (the server refuses
+              the rest: another manager, a team lead, an admin, myself). */}
+          {canManageUser(me, person) ? (
+            <Pressable onPress={toggleActive} style={[styles.card, styles.dangerRow, { backgroundColor: c.card, borderColor: c.border }]}>
+              <Ionicons name={person.isActive ? 'person-remove-outline' : 'person-add-outline'} size={17} color={person.isActive ? c.destructive : c.primary} />
+              <Text style={{ color: person.isActive ? c.destructive : c.primary, fontSize: 14, fontWeight: '600' }}>
+                {person.isActive ? t('people.deactivate', 'Деактивувати') : t('people.activate', 'Активувати')}
+              </Text>
+            </Pressable>
+          ) : null}
         </InsetScrollView>
       )}
     </View>
