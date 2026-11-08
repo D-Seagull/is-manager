@@ -44,7 +44,7 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./src/assets/images/IS-managerapp-img.png"
+      "favicon": "./src/assets/images/icon.png"
     },
     "plugins": [
       "expo-router",
