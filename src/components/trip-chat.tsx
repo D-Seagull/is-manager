@@ -268,19 +268,26 @@ export function TripChat({
   };
 
   // Voice message: recorded in the composer, sent at once as its own bubble.
-  const sendVoice = async (file: VoiceFile, durationMs: number) => {
+  const sendVoice = async (
+    file: VoiceFile,
+    durationMs: number,
+    waveform: string | null,
+  ) => {
     try {
       await uploadDocs.mutateAsync({
         tripId,
         files: [{ uri: file.uri, name: file.name, mimeType: file.mimeType }],
         durationMs,
+        waveform,
       });
       listRef.current?.scrollToOffset({ offset: 0, animated: true });
     } catch (e) {
       Alert.alert(t('documents.uploadFailed', 'Помилка завантаження'), uploadErrorText(e, t));
     }
   };
-  const voice = useVoiceRecorder((file, durationMs) => void sendVoice(file, durationMs));
+  const voice = useVoiceRecorder(
+    (file, durationMs, waveform) => void sendVoice(file, durationMs, waveform),
+  );
 
   const showAttachSheet = () => {
     Alert.alert(t('trip.attachSheet.title', 'Вкладення'), t('documents.uploadSheet.subtitle', 'Оберіть джерело'), [
@@ -715,7 +722,7 @@ const DocBubble = memo(function DocBubble({ doc, isOwn, myId, onOpen, onLongPres
         {isOwn && sidekick}
         <Pressable onPress={isAudio ? undefined : () => onOpen(doc)} onLongPress={() => onLongPress(doc)} delayLongPress={400} style={[styles.docBubble, { backgroundColor: isOwn ? c.primary : c.muted }]}>
           {isAudio ? (
-            <VoiceMessagePlayer uri={doc.signedUrl} durationMs={doc.durationMs} isOwn={isOwn} />
+            <VoiceMessagePlayer uri={doc.signedUrl} durationMs={doc.durationMs} waveform={doc.waveform} isOwn={isOwn} />
           ) : isPhoto ? (
             <Image source={{ uri: doc.thumbUrl || doc.signedUrl }} style={styles.docThumb} />
           ) : (
