@@ -62,7 +62,20 @@
     "defaultTemplateName": "Template",
     "templateError": "Couldn't save the template."
   },
+  "voice": {
+    "record": "Record a voice message",
+    "cancel": "Cancel recording",
+    "send": "Send voice message",
+    "micDenied": "Microphone access is blocked. Allow it in your phone settings.",
+    "recordFailed": "Couldn't start recording",
+    "message": "Voice message",
+    "play": "Play",
+    "pause": "Pause"
+  },
   "chat": {
+    "outboxFailedTitle": "Could not send",
+    "outboxRetry": "Retry",
+    "outboxDiscard": "Delete",
     "messagePlaceholder": "Message…",
     "editPlaceholder": "Edit the message…",
     "companyDeactivatedNotice": "Unfortunately, you can't use the app in full right now.",
@@ -199,7 +212,9 @@
     "invalidCredentials": "Invalid email or password",
     "genericError": "Sign-in error",
     "networkError": "No connection to the server. Please try again.",
-    "driverNotAllowed": "This app is for managers only. Sign in with a manager account."
+    "driverNotAllowed": "This app is for managers only. Sign in with a manager account.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "manager": {
     "noManager": "No manager assigned yet.",
@@ -520,6 +535,12 @@
   },
   "trucks": {
     "take": "Take truck",
+    "copyPlateDriver": "Copy plate and driver",
+    "copied": "Copied",
+    "selectedCount": "Selected: {{count}}",
+    "takeSelected": "Take selected",
+    "copySelected": "Copy selected",
+    "cancelSelection": "Cancel",
     "release": "Release truck",
     "searchPlaceholder": "Search by plate or driver…",
     "addTruck": "New truck",
@@ -656,5 +677,11 @@
     "shareFailed": "Couldn't share the photo",
     "permissionTitle": "No access to the gallery",
     "permissionBody": "Allow saving photos in the phone's settings."
+  },
+  "call": {
+    "title": "Contact",
+    "phone": "Phone",
+    "failedPhone": "Could not place the call",
+    "failedApp": "App is not installed"
   }
 }

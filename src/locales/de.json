@@ -62,7 +62,20 @@
     "defaultTemplateName": "Vorlage",
     "templateError": "Vorlage konnte nicht gespeichert werden."
   },
+  "voice": {
+    "record": "Sprachnachricht aufnehmen",
+    "cancel": "Aufnahme abbrechen",
+    "send": "Sprachnachricht senden",
+    "micDenied": "Der Mikrofonzugriff ist blockiert. Erlaube ihn in den Telefoneinstellungen.",
+    "recordFailed": "Aufnahme konnte nicht gestartet werden",
+    "message": "Sprachnachricht",
+    "play": "Abspielen",
+    "pause": "Pause"
+  },
   "chat": {
+    "outboxFailedTitle": "Senden fehlgeschlagen",
+    "outboxRetry": "Erneut versuchen",
+    "outboxDiscard": "Löschen",
     "messagePlaceholder": "Nachricht…",
     "editPlaceholder": "Nachricht bearbeiten…",
     "companyDeactivatedNotice": "Leider können Sie die App im Moment nicht vollständig nutzen.",
@@ -199,7 +212,9 @@
     "invalidCredentials": "Ungültige E-Mail oder Passwort",
     "genericError": "Anmeldefehler",
     "networkError": "Keine Verbindung zum Server. Bitte versuchen Sie es erneut.",
-    "driverNotAllowed": "Diese App ist nur für Manager. Melden Sie sich mit einem Manager-Konto an."
+    "driverNotAllowed": "Diese App ist nur für Manager. Melden Sie sich mit einem Manager-Konto an.",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort verbergen"
   },
   "manager": {
     "noManager": "No manager assigned yet.",
@@ -520,6 +535,12 @@
   },
   "trucks": {
     "take": "Lkw übernehmen",
+    "copyPlateDriver": "Kennzeichen und Fahrer kopieren",
+    "copied": "Kopiert",
+    "selectedCount": "Ausgewählt: {{count}}",
+    "takeSelected": "Ausgewählte übernehmen",
+    "copySelected": "Ausgewählte kopieren",
+    "cancelSelection": "Abbrechen",
     "release": "Lkw freigeben",
     "searchPlaceholder": "Nach Kennzeichen oder Fahrer suchen…",
     "addTruck": "Neuer LKW",
@@ -656,5 +677,11 @@
     "shareFailed": "Foto konnte nicht geteilt werden",
     "permissionTitle": "Kein Zugriff auf die Galerie",
     "permissionBody": "Erlauben Sie das Speichern von Fotos in den Telefoneinstellungen."
+  },
+  "call": {
+    "title": "Kontakt",
+    "phone": "Telefon",
+    "failedPhone": "Anruf nicht möglich",
+    "failedApp": "App nicht installiert"
   }
 }

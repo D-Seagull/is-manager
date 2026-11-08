@@ -381,7 +381,8 @@ function ConversationRow({ conv }: { conv: Conversation }) {
       ],
     );
   };
-  const c = Colors[useColorScheme() ?? 'light'];
+  const scheme = useColorScheme() ?? 'light';
+  const c = Colors[scheme];
   const hasUnread = conv.unreadCount > 0;
   const isManagerTier = conv.user.role !== 'DRIVER';
 
@@ -396,11 +397,14 @@ function ConversationRow({ conv }: { conv: Conversation }) {
           backgroundColor: pressed
             ? c.muted
             : hasUnread
-              ? `${c.primary}14`
+              ? `${c.primary}${scheme === 'dark' ? '3D' : '2E'}`
               : 'transparent',
         },
       ]}
     >
+      {hasUnread && (
+        <View style={[styles.unreadBar, { backgroundColor: c.primary }]} />
+      )}
       <View style={styles.avatarWrap}>
         <ChatAvatar user={conv.user} size={44} />
         {isManagerTier && (
@@ -435,7 +439,15 @@ function ConversationRow({ conv }: { conv: Conversation }) {
             </View>
           )}
         </View>
-        <Text style={[styles.preview, { color: c.mutedForeground }]} numberOfLines={1}>
+        <Text
+          style={[
+            styles.preview,
+            hasUnread
+              ? { color: c.foreground, fontWeight: '600' }
+              : { color: c.mutedForeground },
+          ]}
+          numberOfLines={1}
+        >
           {conv.lastMessage.deletedAt
             ? t('common.messageDeleted')
             : conv.lastMessage.content || t('nav.fileAttachment')}
@@ -504,7 +516,8 @@ function GroupsTab({
 
 function GroupRow({ group, unread }: { group: ManagerGroup; unread: number }) {
   const { t } = useTranslation();
-  const c = Colors[useColorScheme() ?? 'light'];
+  const scheme = useColorScheme() ?? 'light';
+  const c = Colors[scheme];
   const hasUnread = unread > 0;
   const memberCount = group.managers?.length ?? 0;
 
@@ -522,11 +535,14 @@ function GroupRow({ group, unread }: { group: ManagerGroup; unread: number }) {
           backgroundColor: pressed
             ? c.muted
             : hasUnread
-              ? `${c.primary}14`
+              ? `${c.primary}${scheme === 'dark' ? '3D' : '2E'}`
               : 'transparent',
         },
       ]}
     >
+      {hasUnread && (
+        <View style={[styles.unreadBar, { backgroundColor: c.primary }]} />
+      )}
       <View style={[styles.groupAvatar, { backgroundColor: c.muted }]}>
         <Ionicons name="people" size={20} color={c.primary} />
       </View>
@@ -635,4 +651,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   preview: { fontSize: 13, marginTop: 2 },
+  // Непрочитане: кольорова смужка по лівому краю рядка.
+  unreadBar: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 4,
+  },
 });

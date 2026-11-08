@@ -31,8 +31,7 @@
       "blockedPermissions": [
         "android.permission.READ_MEDIA_IMAGES",
         "android.permission.READ_MEDIA_VIDEO",
-        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
-        "android.permission.RECORD_AUDIO"
+        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED"
       ],
       "versionCode": 3,
       "adaptiveIcon": {
@@ -45,7 +44,7 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./src/assets/images/IS-managerapp-img.png"
+      "favicon": "./src/assets/images/icon.png"
     },
     "plugins": [
       "expo-router",
@@ -66,8 +65,8 @@
       [
         "expo-audio",
         {
-          "microphonePermission": false,
-          "recordAudioAndroid": false,
+          "microphonePermission": "Додатку потрібен доступ до мікрофона, щоб записувати голосові повідомлення в чаті.",
+          "recordAudioAndroid": true,
           "enableBackgroundPlayback": false
         }
       ],

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Redirect, Stack } from 'expo-router';
 
 import { PushNoticeOverlay } from '@/components/push-notice-overlay';
@@ -5,6 +6,7 @@ import { TripStatusBanner } from '@/components/trip-status-banner';
 import { useBugReportsSocketSync, useOnlineUsersSocketSync } from '@/hooks/use-admin';
 import { useAppStatePresence } from '@/hooks/use-app-state-presence';
 import { useAutoOnline } from '@/hooks/use-auto-online';
+import { startOutboxRunner } from '@/lib/outbox';
 import { useChatAlerts } from '@/hooks/use-chat-alerts';
 import { useDmUnreadSync } from '@/hooks/use-direct-messages';
 import { useGroupUnreadSync } from '@/hooks/use-groups';
@@ -25,6 +27,8 @@ export default function ManagerLayout() {
   useDmUnreadSync();
   useGroupUnreadSync();
   useChatAlerts();
+  // Offline outbox: re-send queued chat messages when the connection is back.
+  useEffect(() => startOutboxRunner(), []);
   usePresenceSync();
   useUserStatusSync();
   // Lift a desk-set AWAY back to ONLINE while this app is in use.

@@ -69,7 +69,7 @@ export default function MyTrucksScreen() {
           data={sortedTrucks}
           keyExtractor={(tr) => tr.id}
           contentContainerStyle={styles.list}
-          renderItem={({ item }) => <TruckCard truck={item} />}
+          renderItem={({ item }) => <TruckCard truck={item} showCall />}
         />
       )}
 

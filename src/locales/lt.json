@@ -62,7 +62,20 @@
     "defaultTemplateName": "Šablonas",
     "templateError": "Nepavyko išsaugoti šablono."
   },
+  "voice": {
+    "record": "Įrašyti balso žinutę",
+    "cancel": "Atšaukti įrašymą",
+    "send": "Siųsti balso žinutę",
+    "micDenied": "Mikrofono prieiga užblokuota. Leiskite ją telefono nustatymuose.",
+    "recordFailed": "Nepavyko pradėti įrašymo",
+    "message": "Balso žinutė",
+    "play": "Groti",
+    "pause": "Pauzė"
+  },
   "chat": {
+    "outboxFailedTitle": "Nepavyko išsiųsti",
+    "outboxRetry": "Bandyti dar kartą",
+    "outboxDiscard": "Ištrinti",
     "messagePlaceholder": "Žinutė…",
     "editPlaceholder": "Redaguoti žinutę…",
     "companyDeactivatedNotice": "Deja, šiuo metu negalite naudotis programėle visa apimtimi.",
@@ -203,7 +216,9 @@
     "invalidCredentials": "Neteisingas el. paštas arba slaptažodis",
     "genericError": "Prisijungimo klaida",
     "networkError": "Nėra ryšio su serveriu. Bandykite dar kartą.",
-    "driverNotAllowed": "Ši programa skirta tik vadovams. Prisijunkite su vadovo paskyra."
+    "driverNotAllowed": "Ši programa skirta tik vadovams. Prisijunkite su vadovo paskyra.",
+    "showPassword": "Rodyti slaptažodį",
+    "hidePassword": "Slėpti slaptažodį"
   },
   "manager": {
     "noManager": "Vadovas dar nepriskirtas.",
@@ -525,6 +540,12 @@
   },
   "trucks": {
     "take": "Paimti vilkiką",
+    "copyPlateDriver": "Kopijuoti numerį ir vairuotoją",
+    "copied": "Nukopijuota",
+    "selectedCount": "Pasirinkta: {{count}}",
+    "takeSelected": "Paimti pasirinktus",
+    "copySelected": "Kopijuoti pasirinktus",
+    "cancelSelection": "Atšaukti",
     "release": "Atlaisvinti vilkiką",
     "searchPlaceholder": "Ieškoti pagal numerį ar vairuotoją…",
     "addTruck": "Naujas sunkvežimis",
@@ -661,5 +682,11 @@
     "shareFailed": "Nepavyko pasidalinti nuotrauka",
     "permissionTitle": "Nėra prieigos prie galerijos",
     "permissionBody": "Leiskite išsaugoti nuotraukas telefono nustatymuose."
+  },
+  "call": {
+    "title": "Susisiekti",
+    "phone": "Telefonas",
+    "failedPhone": "Nepavyko paskambinti",
+    "failedApp": "Programėlė neįdiegta"
   }
 }

@@ -62,7 +62,20 @@
     "defaultTemplateName": "Szablon",
     "templateError": "Nie udało się zapisać szablonu."
   },
+  "voice": {
+    "record": "Nagraj wiadomość głosową",
+    "cancel": "Anuluj nagrywanie",
+    "send": "Wyślij wiadomość głosową",
+    "micDenied": "Brak dostępu do mikrofonu. Zezwól na niego w ustawieniach telefonu.",
+    "recordFailed": "Nie udało się rozpocząć nagrywania",
+    "message": "Wiadomość głosowa",
+    "play": "Odtwórz",
+    "pause": "Pauza"
+  },
   "chat": {
+    "outboxFailedTitle": "Nie udało się wysłać",
+    "outboxRetry": "Ponów",
+    "outboxDiscard": "Usuń",
     "messagePlaceholder": "Wiadomość…",
     "editPlaceholder": "Edytuj wiadomość…",
     "companyDeactivatedNotice": "Niestety, obecnie nie możesz w pełni korzystać z aplikacji.",
@@ -203,7 +216,9 @@
     "invalidCredentials": "Nieprawidłowy e-mail lub hasło",
     "genericError": "Błąd logowania",
     "networkError": "Brak połączenia z serwerem. Spróbuj ponownie.",
-    "driverNotAllowed": "Ta aplikacja jest tylko dla menedżerów. Zaloguj się na konto menedżera."
+    "driverNotAllowed": "Ta aplikacja jest tylko dla menedżerów. Zaloguj się na konto menedżera.",
+    "showPassword": "Pokaż hasło",
+    "hidePassword": "Ukryj hasło"
   },
   "manager": {
     "noManager": "Nie przypisano jeszcze menedżera.",
@@ -525,6 +540,12 @@
   },
   "trucks": {
     "take": "Weź ciężarówkę",
+    "copyPlateDriver": "Kopiuj numer i kierowcę",
+    "copied": "Skopiowano",
+    "selectedCount": "Wybrano: {{count}}",
+    "takeSelected": "Przejmij wybrane",
+    "copySelected": "Kopiuj wybrane",
+    "cancelSelection": "Anuluj",
     "release": "Zwolnij ciężarówkę",
     "searchPlaceholder": "Szukaj po numerze lub kierowcy…",
     "addTruck": "Nowa ciężarówka",
@@ -661,5 +682,11 @@
     "shareFailed": "Nie udało się udostępnić zdjęcia",
     "permissionTitle": "Brak dostępu do galerii",
     "permissionBody": "Zezwól na zapisywanie zdjęć w ustawieniach telefonu."
+  },
+  "call": {
+    "title": "Skontaktuj się",
+    "phone": "Telefon",
+    "failedPhone": "Nie udało się zadzwonić",
+    "failedApp": "Aplikacja nie jest zainstalowana"
   }
 }

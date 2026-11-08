@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { bottomBarPadding } from '@/lib/insets';
+import { CallSheet } from '@/components/call-sheet';
 import { InsetScrollView } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useCompanyUsers } from '@/hooks/use-company-users';
@@ -47,6 +48,7 @@ export function InfoTab({ truck, activeTripId }: { truck: MyTruck; activeTripId?
   const createNote = useCreateTruckNote(truck.id);
   const deleteNote = useDeleteTruckNote(truck.id);
 
+  const [callOpen, setCallOpen] = useState(false);
   const [noteText, setNoteText] = useState('');
   const [picker, setPicker] = useState<'driver' | 'manager' | null>(null);
 
@@ -86,7 +88,20 @@ export function InfoTab({ truck, activeTripId }: { truck: MyTruck; activeTripId?
             <Text style={{ flex: 1, color: truck.currentDriver ? c.foreground : c.mutedForeground, fontSize: 14 }} numberOfLines={1}>{driverName}</Text>
             <Ionicons name="chevron-down" size={15} color={c.mutedForeground} />
           </Pressable>
-          {truck.currentDriver?.phone ? <Text style={{ fontSize: 12, color: c.mutedForeground, marginTop: 4 }}>{truck.currentDriver.phone}</Text> : null}
+          {truck.currentDriver?.phone ? (
+            <>
+              <Pressable onPress={() => setCallOpen(true)} hitSlop={8} style={styles.phoneRow}>
+                <Ionicons name="call-outline" size={14} color={c.primary} />
+                <Text style={{ fontSize: 13, color: c.primary, fontWeight: '600' }}>{truck.currentDriver.phone}</Text>
+              </Pressable>
+              <CallSheet
+                visible={callOpen}
+                phone={truck.currentDriver.phone}
+                name={fullName(truck.currentDriver)}
+                onClose={() => setCallOpen(false)}
+              />
+            </>
+          ) : null}
         </Row>
         <View style={[styles.divider, { backgroundColor: c.border }]} />
         <Row label={t('info.manager', 'Менеджер')} c={c}>
@@ -200,6 +215,7 @@ function PickerModal({ visible, title, options, selectedId, onSelect, onClose }:
 }
 
 const styles = StyleSheet.create({
+  phoneRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 6, alignSelf: 'flex-start' },
   card: { borderWidth: 1, borderRadius: 12, padding: Spacing.md },
   row: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.md },
   rowLabel: { width: 72, fontSize: 13, paddingTop: 9 },

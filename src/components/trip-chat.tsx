@@ -29,8 +29,16 @@ import { MessageActionsSheet, type MessageActions } from '@/components/message-a
 import { UserCardSheet } from '@/components/user-card-sheet';
 import { MessageQuote } from '@/components/message-quote';
 import { MessageReactionsCluster } from '@/components/message-reactions';
+import {
+  useVoiceRecorder,
+  VoiceMicButton,
+  VoiceRecordingBar,
+  type VoiceFile,
+} from '@/components/voice-recorder';
+import { VoiceMessagePlayer } from '@/components/voice-message-player';
 import { ScreenPlaceholder } from '@/components/screen-placeholder';
 import { TripHeader } from '@/components/trip-header';
+import { OutboxMark } from '@/components/outbox-mark';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { InsetFlatList } from '@/components/inset-list';
 import { PhotoGallery } from '@/components/photo-gallery';
@@ -160,7 +168,8 @@ export function TripChat({
   // A quoted file that belongs to an album reads "Album · N files".
   const albumSize = useMemo(() => albumSizes(documents), [documents]);
   const docLabel = useCallback(
-    (d: { fileName: string; batchId?: string | null }) => {
+    (d: { fileName: string; batchId?: string | null; fileType?: string }) => {
+      if (d.fileType === 'AUDIO') return `🎤 ${t('voice.message')}`;
       const count = d.batchId ? albumSize.get(d.batchId) : undefined;
       return count ? t('common.album', { count }) : d.fileName;
     },
@@ -258,6 +267,28 @@ export function TripChat({
     }
   };
 
+  // Voice message: recorded in the composer, sent at once as its own bubble.
+  const sendVoice = async (
+    file: VoiceFile,
+    durationMs: number,
+    waveform: string | null,
+  ) => {
+    try {
+      await uploadDocs.mutateAsync({
+        tripId,
+        files: [{ uri: file.uri, name: file.name, mimeType: file.mimeType }],
+        durationMs,
+        waveform,
+      });
+      listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    } catch (e) {
+      Alert.alert(t('documents.uploadFailed', 'Помилка завантаження'), uploadErrorText(e, t));
+    }
+  };
+  const voice = useVoiceRecorder(
+    (file, durationMs, waveform) => void sendVoice(file, durationMs, waveform),
+  );
+
   const showAttachSheet = () => {
     Alert.alert(t('trip.attachSheet.title', 'Вкладення'), t('documents.uploadSheet.subtitle', 'Оберіть джерело'), [
       { text: t('documents.uploadSheet.camera', 'Камера'), onPress: () => pickAndUpload('camera') },
@@ -314,7 +345,7 @@ export function TripChat({
         <View style={{ flex: 1 }} />
         <Pressable onPress={() => setDocsOpen(true)} hitSlop={6} style={({ pressed }) => [styles.folderBtn, { opacity: pressed ? 0.6 : 1 }]}>
           <Ionicons name="folder-outline" size={16} color={c.mutedForeground} />
-          <Text style={[styles.chatLabelText, { color: c.mutedForeground }]}>{documents.filter((d) => !d.deletedAt && d.signedUrl).length}</Text>
+          <Text style={[styles.chatLabelText, { color: c.mutedForeground }]}>{documents.filter((d) => !d.deletedAt && d.signedUrl && d.fileType !== 'AUDIO').length}</Text>
         </Pressable>
       </View>
 
@@ -473,6 +504,10 @@ export function TripChat({
             { paddingBottom: composerPad + (Platform.OS === 'ios' ? Spacing.sm : 0) },
           ]}
         >
+          {voice.active ? (
+            <VoiceRecordingBar elapsedMs={voice.elapsedMs} onCancel={voice.cancel} onSend={voice.send} />
+          ) : (
+          <>
           {!editing && (
             <>
               <Pressable onPress={showAttachSheet} disabled={uploadDocs.isPending} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed || uploadDocs.isPending ? 0.5 : 1 }]}>
@@ -495,9 +530,16 @@ export function TripChat({
             style={[styles.input, { color: c.foreground, backgroundColor: c.muted }]}
             multiline
           />
+          {/* Empty composer → the mic takes the Send button's place. */}
+          {!editing && !text.trim() ? (
+            <VoiceMicButton onPress={() => void voice.start()} disabled={uploadDocs.isPending} />
+          ) : (
           <Pressable onPress={handleSend} disabled={!text.trim()} style={({ pressed }) => [styles.sendBtn, { backgroundColor: c.primary, opacity: pressed ? 0.7 : text.trim() ? 1 : 0.4 }]}>
             <Ionicons name={editing ? 'checkmark' : 'send'} size={18} color={c.primaryForeground} />
           </Pressable>
+          )}
+          </>
+          )}
         </View>
       )}
 
@@ -510,7 +552,7 @@ export function TripChat({
       <TripDocsSheet
         visible={docsOpen}
         onClose={() => setDocsOpen(false)}
-        docs={documents}
+        docs={documents.filter((d) => d.fileType !== 'AUDIO')}
         onOpen={openDoc}
         onUpload={showAttachSheet}
         uploading={uploadDocs.isPending}
@@ -594,7 +636,7 @@ function Banner({ kind, target, onCancel }: { kind: 'reply' | 'edit'; target: Re
   );
 }
 
-const MsgBubble = memo(function MsgBubble({ msg, isOwn, myId, onLongPress, onOpenUser, docLabel }: { msg: ChatMessage; isOwn: boolean; myId: string; onLongPress: (m: ChatMessage) => void; onOpenUser: (userId: string) => void; docLabel: (d: { fileName: string; batchId?: string | null }) => string }) {
+const MsgBubble = memo(function MsgBubble({ msg, isOwn, myId, onLongPress, onOpenUser, docLabel }: { msg: ChatMessage; isOwn: boolean; myId: string; onLongPress: (m: ChatMessage) => void; onOpenUser: (userId: string) => void; docLabel: (d: { fileName: string; batchId?: string | null; fileType?: string }) => string }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const isDeleted = !!msg.deletedAt;
@@ -642,7 +684,8 @@ const MsgBubble = memo(function MsgBubble({ msg, isOwn, myId, onLongPress, onOpe
       <View style={[styles.meta, isOwn && styles.metaOwn]}>
         {msg.editedAt && !isDeleted && <Text style={[styles.metaText, { color: c.mutedForeground, fontStyle: 'italic' }]}>{t('chat.editedShort', 'ред.')}</Text>}
         <Text style={[styles.metaText, { color: c.mutedForeground }]}>{time}</Text>
-        {isOwn && !isDeleted && <Text style={[styles.metaText, { color: msg.isRead ? c.primary : c.mutedForeground }]}>{msg.isRead ? '✓✓' : '✓'}</Text>}
+        {isOwn && !isDeleted && <OutboxMark msg={msg} />}
+        {isOwn && !isDeleted && !msg.pending && !msg.failed && <Text style={[styles.metaText, { color: msg.isRead ? c.primary : c.mutedForeground }]}>{msg.isRead ? '✓✓' : '✓'}</Text>}
       </View>
     </View>
   );
@@ -665,6 +708,7 @@ const DocBubble = memo(function DocBubble({ doc, isOwn, myId, onOpen, onLongPres
     );
   }
   const isPhoto = doc.fileType === 'PHOTO';
+  const isAudio = doc.fileType === 'AUDIO';
   const time = formatTime(doc.createdAt, { hour: '2-digit', minute: '2-digit' });
   const senderName = fullName(doc.uploader) || doc.uploader?.role || '';
   const sidekick = (
@@ -676,8 +720,10 @@ const DocBubble = memo(function DocBubble({ doc, isOwn, myId, onOpen, onLongPres
       {!isOwn && <Text style={[styles.senderName, { color: c.primary }]} numberOfLines={1}>{senderName}</Text>}
       <View style={[styles.bubbleRow, styles.bubbleRowDoc]}>
         {isOwn && sidekick}
-        <Pressable onPress={() => onOpen(doc)} onLongPress={() => onLongPress(doc)} delayLongPress={400} style={[styles.docBubble, { backgroundColor: isOwn ? c.primary : c.muted }]}>
-          {isPhoto ? (
+        <Pressable onPress={isAudio ? undefined : () => onOpen(doc)} onLongPress={() => onLongPress(doc)} delayLongPress={400} style={[styles.docBubble, { backgroundColor: isOwn ? c.primary : c.muted }]}>
+          {isAudio ? (
+            <VoiceMessagePlayer uri={doc.signedUrl} durationMs={doc.durationMs} waveform={doc.waveform} isOwn={isOwn} />
+          ) : isPhoto ? (
             <Image source={{ uri: doc.thumbUrl || doc.signedUrl }} style={styles.docThumb} />
           ) : (
             <View style={styles.docFileRow}>

@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useIsFocused, useLocalSearchParams } from 'expo-router';
+import { router, useIsFocused, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -88,16 +88,23 @@ export default function TruckDetailScreen() {
                 truck itself; blank while it loads, never the list's name. */}
             {plate || truck?.plate || (truckLoading ? '' : t('nav.items.trucks', 'Вантажівка'))}
           </Text>
-          {driverName ? (
-            <Text style={[styles.driverSub, { color: c.mutedForeground }]} numberOfLines={1}>
-              {t('truck.driverLabel', 'Водій')}: {driverName}
-            </Text>
-          ) : null}
-          {driverName && lastSeen ? (
-            <Text style={[styles.lastSeen, { color: c.mutedForeground }]} numberOfLines={1}>
-              {lastSeen}
-            </Text>
-          ) : null}
+          {/* Водій → його картка */}
+          <Pressable
+            disabled={!truck?.currentDriver}
+            onPress={() => router.push(`/(manager)/person/${truck?.currentDriver?.id}` as never)}
+            hitSlop={{ top: 4, bottom: 8, left: 4, right: 12 }}
+          >
+            {driverName ? (
+              <Text style={[styles.driverSub, { color: c.mutedForeground }]} numberOfLines={1}>
+                {t('truck.driverLabel', 'Водій')}: <Text style={{ color: c.primary, fontWeight: '600' }}>{driverName}</Text>
+              </Text>
+            ) : null}
+            {driverName && lastSeen ? (
+              <Text style={[styles.lastSeen, { color: c.mutedForeground }]} numberOfLines={1}>
+                {lastSeen}
+              </Text>
+            ) : null}
+          </Pressable>
         </View>
         <NotificationsBell />
         <Pressable

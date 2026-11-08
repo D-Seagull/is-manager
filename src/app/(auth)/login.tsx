@@ -37,6 +37,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
 
   useEffect(() => {
@@ -127,22 +128,42 @@ export default function LoginScreen() {
               <Text style={[styles.label, { color: c.mutedForeground }]}>
                 {t('login.password', 'Пароль')}
               </Text>
-              <TextInput
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                autoCapitalize="none"
-                textContentType="password"
-                placeholder="••••••••"
-                placeholderTextColor={c.mutedForeground}
-                editable={!submitting}
-                onSubmitEditing={onSubmit}
-                returnKeyType="go"
-                style={[
-                  styles.input,
-                  { backgroundColor: c.card, borderColor: c.border, color: c.foreground },
-                ]}
-              />
+              <View>
+                <TextInput
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  textContentType="password"
+                  placeholder="••••••••"
+                  placeholderTextColor={c.mutedForeground}
+                  editable={!submitting}
+                  onSubmitEditing={onSubmit}
+                  returnKeyType="go"
+                  style={[
+                    styles.input,
+                    { backgroundColor: c.card, borderColor: c.border, color: c.foreground, paddingRight: 48 },
+                  ]}
+                />
+                <Pressable
+                  onPress={() => setShowPassword((v) => !v)}
+                  hitSlop={8}
+                  style={styles.eye}
+                  accessibilityRole="button"
+                  accessibilityLabel={
+                    showPassword
+                      ? t('login.hidePassword', 'Сховати пароль')
+                      : t('login.showPassword', 'Показати пароль')
+                  }
+                >
+                  <Ionicons
+                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                    size={22}
+                    color={c.mutedForeground}
+                  />
+                </Pressable>
+              </View>
             </View>
 
             <Pressable
@@ -221,6 +242,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     fontSize: 16,
   },
+  eye: { position: 'absolute', right: 0, top: 0, bottom: 0, width: 48, alignItems: 'center', justifyContent: 'center' },
   rememberRow: {
     flexDirection: 'row',
     alignItems: 'center',
