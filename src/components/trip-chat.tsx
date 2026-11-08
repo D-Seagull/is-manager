@@ -221,6 +221,31 @@ export function TripChat({
   const handleMsgLongPress = useCallback((m: ChatMessage) => setSheetFor(m), []);
   const handleDocLongPress = useCallback((d: DriverDocument) => setDocSheetFor(d), []);
 
+  // Voice message: recorded in the composer, sent at once as its own bubble.
+  // A hook, so it stays above the `!tripId` early return (the hook count must
+  // not change when the trip id arrives — that crashed the chat on open).
+  const sendVoice = async (
+    file: VoiceFile,
+    durationMs: number,
+    waveform: string | null,
+  ) => {
+    if (!tripId) return;
+    try {
+      await uploadDocs.mutateAsync({
+        tripId,
+        files: [{ uri: file.uri, name: file.name, mimeType: file.mimeType }],
+        durationMs,
+        waveform,
+      });
+      listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    } catch (e) {
+      Alert.alert(t('documents.uploadFailed', 'Помилка завантаження'), uploadErrorText(e, t));
+    }
+  };
+  const voice = useVoiceRecorder(
+    (file, durationMs, waveform) => void sendVoice(file, durationMs, waveform),
+  );
+
   if (!tripId) {
     // Поки трак/рейс ще вантажиться — показуємо лоадер, а не «немає рейсу»
     // (інакше на повільному з'єднанні блимає хибне повідомлення).
@@ -266,28 +291,6 @@ export function TripChat({
       Alert.alert(t('documents.uploadFailed', 'Помилка завантаження'), uploadErrorText(e, t));
     }
   };
-
-  // Voice message: recorded in the composer, sent at once as its own bubble.
-  const sendVoice = async (
-    file: VoiceFile,
-    durationMs: number,
-    waveform: string | null,
-  ) => {
-    try {
-      await uploadDocs.mutateAsync({
-        tripId,
-        files: [{ uri: file.uri, name: file.name, mimeType: file.mimeType }],
-        durationMs,
-        waveform,
-      });
-      listRef.current?.scrollToOffset({ offset: 0, animated: true });
-    } catch (e) {
-      Alert.alert(t('documents.uploadFailed', 'Помилка завантаження'), uploadErrorText(e, t));
-    }
-  };
-  const voice = useVoiceRecorder(
-    (file, durationMs, waveform) => void sendVoice(file, durationMs, waveform),
-  );
 
   const showAttachSheet = () => {
     Alert.alert(t('trip.attachSheet.title', 'Вкладення'), t('documents.uploadSheet.subtitle', 'Оберіть джерело'), [

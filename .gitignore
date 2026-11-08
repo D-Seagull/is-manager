@@ -49,3 +49,5 @@ example
 
 # Sentry build plugin (local auth token for source map uploads)
 .env.sentry-build-plugin
+
+.env.local
