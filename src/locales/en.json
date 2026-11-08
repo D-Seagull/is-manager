@@ -62,6 +62,16 @@
     "defaultTemplateName": "Template",
     "templateError": "Couldn't save the template."
   },
+  "voice": {
+    "record": "Record a voice message",
+    "cancel": "Cancel recording",
+    "send": "Send voice message",
+    "micDenied": "Microphone access is blocked. Allow it in your phone settings.",
+    "recordFailed": "Couldn't start recording",
+    "message": "Voice message",
+    "play": "Play",
+    "pause": "Pause"
+  },
   "chat": {
     "outboxFailedTitle": "Could not send",
     "outboxRetry": "Retry",

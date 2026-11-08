@@ -60,6 +60,13 @@ import {
   MessageReactionsBar,
   MessageReactionsCluster,
 } from '@/components/message-reactions';
+import {
+  useVoiceRecorder,
+  VoiceMicButton,
+  VoiceRecordingBar,
+  type VoiceFile,
+} from '@/components/voice-recorder';
+import { VoiceMessagePlayer } from '@/components/voice-message-player';
 import { useChatTyping } from '@/hooks/use-chat-typing';
 import { useReactionsSocketSync } from '@/hooks/use-message-reactions';
 import { useFocusMessage } from '@/hooks/use-focus-message';
@@ -206,7 +213,8 @@ export default function GroupChatScreen() {
   // A quoted file that belongs to an album reads "Album · N files".
   const albumSize = useMemo(() => albumSizes(documents), [documents]);
   const docLabel = useCallback(
-    (d: { fileName: string; batchId?: string | null }) => {
+    (d: { fileName: string; batchId?: string | null; fileType?: string }) => {
+      if (d.fileType === 'AUDIO') return `🎤 ${t('voice.message')}`;
       const count = d.batchId ? albumSize.get(d.batchId) : undefined;
       return count ? t('common.album', { count }) : d.fileName;
     },
@@ -301,6 +309,25 @@ export default function GroupChatScreen() {
       { text: t('common.cancel'), style: 'cancel' },
     ], { cancelable: true }); // Android: a tap outside closes it
   };
+
+  // Voice message: recorded in the composer, sent at once as its own bubble
+  // (an active reply target travels with it).
+  const sendVoice = async (file: VoiceFile, durationMs: number) => {
+    const reply = replyingTo;
+    setReplyingTo(null);
+    try {
+      await uploadDocs.mutateAsync({
+        files: [{ uri: file.uri, name: file.name, type: file.mimeType }],
+        durationMs,
+        replyToMessageId: reply?.targetType === 'msg' ? reply.id : null,
+        replyToDocumentId: reply?.targetType === 'doc' ? reply.id : null,
+      });
+      listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    } catch (e) {
+      Alert.alert(t('documents.uploadFailed'), uploadErrorText(e, t));
+    }
+  };
+  const voice = useVoiceRecorder((file, durationMs) => void sendVoice(file, durationMs));
 
   const openDoc = useCallback(
     async (doc: GroupDocumentFull) => {
@@ -566,6 +593,14 @@ export default function GroupChatScreen() {
           },
         ]}
       >
+        {voice.active ? (
+          <VoiceRecordingBar
+            elapsedMs={voice.elapsedMs}
+            onCancel={voice.cancel}
+            onSend={voice.send}
+          />
+        ) : (
+        <>
         {!editing && (
           <>
             <Pressable
@@ -621,6 +656,13 @@ export default function GroupChatScreen() {
           style={[styles.input, { color: c.foreground, backgroundColor: c.muted }]}
           multiline
         />
+        {/* Empty composer → the mic takes the Send button's place. */}
+        {!editing && !text.trim() ? (
+          <VoiceMicButton
+            onPress={() => void voice.start()}
+            disabled={uploadDocs.isPending}
+          />
+        ) : (
         <Pressable
           onPress={handleSend}
           disabled={!text.trim()}
@@ -638,6 +680,9 @@ export default function GroupChatScreen() {
             color={c.primaryForeground}
           />
         </Pressable>
+        )}
+        </>
+        )}
       </View>
       )}
 
@@ -707,7 +752,7 @@ export default function GroupChatScreen() {
       {/* Documents folder — quick access to every attachment in the group */}
       <DocsFolderModal
         visible={folderOpen}
-        docs={liveDocs}
+        docs={liveDocs.filter((d) => d.fileType !== 'AUDIO')}
         onOpen={(d) => openDoc(d)}
         onUpload={showAttachSheet}
         uploading={uploadDocs.isPending}
@@ -975,7 +1020,9 @@ const GroupBubble = memo(function GroupBubble({
   highlighted?: boolean;
   onLongPress: (m: GroupMessage) => void;
   onReplyJump: (targetId: string) => void;
-  docLabel: (d: { fileName: string; batchId?: string | null }) => string;
+  docLabel: (
+    d: { fileName: string; batchId?: string | null; fileType?: string },
+  ) => string;
   onOpenUser: (userId: string) => void;
 }) {
   const { t } = useTranslation();
@@ -1235,6 +1282,7 @@ const DocBubble = memo(function DocBubble({
   const c = Colors[scheme];
   const isDeleted = !!doc.deletedAt;
   const isPhoto = doc.fileType === 'PHOTO';
+  const isAudio = doc.fileType === 'AUDIO';
   const time = formatTime(doc.createdAt, { hour: '2-digit', minute: '2-digit' });
   const senderName = fullName(doc.uploader) || doc.uploader?.role || t('nav.driverFallback');
   const sidekick = isDeleted ? null : (
@@ -1269,7 +1317,7 @@ const DocBubble = memo(function DocBubble({
       <View style={[styles.reactRow, styles.reactRowDoc]}>
       {isOwn && sidekick}
       <Pressable
-        onPress={() => onOpen(doc)}
+        onPress={isAudio ? undefined : () => onOpen(doc)}
         onLongPress={() => onLongPress(doc)}
         delayLongPress={400}
         style={[
@@ -1278,7 +1326,13 @@ const DocBubble = memo(function DocBubble({
           highlighted && { borderWidth: 2, borderColor: c.primary },
         ]}
       >
-        {isPhoto ? (
+        {isAudio ? (
+          <VoiceMessagePlayer
+            uri={doc.signedUrl}
+            durationMs={doc.durationMs}
+            isOwn={isOwn}
+          />
+        ) : isPhoto ? (
           <Image source={{ uri: doc.thumbUrl || doc.signedUrl }} style={styles.docThumb} />
         ) : (
           <View style={styles.docFileRow}>

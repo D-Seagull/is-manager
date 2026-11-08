@@ -62,6 +62,16 @@
     "defaultTemplateName": "Vorlage",
     "templateError": "Vorlage konnte nicht gespeichert werden."
   },
+  "voice": {
+    "record": "Sprachnachricht aufnehmen",
+    "cancel": "Aufnahme abbrechen",
+    "send": "Sprachnachricht senden",
+    "micDenied": "Der Mikrofonzugriff ist blockiert. Erlaube ihn in den Telefoneinstellungen.",
+    "recordFailed": "Aufnahme konnte nicht gestartet werden",
+    "message": "Sprachnachricht",
+    "play": "Abspielen",
+    "pause": "Pause"
+  },
   "chat": {
     "outboxFailedTitle": "Senden fehlgeschlagen",
     "outboxRetry": "Erneut versuchen",
