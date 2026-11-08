@@ -77,8 +77,8 @@ export function TruckCard({
     (a ?? '').trim().toLowerCase() === (b ?? '').trim().toLowerCase();
   const showSender = !!latest && !sameName(latest.senderName, fullName(driver));
   // Unread → the whole card tinted blue with a blue dot, like the web list.
-  const tint = scheme === 'dark' ? '26' : '14';
-  const tintPressed = scheme === 'dark' ? '3A' : '24';
+  const tint = scheme === 'dark' ? '3D' : '2E';
+  const tintPressed = scheme === 'dark' ? '52' : '40';
 
   // Primary badge: active trip status if present (тільки /trucks/my), else the
   // truck's own status (загальний список /trucks).
@@ -113,7 +113,7 @@ export function TruckCard({
           : hasUnread
           ? {
               backgroundColor: `${c.primary}${pressed ? tintPressed : tint}`,
-              borderColor: `${c.primary}59`,
+              borderColor: `${c.primary}A6`,
             }
           : { backgroundColor: pressed ? c.muted : c.card, borderColor: c.border },
       ]}

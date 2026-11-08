@@ -56,7 +56,10 @@ import {
   useMarkGroupRead,
   type GroupMessage,
 } from '@/hooks/use-groups';
-import { MessageReactionsCluster } from '@/components/message-reactions';
+import {
+  MessageReactionsBar,
+  MessageReactionsCluster,
+} from '@/components/message-reactions';
 import { useChatTyping } from '@/hooks/use-chat-typing';
 import { useReactionsSocketSync } from '@/hooks/use-message-reactions';
 import { useFocusMessage } from '@/hooks/use-focus-message';
@@ -986,6 +989,7 @@ const GroupBubble = memo(function GroupBubble({
       targetId={msg.id}
       reactions={msg.reactions ?? []}
       currentUserId={myId}
+      hideOthers
     />
   );
 
@@ -1067,6 +1071,15 @@ const GroupBubble = memo(function GroupBubble({
       </Pressable>
       {!isOwn && sidekick}
       </View>
+      {!isDeleted && (
+        <MessageReactionsBar
+          type="GROUP"
+          targetId={msg.id}
+          reactions={msg.reactions ?? []}
+          isOwn={isOwn}
+          currentUserId={myId}
+        />
+      )}
       <View style={[styles.meta, isOwn && styles.metaOwn]}>
         {msg.editedAt && !isDeleted && (
           <Text
@@ -1136,6 +1149,7 @@ const AlbumBubble = memo(function AlbumBubble({
       targetId={lead.id}
       reactions={lead.reactions ?? []}
       currentUserId={myId}
+      hideOthers
     />
   );
 
@@ -1185,6 +1199,13 @@ const AlbumBubble = memo(function AlbumBubble({
         </View>
         {!isOwn && sidekick}
       </View>
+      <MessageReactionsBar
+        type="GROUP_DOC"
+        targetId={lead.id}
+        reactions={lead.reactions ?? []}
+        isOwn={isOwn}
+        currentUserId={myId}
+      />
       <View style={[styles.meta, isOwn && styles.metaOwn]}>
         <Text style={[styles.metaText, { color: c.mutedForeground }]}>{time}</Text>
       </View>
@@ -1222,6 +1243,7 @@ const DocBubble = memo(function DocBubble({
       targetId={doc.id}
       reactions={doc.reactions ?? []}
       currentUserId={myId}
+      hideOthers
     />
   );
 
@@ -1289,6 +1311,13 @@ const DocBubble = memo(function DocBubble({
       </Pressable>
       {!isOwn && sidekick}
       </View>
+      <MessageReactionsBar
+        type="GROUP_DOC"
+        targetId={doc.id}
+        reactions={doc.reactions ?? []}
+        isOwn={isOwn}
+        currentUserId={myId}
+      />
       <View style={[styles.meta, isOwn && styles.metaOwn]}>
         <Text style={[styles.metaText, { color: c.mutedForeground }]}>{time}</Text>
       </View>
