@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import * as DocumentPicker from 'expo-document-picker';
@@ -85,14 +86,18 @@ export function TripChat({
   isFocused,
   loading,
   focusMessageId,
+  driverId,
 }: {
   tripId: string | null;
+  /** The truck's driver — with no trip, the chat tab offers a direct message to them. */
+  driverId?: string | null;
   isFocused: boolean;
   loading?: boolean;
   /** From a push tap: scroll to this message and flash it. */
   focusMessageId?: string;
 }) {
   const { t } = useTranslation();
+  const router = useRouter();
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
   // Safe-area pad when the keyboard is closed, small gap when it's open.
@@ -263,6 +268,15 @@ export function TripChat({
         icon="chatbubbles-outline"
         title={t('tripChat.noTrip.title', 'Немає активного рейсу')}
         subtitle={t('tripChat.noTrip.subtitle', 'Чат з’явиться, коли машині призначать рейс.')}
+        action={
+          driverId
+            ? {
+                label: t('tripChat.noTrip.writeDriver', 'Написати водієві'),
+                icon: 'chatbubble-ellipses-outline',
+                onPress: () => router.push(`/(manager)/dm/${driverId}` as never),
+              }
+            : undefined
+        }
       />
     );
   }

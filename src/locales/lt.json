@@ -475,6 +475,7 @@
     "inactive": "Jūs nebe šio reiso vadovas — pokalbis tik skaitymui",
     "companyDeactivated": "Deja, šiuo metu negalite naudotis programėle visa apimtimi",
     "noTrip": {
+      "writeDriver": "Rašyti vairuotojui",
       "title": "Nėra aktyvaus reiso",
       "subtitle": "Pokalbis atsiras, kai vilkikui bus priskirtas reisas."
     }

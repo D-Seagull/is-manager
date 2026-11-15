@@ -470,6 +470,7 @@
     "inactive": "Sie sind nicht mehr der Manager dieser Fahrt — der Chat ist schreibgeschützt",
     "companyDeactivated": "Leider können Sie die App im Moment nicht vollständig nutzen",
     "noTrip": {
+      "writeDriver": "Fahrer anschreiben",
       "title": "Keine aktive Fahrt",
       "subtitle": "Der Chat erscheint, sobald dem Lkw eine Fahrt zugewiesen wird."
     }
