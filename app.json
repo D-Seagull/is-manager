@@ -13,13 +13,24 @@
     "icon": "./src/assets/images/icon.png",
     "scheme": "ismanager",
     "userInterfaceStyle": "automatic",
+    "locales": {
+      "en": "./src/assets/ios-permissions/en.json",
+      "uk": "./src/assets/ios-permissions/uk.json",
+      "pl": "./src/assets/ios-permissions/pl.json",
+      "lt": "./src/assets/ios-permissions/lt.json",
+      "ru": "./src/assets/ios-permissions/ru.json",
+      "de": "./src/assets/ios-permissions/de.json"
+    },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.dseadull.ismanager",
+      "supportsTablet": false,
+      "bundleIdentifier": "com.isfleet.ismanager",
       "infoPlist": {
-        "NSCameraUsageDescription": "Додатку потрібен доступ до камери, щоб знімати фото документів і надсилати їх у чат.",
-        "NSPhotoLibraryUsageDescription": "Додатку потрібен доступ до фотографій, щоб прикріплювати зображення в чат і документи та встановлювати аватар.",
-        "ITSAppUsesNonExemptEncryption": false
+        "NSCameraUsageDescription": "The app needs camera access to take photos of documents and send them in chat.",
+        "NSPhotoLibraryUsageDescription": "The app needs access to your photos to attach images to chats and documents and to set your profile picture.",
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSPhotoLibraryAddUsageDescription": "The app needs access to your photos to save pictures from chat to your gallery.",
+        "NSMicrophoneUsageDescription": "The app needs microphone access to record voice messages in chat.",
+        "CFBundleAllowMixedLocalizations": true
       },
       "entitlements": {
         "com.apple.developer.usernotifications.time-sensitive": true
@@ -67,7 +78,7 @@
       [
         "expo-audio",
         {
-          "microphonePermission": "Додатку потрібен доступ до мікрофона, щоб записувати голосові повідомлення в чаті.",
+          "microphonePermission": "The app needs microphone access to record voice messages in chat.",
           "recordAudioAndroid": true,
           "enableBackgroundPlayback": false
         }
@@ -87,8 +98,8 @@
       [
         "expo-media-library",
         {
-          "photosPermission": "Додатку потрібен доступ до фотографій, щоб прикріплювати зображення в чат і документи та встановлювати аватар.",
-          "savePhotosPermission": "Додатку потрібен доступ до фотографій, щоб зберігати фото з чату у вашу галерею.",
+          "photosPermission": "The app needs access to your photos to attach images to chats and documents and to set your profile picture.",
+          "savePhotosPermission": "The app needs access to your photos to save pictures from chat to your gallery.",
           "isAccessMediaLocationEnabled": false,
           "granularPermissions": [
             "photo"
