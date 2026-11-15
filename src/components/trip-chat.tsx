@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import * as DocumentPicker from 'expo-document-picker';
@@ -32,7 +33,9 @@ import { MessageReactionsCluster } from '@/components/message-reactions';
 import {
   useVoiceRecorder,
   VoiceMicButton,
+  VoicePreviewBar,
   VoiceRecordingBar,
+  VoiceSendButton,
   type VoiceFile,
 } from '@/components/voice-recorder';
 import { VoiceMessagePlayer } from '@/components/voice-message-player';
@@ -83,14 +86,18 @@ export function TripChat({
   isFocused,
   loading,
   focusMessageId,
+  driverId,
 }: {
   tripId: string | null;
+  /** The truck's driver — with no trip, the chat tab offers a direct message to them. */
+  driverId?: string | null;
   isFocused: boolean;
   loading?: boolean;
   /** From a push tap: scroll to this message and flash it. */
   focusMessageId?: string;
 }) {
   const { t } = useTranslation();
+  const router = useRouter();
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
   // Safe-area pad when the keyboard is closed, small gap when it's open.
@@ -221,6 +228,31 @@ export function TripChat({
   const handleMsgLongPress = useCallback((m: ChatMessage) => setSheetFor(m), []);
   const handleDocLongPress = useCallback((d: DriverDocument) => setDocSheetFor(d), []);
 
+  // Voice message: recorded in the composer, sent at once as its own bubble.
+  // A hook, so it stays above the `!tripId` early return (the hook count must
+  // not change when the trip id arrives — that crashed the chat on open).
+  const sendVoice = async (
+    file: VoiceFile,
+    durationMs: number,
+    waveform: string | null,
+  ) => {
+    if (!tripId) return;
+    try {
+      await uploadDocs.mutateAsync({
+        tripId,
+        files: [{ uri: file.uri, name: file.name, mimeType: file.mimeType }],
+        durationMs,
+        waveform,
+      });
+      listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    } catch (e) {
+      Alert.alert(t('documents.uploadFailed', 'Помилка завантаження'), uploadErrorText(e, t));
+    }
+  };
+  const voice = useVoiceRecorder(
+    (file, durationMs, waveform) => void sendVoice(file, durationMs, waveform),
+  );
+
   if (!tripId) {
     // Поки трак/рейс ще вантажиться — показуємо лоадер, а не «немає рейсу»
     // (інакше на повільному з'єднанні блимає хибне повідомлення).
@@ -236,6 +268,15 @@ export function TripChat({
         icon="chatbubbles-outline"
         title={t('tripChat.noTrip.title', 'Немає активного рейсу')}
         subtitle={t('tripChat.noTrip.subtitle', 'Чат з’явиться, коли машині призначать рейс.')}
+        action={
+          driverId
+            ? {
+                label: t('tripChat.noTrip.writeDriver', 'Написати водієві'),
+                icon: 'chatbubble-ellipses-outline',
+                onPress: () => router.push(`/(manager)/dm/${driverId}` as never),
+              }
+            : undefined
+        }
       />
     );
   }
@@ -266,28 +307,6 @@ export function TripChat({
       Alert.alert(t('documents.uploadFailed', 'Помилка завантаження'), uploadErrorText(e, t));
     }
   };
-
-  // Voice message: recorded in the composer, sent at once as its own bubble.
-  const sendVoice = async (
-    file: VoiceFile,
-    durationMs: number,
-    waveform: string | null,
-  ) => {
-    try {
-      await uploadDocs.mutateAsync({
-        tripId,
-        files: [{ uri: file.uri, name: file.name, mimeType: file.mimeType }],
-        durationMs,
-        waveform,
-      });
-      listRef.current?.scrollToOffset({ offset: 0, animated: true });
-    } catch (e) {
-      Alert.alert(t('documents.uploadFailed', 'Помилка завантаження'), uploadErrorText(e, t));
-    }
-  };
-  const voice = useVoiceRecorder(
-    (file, durationMs, waveform) => void sendVoice(file, durationMs, waveform),
-  );
 
   const showAttachSheet = () => {
     Alert.alert(t('trip.attachSheet.title', 'Вкладення'), t('documents.uploadSheet.subtitle', 'Оберіть джерело'), [
@@ -504,10 +523,12 @@ export function TripChat({
             { paddingBottom: composerPad + (Platform.OS === 'ios' ? Spacing.sm : 0) },
           ]}
         >
-          {voice.active ? (
-            <VoiceRecordingBar elapsedMs={voice.elapsedMs} onCancel={voice.cancel} onSend={voice.send} />
-          ) : (
-          <>
+          {voice.recording ? (
+          <VoiceRecordingBar elapsedMs={voice.elapsedMs} />
+        ) : voice.draft ? (
+          <VoicePreviewBar draft={voice.draft} onDiscard={voice.discardDraft} />
+        ) : (
+        <>
           {!editing && (
             <>
               <Pressable onPress={showAttachSheet} disabled={uploadDocs.isPending} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed || uploadDocs.isPending ? 0.5 : 1 }]}>
@@ -530,16 +551,23 @@ export function TripChat({
             style={[styles.input, { color: c.foreground, backgroundColor: c.muted }]}
             multiline
           />
-          {/* Empty composer → the mic takes the Send button's place. */}
-          {!editing && !text.trim() ? (
-            <VoiceMicButton onPress={() => void voice.start()} disabled={uploadDocs.isPending} />
-          ) : (
-          <Pressable onPress={handleSend} disabled={!text.trim()} style={({ pressed }) => [styles.sendBtn, { backgroundColor: c.primary, opacity: pressed ? 0.7 : text.trim() ? 1 : 0.4 }]}>
+          </>
+        )}
+        {/* One button for the whole hold: the composer changes around it. */}
+        {voice.draft ? (
+          <VoiceSendButton onPress={voice.sendDraft} />
+        ) : !editing && !text.trim() ? (
+          <VoiceMicButton
+            onHoldStart={() => void voice.startHold()}
+            onHoldEnd={voice.endHold}
+            recording={voice.recording}
+            disabled={uploadDocs.isPending}
+          />
+        ) : (
+        <Pressable onPress={handleSend} disabled={!text.trim()} style={({ pressed }) => [styles.sendBtn, { backgroundColor: c.primary, opacity: pressed ? 0.7 : text.trim() ? 1 : 0.4 }]}>
             <Ionicons name={editing ? 'checkmark' : 'send'} size={18} color={c.primaryForeground} />
           </Pressable>
-          )}
-          </>
-          )}
+        )}
         </View>
       )}
 
@@ -736,6 +764,11 @@ const DocBubble = memo(function DocBubble({ doc, isOwn, myId, onOpen, onLongPres
       </View>
       <View style={[styles.meta, isOwn && styles.metaOwn]}>
         <Text style={[styles.metaText, { color: c.mutedForeground }]}>{time}</Text>
+        {isOwn && (
+          <Text style={[styles.metaText, { color: doc.isRead ? c.primary : c.mutedForeground }]}>
+            {doc.isRead ? '✓✓' : '✓'}
+          </Text>
+        )}
       </View>
     </View>
   );

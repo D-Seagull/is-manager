@@ -146,6 +146,7 @@ export default function TruckDetailScreen() {
               tripId={selectedTripId ?? activeTripId}
               isFocused={tab === 'chat' && screenFocused}
               loading={truckLoading}
+              driverId={truck?.currentDriver?.id}
               focusMessageId={typeof messageId === 'string' ? messageId : undefined}
             />
           ) : tab === 'trips' ? (

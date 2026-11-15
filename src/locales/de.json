@@ -70,7 +70,9 @@
     "recordFailed": "Aufnahme konnte nicht gestartet werden",
     "message": "Sprachnachricht",
     "play": "Abspielen",
-    "pause": "Pause"
+    "pause": "Pause",
+    "release": "Loslassen zum Beenden",
+    "holdHint": "Mikrofon gedrückt halten zum Aufnehmen"
   },
   "chat": {
     "outboxFailedTitle": "Senden fehlgeschlagen",
@@ -468,6 +470,7 @@
     "inactive": "Sie sind nicht mehr der Manager dieser Fahrt — der Chat ist schreibgeschützt",
     "companyDeactivated": "Leider können Sie die App im Moment nicht vollständig nutzen",
     "noTrip": {
+      "writeDriver": "Fahrer anschreiben",
       "title": "Keine aktive Fahrt",
       "subtitle": "Der Chat erscheint, sobald dem Lkw eine Fahrt zugewiesen wird."
     }

@@ -70,7 +70,9 @@
     "recordFailed": "Nie udało się rozpocząć nagrywania",
     "message": "Wiadomość głosowa",
     "play": "Odtwórz",
-    "pause": "Pauza"
+    "pause": "Pauza",
+    "release": "Puść, aby zakończyć",
+    "holdHint": "Przytrzymaj mikrofon, aby nagrać"
   },
   "chat": {
     "outboxFailedTitle": "Nie udało się wysłać",
@@ -473,6 +475,7 @@
     "inactive": "Nie jesteś już menedżerem tej trasy — czat tylko do odczytu",
     "companyDeactivated": "Niestety, obecnie nie możesz w pełni korzystać z aplikacji",
     "noTrip": {
+      "writeDriver": "Napisz do kierowcy",
       "title": "Brak aktywnej trasy",
       "subtitle": "Czat pojawi się, gdy ciężarówce zostanie przypisana trasa."
     }

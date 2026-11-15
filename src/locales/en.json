@@ -70,7 +70,9 @@
     "recordFailed": "Couldn't start recording",
     "message": "Voice message",
     "play": "Play",
-    "pause": "Pause"
+    "pause": "Pause",
+    "release": "Release to stop",
+    "holdHint": "Hold the microphone to record"
   },
   "chat": {
     "outboxFailedTitle": "Could not send",
@@ -468,6 +470,7 @@
     "inactive": "You're no longer this trip's manager — the chat is read-only",
     "companyDeactivated": "Unfortunately, you can't use the app in full right now",
     "noTrip": {
+      "writeDriver": "Message the driver",
       "title": "No active trip",
       "subtitle": "The chat appears once a trip is assigned to the truck."
     }
