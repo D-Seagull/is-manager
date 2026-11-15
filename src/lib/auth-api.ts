@@ -56,9 +56,16 @@ export interface AuthResult {
  * user } — we normalise to { token, refreshToken, user } for symmetry with the
  * auth store / api interceptor.
  */
+// Log only the status and message of a failed call: the full axios error
+// carries the request body (email, password) into the device log.
+function errText(err: unknown): string {
+  const e = err as { response?: { status?: number }; message?: string };
+  return `${e?.response?.status ?? 'no response'} ${e?.message ?? ''}`.trim();
+}
+
 export async function login(email: string, password: string): Promise<AuthResult> {
   try {
-    console.log('[auth-api] login →', { email });
+    console.log('[auth-api] login →');
     const { data } = await api.post<{
       access_token: string;
       refresh_token: string;
@@ -71,7 +78,7 @@ export async function login(email: string, password: string): Promise<AuthResult
       user: data.user,
     };
   } catch (err) {
-    console.warn('[auth-api] login ✗', err);
+    console.warn('[auth-api] login ✗', errText(err));
     throw err;
   }
 }

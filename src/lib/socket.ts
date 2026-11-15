@@ -57,7 +57,7 @@ export function configureSocketAuth(fn: TokenProvider) {
 
 export function getSocket(token?: string): Socket {
   if (!socket) {
-    console.log('[socket] creating → ', API_URL, 'token:', token ? token.slice(0, 20) + '…' : 'NONE');
+    console.log('[socket] creating → ', API_URL, 'token:', token ? 'present' : 'NONE');
 
     socket = io(API_URL, {
       // Function form → fresh token on every (re)connect (a silent refresh may
