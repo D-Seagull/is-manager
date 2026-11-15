@@ -70,7 +70,9 @@
     "recordFailed": "Nepavyko pradėti įrašymo",
     "message": "Balso žinutė",
     "play": "Groti",
-    "pause": "Pauzė"
+    "pause": "Pauzė",
+    "release": "Atleiskite, kad sustabdytumėte",
+    "holdHint": "Laikykite mikrofoną, kad įrašytumėte"
   },
   "chat": {
     "outboxFailedTitle": "Nepavyko išsiųsti",

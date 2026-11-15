@@ -70,7 +70,9 @@
     "recordFailed": "Couldn't start recording",
     "message": "Voice message",
     "play": "Play",
-    "pause": "Pause"
+    "pause": "Pause",
+    "release": "Release to stop",
+    "holdHint": "Hold the microphone to record"
   },
   "chat": {
     "outboxFailedTitle": "Could not send",

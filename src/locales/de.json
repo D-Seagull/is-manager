@@ -70,7 +70,9 @@
     "recordFailed": "Aufnahme konnte nicht gestartet werden",
     "message": "Sprachnachricht",
     "play": "Abspielen",
-    "pause": "Pause"
+    "pause": "Pause",
+    "release": "Loslassen zum Beenden",
+    "holdHint": "Mikrofon gedrückt halten zum Aufnehmen"
   },
   "chat": {
     "outboxFailedTitle": "Senden fehlgeschlagen",

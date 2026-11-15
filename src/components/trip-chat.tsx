@@ -32,7 +32,9 @@ import { MessageReactionsCluster } from '@/components/message-reactions';
 import {
   useVoiceRecorder,
   VoiceMicButton,
+  VoicePreviewBar,
   VoiceRecordingBar,
+  VoiceSendButton,
   type VoiceFile,
 } from '@/components/voice-recorder';
 import { VoiceMessagePlayer } from '@/components/voice-message-player';
@@ -507,10 +509,12 @@ export function TripChat({
             { paddingBottom: composerPad + (Platform.OS === 'ios' ? Spacing.sm : 0) },
           ]}
         >
-          {voice.active ? (
-            <VoiceRecordingBar elapsedMs={voice.elapsedMs} onCancel={voice.cancel} onSend={voice.send} />
-          ) : (
-          <>
+          {voice.recording ? (
+          <VoiceRecordingBar elapsedMs={voice.elapsedMs} />
+        ) : voice.draft ? (
+          <VoicePreviewBar draft={voice.draft} onDiscard={voice.discardDraft} />
+        ) : (
+        <>
           {!editing && (
             <>
               <Pressable onPress={showAttachSheet} disabled={uploadDocs.isPending} hitSlop={6} style={({ pressed }) => [styles.iconBtn, { opacity: pressed || uploadDocs.isPending ? 0.5 : 1 }]}>
@@ -533,16 +537,23 @@ export function TripChat({
             style={[styles.input, { color: c.foreground, backgroundColor: c.muted }]}
             multiline
           />
-          {/* Empty composer → the mic takes the Send button's place. */}
-          {!editing && !text.trim() ? (
-            <VoiceMicButton onPress={() => void voice.start()} disabled={uploadDocs.isPending} />
-          ) : (
-          <Pressable onPress={handleSend} disabled={!text.trim()} style={({ pressed }) => [styles.sendBtn, { backgroundColor: c.primary, opacity: pressed ? 0.7 : text.trim() ? 1 : 0.4 }]}>
+          </>
+        )}
+        {/* One button for the whole hold: the composer changes around it. */}
+        {voice.draft ? (
+          <VoiceSendButton onPress={voice.sendDraft} />
+        ) : !editing && !text.trim() ? (
+          <VoiceMicButton
+            onHoldStart={() => void voice.startHold()}
+            onHoldEnd={voice.endHold}
+            recording={voice.recording}
+            disabled={uploadDocs.isPending}
+          />
+        ) : (
+        <Pressable onPress={handleSend} disabled={!text.trim()} style={({ pressed }) => [styles.sendBtn, { backgroundColor: c.primary, opacity: pressed ? 0.7 : text.trim() ? 1 : 0.4 }]}>
             <Ionicons name={editing ? 'checkmark' : 'send'} size={18} color={c.primaryForeground} />
           </Pressable>
-          )}
-          </>
-          )}
+        )}
         </View>
       )}
 
@@ -739,6 +750,11 @@ const DocBubble = memo(function DocBubble({ doc, isOwn, myId, onOpen, onLongPres
       </View>
       <View style={[styles.meta, isOwn && styles.metaOwn]}>
         <Text style={[styles.metaText, { color: c.mutedForeground }]}>{time}</Text>
+        {isOwn && (
+          <Text style={[styles.metaText, { color: doc.isRead ? c.primary : c.mutedForeground }]}>
+            {doc.isRead ? '✓✓' : '✓'}
+          </Text>
+        )}
       </View>
     </View>
   );
