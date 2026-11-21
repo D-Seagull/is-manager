@@ -161,7 +161,7 @@ export default function TruckDetailScreen() {
           ) : tab === 'documents' ? (
             <DocumentsTab truckId={truckId ?? ''} />
           ) : tab === 'alarm' && truck ? (
-            <AlarmTab truck={truck} activeTripId={activeTripId} />
+            <AlarmTab truck={truck} />
           ) : tab === 'info' && truck ? (
             <InfoTab truck={truck} activeTripId={activeTripId} />
           ) : (

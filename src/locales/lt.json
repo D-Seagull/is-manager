@@ -6,7 +6,6 @@
     "empty": "Nėra žadintuvų",
     "titlePlaceholder": "Pavadinimas",
     "notePlaceholder": "Pastaba (nebūtina)",
-    "linkToTrip": "Susieti su aktyviu reisu",
     "restartIn": "Paleisti iš naujo po",
     "deleteConfirm": "Ištrinti žadintuvą?",
     "toMe": "Man",
@@ -554,7 +553,10 @@
     "addTruck": "Naujas sunkvežimis",
     "createError": "Nepavyko pridėti sunkvežimio",
     "plate": "Valstybinis numeris",
-    "platePlaceholder": "pvz. BE 9130"
+    "platePlaceholder": "pvz. BE 9130",
+    "duplicateTitle": "Tokia transporto priemonė jau yra",
+    "duplicateBody": "Transporto priemonė su numeriu {{plate}} jau yra jūsų įmonėje.",
+    "duplicateDeactivatedBody": "Transporto priemonė su numeriu {{plate}} jau yra jūsų įmonėje, bet yra deaktyvuota. Galite ją aktyvuoti užuot kūrę naują."
   },
   "bugReport": {
     "title": "Pranešti apie problemą",

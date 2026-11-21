@@ -12,7 +12,7 @@ import { Colors, Radius, Spacing } from '@/constants/theme';
 import { InsetFlatList } from '@/components/inset-list';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useListBottomPadding } from '@/hooks/use-list-bottom-padding';
-import { useCreateTruck, useTrucks, useUpdateTruck } from '@/hooks/use-my-trucks';
+import { useActivateTruck, useCreateTruck, useTrucks, useUpdateTruck } from '@/hooks/use-my-trucks';
 import { fullName } from '@/lib/format';
 import { useUser } from '@/store/auth';
 
@@ -191,6 +191,7 @@ function CreateTruckModal({ visible, onClose }: { visible: boolean; onClose: () 
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const createTruck = useCreateTruck();
+  const activateTruck = useActivateTruck();
   const [plate, setPlate] = useState('');
   const [saving, setSaving] = useState(false);
   const canSave = plate.trim().length >= 1 && !saving;
@@ -203,13 +204,48 @@ function CreateTruckModal({ visible, onClose }: { visible: boolean; onClose: () 
       setPlate('');
       onClose();
     } catch (err) {
-      const msg = (err as { response?: { data?: { message?: string } } })?.response
+      const msg = (err as { response?: { data?: { message?: unknown } } })?.response
         ?.data?.message;
+      // A duplicate plate comes back nested: message = { code, message, truck }.
+      const dup =
+        msg && typeof msg === 'object'
+          ? (msg as {
+              code?: string;
+              message?: string;
+              truck?: { id: string; plate: string; isActive: boolean };
+            })
+          : null;
+      if (dup?.code === 'TRUCK_PLATE_EXISTS' && dup.truck) {
+        const twin = dup.truck;
+        if (twin.isActive) {
+          Alert.alert(
+            t('trucks.duplicateTitle'),
+            t('trucks.duplicateBody', { plate: twin.plate }),
+          );
+        } else {
+          Alert.alert(
+            t('trucks.duplicateTitle'),
+            t('trucks.duplicateDeactivatedBody', { plate: twin.plate }),
+            [
+              { text: t('common.cancel'), style: 'cancel' },
+              {
+                text: t('people.activate'),
+                onPress: () => {
+                  activateTruck.mutate(twin.id);
+                  setPlate('');
+                  onClose();
+                },
+              },
+            ],
+          );
+        }
+        return;
+      }
       Alert.alert(
         t('common.error', 'Помилка'),
         typeof msg === 'string'
           ? msg
-          : t('trucks.createError', 'Не вдалося додати вантажівку'),
+          : dup?.message ?? t('trucks.createError', 'Не вдалося додати вантажівку'),
       );
     } finally {
       setSaving(false);
@@ -265,7 +301,7 @@ function CreateTruckModal({ visible, onClose }: { visible: boolean; onClose: () 
           </Text>
           <TextInput
             value={plate}
-            onChangeText={setPlate}
+            onChangeText={(v) => setPlate(v.toUpperCase())}
             placeholder={t('trucks.platePlaceholder', 'Напр. BE 9130')}
             placeholderTextColor={c.mutedForeground}
             autoCapitalize="characters"

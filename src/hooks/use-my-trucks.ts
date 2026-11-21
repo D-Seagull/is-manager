@@ -110,6 +110,20 @@ export function useTruckNotes(truckId: string | null | undefined) {
   });
 }
 
+export function useActivateTruck() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const res = await api.patch(`/trucks/${id}/activate`);
+      return res.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['trucks-all'] });
+      qc.invalidateQueries({ queryKey: ['trucks-my'] });
+    },
+  });
+}
+
 export function useCreateTruck() {
   const qc = useQueryClient();
   return useMutation({
