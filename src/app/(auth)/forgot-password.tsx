@@ -3,14 +3,13 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Colors, Radius, Spacing } from '@/constants/theme';
@@ -43,12 +42,16 @@ export default function ForgotPasswordScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: c.background }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <View style={{ flex: 1, backgroundColor: c.background }}>
       <SafeAreaView style={styles.safe}>
-        <View style={styles.content}>
+        {/* Scrolls, so on a short screen the focused field and the button
+            stay above the keyboard instead of hiding under it. */}
+        <KeyboardAwareScrollView
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          bottomOffset={Spacing.xl}
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.header}>
             <Text style={[styles.title, { color: c.foreground }]}>
               {t('forgot.title', 'Відновлення пароля')}
@@ -99,17 +102,18 @@ export default function ForgotPasswordScreen() {
               {t('forgot.back', '← Назад до входу')}
             </Text>
           </Pressable>
-        </View>
+        </KeyboardAwareScrollView>
       </SafeAreaView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
   content: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
+    paddingVertical: Spacing.xl,
     paddingHorizontal: Spacing.xl,
     gap: Spacing['2xl'],
   },
