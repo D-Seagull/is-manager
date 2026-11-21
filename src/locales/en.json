@@ -548,7 +548,10 @@
     "addTruck": "New truck",
     "createError": "Couldn't add the truck",
     "plate": "Plate number",
-    "platePlaceholder": "e.g. BE 9130"
+    "platePlaceholder": "e.g. BE 9130",
+    "duplicateTitle": "This truck already exists",
+    "duplicateBody": "A truck with plate {{plate}} already exists in your company.",
+    "duplicateDeactivatedBody": "A truck with plate {{plate}} already exists in your company but is deactivated. You can activate it instead of creating a new one."
   },
   "bugReport": {
     "title": "Report a problem",

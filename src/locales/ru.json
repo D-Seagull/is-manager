@@ -553,7 +553,10 @@
     "addTruck": "Новый грузовик",
     "createError": "Не удалось добавить грузовик",
     "plate": "Номер",
-    "platePlaceholder": "Напр. BE 9130"
+    "platePlaceholder": "Напр. BE 9130",
+    "duplicateTitle": "Такая машина уже есть",
+    "duplicateBody": "Машина с номером {{plate}} уже есть в вашей компании.",
+    "duplicateDeactivatedBody": "Машина с номером {{plate}} уже есть в вашей компании, но деактивирована. Её можно активировать вместо создания новой."
   },
   "bugReport": {
     "title": "Сообщить о проблеме",

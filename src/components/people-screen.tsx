@@ -210,7 +210,15 @@ function CreateModal({ kind, visible, onClose }: { kind: 'driver' | 'manager'; v
         onClose();
       }
     } catch (e) {
-      Alert.alert(t('common.error', 'Помилка'), (e as Error).message);
+      // The server's translated reason ("такий користувач уже є", phone in
+      // use, …) — not axios' "Request failed with status code 409".
+      const msg = (e as { response?: { data?: { message?: unknown } } })?.response
+        ?.data?.message;
+      const text = Array.isArray(msg) ? msg[0] : msg;
+      Alert.alert(
+        t('common.error', 'Помилка'),
+        typeof text === 'string' ? text : (e as Error).message,
+      );
     } finally {
       setSaving(false);
     }

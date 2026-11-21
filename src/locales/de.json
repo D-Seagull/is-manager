@@ -548,7 +548,10 @@
     "addTruck": "Neuer LKW",
     "createError": "LKW konnte nicht hinzugefügt werden",
     "plate": "Kennzeichen",
-    "platePlaceholder": "z. B. BE 9130"
+    "platePlaceholder": "z. B. BE 9130",
+    "duplicateTitle": "Dieser Lkw existiert bereits",
+    "duplicateBody": "Ein Lkw mit dem Kennzeichen {{plate}} ist in Ihrer Firma bereits vorhanden.",
+    "duplicateDeactivatedBody": "Ein Lkw mit dem Kennzeichen {{plate}} ist in Ihrer Firma bereits vorhanden, aber deaktiviert. Sie können ihn aktivieren, statt einen neuen anzulegen."
   },
   "bugReport": {
     "title": "Problem melden",

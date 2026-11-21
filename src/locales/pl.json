@@ -553,7 +553,10 @@
     "addTruck": "Nowa ciężarówka",
     "createError": "Nie udało się dodać ciężarówki",
     "plate": "Numer rejestracyjny",
-    "platePlaceholder": "np. BE 9130"
+    "platePlaceholder": "np. BE 9130",
+    "duplicateTitle": "Taki pojazd już istnieje",
+    "duplicateBody": "Pojazd o numerze {{plate}} już jest w Twojej firmie.",
+    "duplicateDeactivatedBody": "Pojazd o numerze {{plate}} już jest w Twojej firmie, ale jest dezaktywowany. Możesz go aktywować zamiast tworzyć nowy."
   },
   "bugReport": {
     "title": "Zgłoś problem",
