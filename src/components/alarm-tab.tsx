@@ -7,7 +7,6 @@ import {
   Alert,
   Pressable,
   StyleSheet,
-  Switch,
   Text,
   TextInput,
   View,
@@ -39,7 +38,7 @@ const offsetDate = (min: number) => {
   return d;
 };
 
-export function AlarmTab({ truck, activeTripId }: { truck: MyTruck; activeTripId?: string | null }) {
+export function AlarmTab({ truck }: { truck: MyTruck }) {
   const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const user = useUser();
@@ -55,7 +54,6 @@ export function AlarmTab({ truck, activeTripId }: { truck: MyTruck; activeTripId
   const [note, setNote] = useState('');
   const [time, setTime] = useState<Date>(() => offsetDate(15));
   const [recurrence, setRecurrence] = useState<AlarmRecurrence>('NONE');
-  const [linkToTrip, setLinkToTrip] = useState(false);
   const [pickerMode, setPickerMode] = useState<'date' | 'time' | null>(null);
 
   const reset = () => {
@@ -64,7 +62,6 @@ export function AlarmTab({ truck, activeTripId }: { truck: MyTruck; activeTripId
     setTime(offsetDate(15));
     setRecurrence('NONE');
     setTarget('self');
-    setLinkToTrip(false);
   };
 
   const recOptions: { key: AlarmRecurrence; label: string }[] = useMemo(
@@ -111,7 +108,6 @@ export function AlarmTab({ truck, activeTripId }: { truck: MyTruck; activeTripId
         note: note.trim() || undefined,
         time: toWallClock(time),
         recurrence,
-        tripId: linkToTrip && activeTripId ? activeTripId : undefined,
       });
       reset();
       setShowForm(false);
@@ -185,13 +181,6 @@ export function AlarmTab({ truck, activeTripId }: { truck: MyTruck; activeTripId
                 </Pressable>
               ))}
             </View>
-
-            {activeTripId ? (
-              <View style={styles.linkRow}>
-                <Switch value={linkToTrip} onValueChange={setLinkToTrip} />
-                <Text style={{ color: c.mutedForeground, fontSize: 13 }}>{t('alarm.linkToTrip', 'Прив’язати до активного рейсу')}</Text>
-              </View>
-            ) : null}
 
             <Pressable onPress={handleCreate} disabled={createAlarm.isPending || !title.trim()} style={[styles.createBtn, { backgroundColor: c.primary, opacity: !title.trim() || createAlarm.isPending ? 0.5 : 1 }]}>
               {createAlarm.isPending ? <ActivityIndicator color={c.primaryForeground} /> : <Text style={[styles.createText, { color: c.primaryForeground }]}>{t('alarm.create', 'Створити')}</Text>}
@@ -284,7 +273,6 @@ const styles = StyleSheet.create({
   timeRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   chip: { borderWidth: 1, borderRadius: Radius.sm, paddingHorizontal: 9, paddingVertical: 5 },
-  linkRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   createBtn: { alignItems: 'center', justifyContent: 'center', paddingVertical: 12, borderRadius: Radius.md },
   createText: { fontSize: 14, fontWeight: '700' },
   alarmRow: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm, borderWidth: StyleSheet.hairlineWidth, borderRadius: 10, padding: Spacing.sm + 2 },
