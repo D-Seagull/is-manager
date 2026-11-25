@@ -30,8 +30,20 @@ export function useChatAlerts() {
     // personal room for every new trip message / document, on ANY screen
     // (the trip room itself only while that chat is open). System signals
     // carry no senderName — no chime for those.
-    const onTrip = (sig: { senderId?: string; senderName?: string }) => {
+    const onTrip = (sig: {
+      senderId?: string;
+      senderName?: string;
+      driverId?: string | null;
+      managerId?: string | null;
+    }) => {
       if (!sig?.senderName || sig.senderId === myId) return;
+      // Only a chat I take part in may ring — never someone else's trip.
+      if (
+        ('driverId' in sig || 'managerId' in sig) &&
+        sig.driverId !== myId &&
+        sig.managerId !== myId
+      )
+        return;
       notifyIncomingMessage();
     };
     socket.on('new_direct_message', onNew);

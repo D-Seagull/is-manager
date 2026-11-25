@@ -14,7 +14,7 @@ import { deleteTripMessage, editTripMessage, fetchTripMessages } from '@/lib/tri
 import { getSocket } from '@/lib/socket';
 import { useAppActive } from '@/hooks/use-app-active';
 import { notifyIncomingReaction } from '@/lib/message-alert';
-import { enqueueMessage, onOutboxDelivered, useOutboxItems } from '@/lib/outbox';
+import { enqueueMessage, onOutboxDelivered, undeliveredItems, useOutboxItems } from '@/lib/outbox';
 import { useAuthStore } from '@/store/auth';
 
 import { fullName } from "@/lib/format";
@@ -382,8 +382,15 @@ export function useTripChat(
       });
     };
 
+    // The live room only admits the trip's current driver / manager: whoever
+    // just became one while this chat is open joins now.
+    const onTripUpdated = (payload: { tripId: string }) => {
+      if (payload.tripId === tripId) joinRoom();
+    };
+
     sock.on('connect', onConnect);
     sock.on('disconnect', onDisconnect);
+    sock.on('tripUpdated', onTripUpdated);
     sock.on('newMessage', onNewMessage);
     sock.on('newDocument', onNewDocument);
     sock.on('tripMessagesRead', onMessagesRead);
@@ -404,6 +411,7 @@ export function useTripChat(
       cancelled = true;
       sock.off('connect', onConnect);
       sock.off('disconnect', onDisconnect);
+      sock.off('tripUpdated', onTripUpdated);
       sock.off('newMessage', onNewMessage);
       sock.off('newDocument', onNewDocument);
       sock.off('tripMessagesRead', onMessagesRead);
@@ -587,7 +595,10 @@ export function useTripChat(
   const outboxItems = useOutboxItems('trip', tripId);
   const withPending = useMemo<ChatMessage[]>(() => {
     if (outboxItems.length === 0 || !user) return visible;
-    const pending = outboxItems.map<ChatMessage>((i) => ({
+    // Already echoed back by the server → shown once, as the saved message.
+    const waiting = undeliveredItems(outboxItems, visible, user.id);
+    if (waiting.length === 0) return visible;
+    const pending = waiting.map<ChatMessage>((i) => ({
       id: `pending:${i.clientId}`,
       tripId: i.scopeId,
       senderId: user.id,
