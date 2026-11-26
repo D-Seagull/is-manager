@@ -23,6 +23,8 @@ export interface CreateTripPayload {
   notes?: string;
   orderNumber?: string;
   stops: StopFormData[];
+  /** "Fill from order": same key again returns the trip already created. */
+  importKey?: string;
 }
 
 /** Усі рейси компанії (GET /trips) — для загального екрана «Рейси». */

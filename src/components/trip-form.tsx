@@ -33,6 +33,26 @@ import {
 import { deriveTripTitle, fullName } from '@/lib/format';
 import { StopType, Trip } from '@/lib/types';
 import { HourScale } from '@/components/hour-scale';
+import { OrderDraftNotice, OrderImportBox, StopReviewNote } from '@/components/order-import-box';
+import { FinanceFields } from '@/components/trip-finance';
+import {
+  saveTripFinance,
+  uploadTripOrder,
+  useOrderImportStatus,
+  useRefreshTripExtras,
+} from '@/hooks/use-order-import';
+import {
+  draftToStops,
+  emptyFinance,
+  financePayload,
+  financeToForm,
+  hasFinance,
+  serverMessage,
+  uuidV4,
+  type FinanceFormData,
+  type OrderDraft,
+  type OrderSourceInput,
+} from '@/lib/order-import';
 
 const STOP_COLOR: Record<StopType, string> = {
   LOADING: '#10B981',
@@ -56,6 +76,8 @@ type StopRowData = {
   windowDate: string;
   windowStart: string;
   windowEnd: string;
+  /** Read from a transport order and flagged for a look ("fill from order"). */
+  review?: { note: string | null; page: number | null } | null;
 };
 const emptyStop = (type: StopType = 'LOADING'): StopRowData => ({
   type,
@@ -115,6 +137,8 @@ export function TripForm({
   );
 
   const createTrip = useCreateTrip();
+  const { data: importStatus } = useOrderImportStatus();
+  const refreshTripExtras = useRefreshTripExtras();
   const updateInfo = useUpdateTripInfo(truckId);
   const reassign = useReassignTrip(truckId);
 
@@ -122,6 +146,12 @@ export function TripForm({
   const [tripName, setTripName] = useState('');
   const [orderNumber, setOrderNumber] = useState('');
   const [notes, setNotes] = useState('');
+  // "Fill from order" (new trips only): where the draft came from, its
+  // warnings, the create's idempotency key, and the managers-only finance.
+  const [finance, setFinance] = useState<FinanceFormData>(emptyFinance());
+  const [orderSource, setOrderSource] = useState<OrderSourceInput | null>(null);
+  const [orderWarnings, setOrderWarnings] = useState<string[]>([]);
+  const [importKey, setImportKey] = useState<string | null>(null);
   const [stops, setStops] = useState<StopRowData[]>([emptyStop('LOADING'), emptyStop('UNLOADING')]);
   const [driverPickerOpen, setDriverPickerOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -160,7 +190,31 @@ export function TripForm({
       setStops([emptyStop('LOADING'), emptyStop('UNLOADING')]);
       isNameEdited.current = false;
     }
+    setFinance(emptyFinance());
+    setOrderSource(null);
+    setOrderWarnings([]);
+    setImportKey(null);
   }, [visible, trip, defaultDriverId]);
+
+  const applyOrderDraft = (draft: OrderDraft, source: OrderSourceInput) => {
+    if (draft.orderNumber) setOrderNumber(draft.orderNumber);
+    if (draft.notes) setNotes(draft.notes);
+    if (draft.stops.length) {
+      isNameEdited.current = false; // the name follows the new addresses
+      setStops(draftToStops(draft));
+    }
+    const f = financeToForm(draft.finance);
+    if (hasFinance(f)) setFinance(f);
+    setOrderSource(source);
+    setOrderWarnings(draft.warnings);
+    setImportKey(uuidV4());
+  };
+
+  const resetOrder = () => {
+    setOrderSource(null);
+    setOrderWarnings([]);
+    setImportKey(null);
+  };
 
   // автозаповнення назви з адрес поки користувач не редагував її вручну
   useEffect(() => {
@@ -231,7 +285,29 @@ export function TripForm({
         result = await createTrip.mutateAsync({
           title, driverId, truckId,
           notes: notes || undefined, orderNumber: orderNumber || undefined, stops: built,
+          importKey: importKey ?? undefined,
         });
+        // Finance and the order file go after the trip exists (managers
+        // only); a failure is a warning — the trip is already made.
+        const problems: string[] = [];
+        if (hasFinance(finance)) {
+          try {
+            await saveTripFinance(result.id, financePayload(finance));
+          } catch (e) {
+            problems.push(`${t('orderImport.finance.saveFailed', 'Не вдалося зберегти фінанси')}: ${serverMessage(e) ?? ''}`);
+          }
+        }
+        if (orderSource && 'file' in orderSource) {
+          try {
+            await uploadTripOrder(result.id, orderSource.file);
+          } catch (e) {
+            problems.push(`${t('orderImport.uploadFailed', 'Файл заявки не збережено')}: ${serverMessage(e) ?? ''}`);
+          }
+        }
+        refreshTripExtras(result.id);
+        if (problems.length) {
+          Alert.alert(t('orderImport.createdWithIssues', 'Рейс створено'), problems.join('\n'));
+        }
       }
       onClose();
       onSaved?.(result);
@@ -288,6 +364,15 @@ export function TripForm({
             </Pressable>
           </Field>
 
+          {/* Fill from order — new trips only, when AI is on for the company */}
+          {!isEdit && importStatus?.enabled ? (
+            orderSource ? (
+              <OrderDraftNotice c={c} source={orderSource} warnings={orderWarnings} onReset={resetOrder} />
+            ) : (
+              <OrderImportBox c={c} driverId={driverId} onDraft={applyOrderDraft} />
+            )
+          ) : null}
+
           {/* Trip name — автозаповнення з адрес, можна редагувати вручну */}
           <Field label={t('truckPanel.newTrip.tripNameLabel', 'Назва рейсу')} c={c}>
             <TextInput
@@ -310,6 +395,9 @@ export function TripForm({
             {stops.map((s, i) => (
               <View key={i} style={{ gap: Spacing.sm }}>
                 <InsertRow c={c} onPress={() => setTypeMenu({ mode: 'insert', idx: i })} />
+                {s.review ? (
+                  <StopReviewNote c={c} note={s.review.note} page={s.review.page} onDismiss={() => setStop(i, { review: null })} />
+                ) : null}
                 <StopCard
                   c={c} t={t}
                   stop={s} index={i} count={stops.length}
@@ -326,6 +414,9 @@ export function TripForm({
           <Field label={t('truckPanel.newTrip.notesLabel', 'Нотатки')} c={c}>
             <TextInput value={notes} onChangeText={setNotes} placeholder="…" placeholderTextColor={c.mutedForeground} multiline style={[styles.input, { minHeight: 70, textAlignVertical: 'top', backgroundColor: c.card, borderColor: c.border, color: c.foreground }]} />
           </Field>
+
+          {/* Finance — managers only; edited later from the trip header */}
+          {!isEdit ? <FinanceFields c={c} value={finance} onChange={setFinance} /> : null}
         </InsetScrollView>
       </KeyboardAvoidingView>
 

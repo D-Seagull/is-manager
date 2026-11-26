@@ -25,6 +25,7 @@ import { useUpdateTripStatus } from '@/hooks/use-trips';
 import { useUser } from '@/store/auth';
 import { formatStopWindow } from '@/lib/format';
 import { TripStop } from '@/lib/types';
+import { TripFinanceLine } from '@/components/trip-finance';
 
 const LOAD_COLOR = '#10B981';
 const UNLOAD_COLOR = '#EF4444';
@@ -130,6 +131,8 @@ export function TripHeader({ tripId }: { tripId: string }) {
               <Text style={[styles.notesText, { color: UNLOAD_COLOR }]}>{trip.notes}</Text>
             </View>
           ) : null}
+          {/* Managers only: the order file and the money side */}
+          <TripFinanceLine c={c} tripId={trip.id} />
         </ScrollView>
       )}
 
