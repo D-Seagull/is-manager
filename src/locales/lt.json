@@ -203,7 +203,9 @@
     "driver": "Vairuotojas",
     "manager": "Vadovas",
     "noDriver": "Be vairuotojo",
-    "noManager": "Be vadovo"
+    "noManager": "Be vadovo",
+    "freeDrivers": "Laisvi vairuotojai",
+    "driversOnTrucks": "Su vilkikais"
   },
   "login": {
     "rememberMe": "Prisiminti mane",

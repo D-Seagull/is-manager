@@ -203,7 +203,9 @@
     "driver": "Водій",
     "manager": "Менеджер",
     "noDriver": "Без водія",
-    "noManager": "Без менеджера"
+    "noManager": "Без менеджера",
+    "freeDrivers": "Вільні водії",
+    "driversOnTrucks": "На вантажівках"
   },
   "login": {
     "rememberMe": "Запам'ятати мене",

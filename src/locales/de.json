@@ -199,7 +199,9 @@
     "driver": "Fahrer",
     "manager": "Manager",
     "noDriver": "Kein Fahrer",
-    "noManager": "Kein Manager"
+    "noManager": "Kein Manager",
+    "freeDrivers": "Freie Fahrer",
+    "driversOnTrucks": "Auf Fahrzeugen"
   },
   "login": {
     "rememberMe": "Angemeldet bleiben",

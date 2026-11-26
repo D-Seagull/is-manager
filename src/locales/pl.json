@@ -203,7 +203,9 @@
     "driver": "Kierowca",
     "manager": "Menedżer",
     "noDriver": "Bez kierowcy",
-    "noManager": "Bez menedżera"
+    "noManager": "Bez menedżera",
+    "freeDrivers": "Wolni kierowcy",
+    "driversOnTrucks": "Na pojazdach"
   },
   "login": {
     "rememberMe": "Zapamiętaj mnie",

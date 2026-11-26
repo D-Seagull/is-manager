@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   Pressable,
   // eslint-disable-next-line no-restricted-imports -- height-capped picker inside a sheet
   ScrollView,
@@ -41,6 +43,29 @@ export function InfoTab({ truck, activeTripId }: { truck: MyTruck; activeTripId?
   const { data: companyUsers = [] } = useCompanyUsers();
   const drivers = useMemo(() => companyUsers.filter((u) => u.role === 'DRIVER' && u.isActive), [companyUsers]);
   const managers = useMemo(() => companyUsers.filter((u) => (u.role === 'MANAGER' || u.role === 'TEAMLEAD') && u.isActive), [companyUsers]);
+
+  // Driver picker: free drivers first, then drivers already on a truck (plate
+  // as a hint; this truck's own driver heads that section). Mirrors the web
+  // PersonPicker (is-fleet-frontend/src/components/person-picker.tsx).
+  const driverSections = useMemo<PickerSection[]>(() => {
+    const byName = (a: PickerOption, b: PickerOption) => a.label.localeCompare(b.label);
+    const free: PickerOption[] = [];
+    const busy: (PickerOption & { own: boolean })[] = [];
+    for (const d of drivers) {
+      const opt = { id: d.id, label: fullName(d) || d.phone || d.id, searchText: d.phone ?? '' };
+      if (d.currentTruck) busy.push({ ...opt, hint: d.currentTruck.plate, own: d.currentTruck.id === truck.id });
+      else free.push(opt);
+    }
+    busy.sort((a, b) => Number(b.own) - Number(a.own) || byName(a, b));
+    return [
+      { title: t('info.freeDrivers', 'Вільні водії'), options: free.sort(byName) },
+      { title: t('info.driversOnTrucks', 'На вантажівках'), options: busy },
+    ];
+  }, [drivers, truck.id, t]);
+  const managerSections = useMemo<PickerSection[]>(
+    () => [{ options: managers.map((m) => ({ id: m.id, label: fullName(m) || m.phone || m.id, searchText: m.phone ?? '' })) }],
+    [managers],
+  );
 
   const updateTruck = useUpdateTruck();
   const reassign = useReassignTrip(truck.id);
@@ -164,17 +189,19 @@ export function InfoTab({ truck, activeTripId }: { truck: MyTruck; activeTripId?
         visible={picker === 'driver'}
         title={t('info.driver', 'Водій')}
         onClose={() => setPicker(null)}
-        selectedId={truck.currentDriver?.id ?? 'none'}
-        options={[{ id: 'none', label: t('info.noDriver', 'Без водія') }, ...drivers.map((d) => ({ id: d.id, label: (fullName(d) || d.phone || d.id) + (d.currentTruck && d.currentTruck.id !== truck.id ? ` · ${d.currentTruck.plate}` : '') }))]}
-        onSelect={(id) => setDriver(id === 'none' ? null : id)}
+        selectedId={truck.currentDriver?.id ?? null}
+        noneLabel={t('info.noDriver', 'Без водія')}
+        sections={driverSections}
+        onSelect={setDriver}
       />
       <PickerModal
         visible={picker === 'manager'}
         title={t('info.manager', 'Менеджер')}
         onClose={() => setPicker(null)}
-        selectedId={truck.managerId ?? 'none'}
-        options={[{ id: 'none', label: t('info.noManager', 'Без менеджера') }, ...managers.map((m) => ({ id: m.id, label: fullName(m) || m.phone || m.id }))]}
-        onSelect={(id) => setManager(id === 'none' ? null : id)}
+        selectedId={truck.managerId ?? null}
+        noneLabel={t('info.noManager', 'Без менеджера')}
+        sections={managerSections}
+        onSelect={setManager}
       />
     </InsetScrollView>
   );
@@ -189,27 +216,84 @@ function Row({ label, c, children }: { label: string; c: (typeof Colors)['light'
   );
 }
 
-function PickerModal({ visible, title, options, selectedId, onSelect, onClose }: { visible: boolean; title: string; options: { id: string; label: string }[]; selectedId: string | null; onSelect: (id: string) => void; onClose: () => void }) {
+type PickerOption = { id: string; label: string; hint?: string; searchText?: string };
+type PickerSection = { title?: string; options: PickerOption[] };
+
+// Bottom-sheet single-select with a search box (name / phone / plate) and
+// optional section headers. `selectedId === null` = the "none" row.
+function PickerModal({ visible, title, noneLabel, sections, selectedId, onSelect, onClose }: { visible: boolean; title: string; noneLabel: string; sections: PickerSection[]; selectedId: string | null; onSelect: (id: string | null) => void; onClose: () => void }) {
+  const { t } = useTranslation();
   const c = Colors[useColorScheme() ?? 'light'];
   const insets = useSafeAreaInsets();
-  return (
-    <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
-      <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={[styles.sheet, { backgroundColor: c.card, paddingBottom: bottomBarPadding(insets, Spacing.sm) + Spacing.lg }]} onPress={(e) => e.stopPropagation()}>
-          <Text style={[styles.sheetTitle, { color: c.foreground }]}>{title}</Text>
-          <ScrollView style={{ maxHeight: 380 }}>
-            {options.map((o) => {
-              const selected = o.id === selectedId;
-              return (
-                <Pressable key={o.id} onPress={() => onSelect(o.id)} style={({ pressed }) => [styles.sheetItem, { backgroundColor: selected || pressed ? c.muted : 'transparent' }]}>
-                  <Text style={{ flex: 1, color: c.foreground, fontSize: 15 }} numberOfLines={1}>{o.label}</Text>
-                  {selected && <Ionicons name="checkmark" size={20} color={c.primary} />}
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-        </Pressable>
+  const [query, setQuery] = useState('');
+  const q = query.trim().toLowerCase();
+  const filtered = useMemo(
+    () =>
+      sections
+        .map((s) => ({
+          ...s,
+          options: q ? s.options.filter((o) => `${o.label} ${o.hint ?? ''} ${o.searchText ?? ''}`.toLowerCase().includes(q)) : s.options,
+        }))
+        .filter((s) => s.options.length > 0),
+    [sections, q],
+  );
+  const close = () => {
+    setQuery('');
+    onClose();
+  };
+  const pick = (id: string | null) => {
+    setQuery('');
+    onSelect(id);
+  };
+  const renderRow = (id: string | null, label: string, hint?: string, muted?: boolean) => {
+    const selected = id === selectedId;
+    return (
+      <Pressable key={id ?? '__none__'} onPress={() => pick(id)} style={({ pressed }) => [styles.sheetItem, { backgroundColor: selected || pressed ? c.muted : 'transparent' }]}>
+        <Text style={{ flex: 1, color: muted ? c.mutedForeground : c.foreground, fontSize: 15 }} numberOfLines={1}>{label}</Text>
+        {hint ? <Text style={{ color: c.mutedForeground, fontSize: 13, marginLeft: Spacing.sm }} numberOfLines={1}>{hint}</Text> : null}
+        <Ionicons name="checkmark" size={20} color={c.primary} style={{ marginLeft: Spacing.sm, opacity: selected ? 1 : 0 }} />
       </Pressable>
+    );
+  };
+  return (
+    <Modal transparent visible={visible} animationType="fade" onRequestClose={close}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <Pressable style={styles.backdrop} onPress={close}>
+          <Pressable style={[styles.sheet, { backgroundColor: c.card, paddingBottom: bottomBarPadding(insets, Spacing.sm) + Spacing.lg }]} onPress={(e) => e.stopPropagation()}>
+            <Text style={[styles.sheetTitle, { color: c.foreground }]}>{title}</Text>
+            <View style={[styles.searchBox, { borderColor: c.border, backgroundColor: c.background }]}>
+              <Ionicons name="search-outline" size={16} color={c.mutedForeground} />
+              <TextInput
+                value={query}
+                onChangeText={setQuery}
+                placeholder={t('common.search', 'Пошук…')}
+                placeholderTextColor={c.mutedForeground}
+                style={[styles.searchInput, { color: c.foreground }]}
+                autoCorrect={false}
+                autoCapitalize="none"
+                returnKeyType="search"
+              />
+              {query ? (
+                <Pressable onPress={() => setQuery('')} hitSlop={8}>
+                  <Ionicons name="close-circle" size={16} color={c.mutedForeground} />
+                </Pressable>
+              ) : null}
+            </View>
+            <ScrollView style={{ maxHeight: 380 }} keyboardShouldPersistTaps="handled">
+              {!q && renderRow(null, noneLabel, undefined, true)}
+              {filtered.map((s, si) => (
+                <View key={s.title ?? si}>
+                  {s.title ? <Text style={[styles.sectionTitle, { color: c.mutedForeground }]}>{s.title}</Text> : null}
+                  {s.options.map((o) => renderRow(o.id, o.label, o.hint))}
+                </View>
+              ))}
+              {q && filtered.length === 0 ? (
+                <Text style={{ color: c.mutedForeground, textAlign: 'center', paddingVertical: Spacing.lg }}>{t('common.noMatches', 'Нічого не знайдено')}</Text>
+              ) : null}
+            </ScrollView>
+          </Pressable>
+        </Pressable>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -229,5 +313,8 @@ const styles = StyleSheet.create({
   backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   sheet: { borderTopLeftRadius: Radius.lg, borderTopRightRadius: Radius.lg, padding: Spacing.md },
   sheetTitle: { fontSize: 13, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: Spacing.sm, textAlign: 'center' },
+  searchBox: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, borderWidth: 1, borderRadius: Radius.sm, paddingHorizontal: Spacing.md, height: 40, marginBottom: Spacing.sm },
+  searchInput: { flex: 1, fontSize: 15, paddingVertical: 0 },
+  sectionTitle: { fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, paddingHorizontal: Spacing.md, paddingTop: Spacing.md, paddingBottom: Spacing.xs },
   sheetItem: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing.md, paddingVertical: 12, borderRadius: Radius.sm },
 });
