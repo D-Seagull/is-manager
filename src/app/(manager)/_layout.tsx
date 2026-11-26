@@ -8,6 +8,7 @@ import { useAppStatePresence } from '@/hooks/use-app-state-presence';
 import { useAutoOnline } from '@/hooks/use-auto-online';
 import { startOutboxRunner } from '@/lib/outbox';
 import { useChatAlerts } from '@/hooks/use-chat-alerts';
+import { useChatReadTray } from '@/hooks/use-chat-read-tray';
 import { useDmUnreadSync } from '@/hooks/use-direct-messages';
 import { useGroupUnreadSync } from '@/hooks/use-groups';
 import { useFleetSync } from '@/hooks/use-fleet-sync';
@@ -27,6 +28,8 @@ export default function ManagerLayout() {
   useDmUnreadSync();
   useGroupUnreadSync();
   useChatAlerts();
+  // Chat read on the web / another device → its banners leave the tray.
+  useChatReadTray();
   // Offline outbox: re-send queued chat messages when the connection is back.
   useEffect(() => startOutboxRunner(), []);
   usePresenceSync();
