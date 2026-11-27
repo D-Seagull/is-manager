@@ -2,7 +2,15 @@ import { describe, expect, it, vi } from 'vitest';
 
 // outbox.ts pulls in storage, the socket and the auth store; the dedupe helper
 // needs none of them.
-vi.mock('@react-native-async-storage/async-storage', () => ({ default: {} }));
+// diag-log (imported by outbox) reads its saved lines at import time, so the
+// storage stub needs real async methods, not an empty object.
+vi.mock('@react-native-async-storage/async-storage', () => ({
+  default: {
+    getItem: vi.fn(async () => null),
+    setItem: vi.fn(async () => {}),
+    removeItem: vi.fn(async () => {}),
+  },
+}));
 vi.mock('@/lib/socket', () => ({ getSocket: () => ({}) }));
 vi.mock('@/store/auth', () => ({ useAuthStore: { getState: () => ({}) } }));
 
