@@ -530,7 +530,10 @@
       "notesLabel": "Нотатки",
       "tripNameLabel": "Назва рейсу",
       "tripNamePlaceholder": "Напр. Львів → Краків",
-      "tripFallbackName": "Новий рейс"
+      "tripFallbackName": "Новий рейс",
+      "resetButton": "Скинути",
+      "resetConfirm": "Скинути форму?",
+      "resetConfirmDesc": "Усі введені зупинки, адреси, дати, нотатки й дані замовлення буде очищено. Це не можна скасувати."
     },
     "trips": {
       "empty": "Рейсів ще немає",

@@ -530,7 +530,10 @@
       "notesLabel": "Notatki",
       "tripNameLabel": "Nazwa trasy",
       "tripNamePlaceholder": "np. Lwów → Kraków",
-      "tripFallbackName": "Nowa trasa"
+      "tripFallbackName": "Nowa trasa",
+      "resetButton": "Wyczyść",
+      "resetConfirm": "Wyczyścić formularz?",
+      "resetConfirmDesc": "Wszystkie wpisane punkty, adresy, daty, notatki i dane zlecenia zostaną usunięte. Tego nie można cofnąć."
     },
     "trips": {
       "empty": "Brak tras",

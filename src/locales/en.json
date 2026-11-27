@@ -525,7 +525,10 @@
       "notesLabel": "Notes",
       "tripNameLabel": "Trip name",
       "tripNamePlaceholder": "e.g. Lviv → Krakow",
-      "tripFallbackName": "New trip"
+      "tripFallbackName": "New trip",
+      "resetButton": "Reset",
+      "resetConfirm": "Reset the form?",
+      "resetConfirmDesc": "All entered stops, addresses, dates, notes and order data will be cleared. This can't be undone."
     },
     "trips": {
       "empty": "No trips yet",

@@ -530,7 +530,10 @@
       "notesLabel": "Pastabos",
       "tripNameLabel": "Reiso pavadinimas",
       "tripNamePlaceholder": "pvz. Lvivas → Krokuva",
-      "tripFallbackName": "Naujas reisas"
+      "tripFallbackName": "Naujas reisas",
+      "resetButton": "Išvalyti",
+      "resetConfirm": "Išvalyti formą?",
+      "resetConfirmDesc": "Visi įvesti sustojimai, adresai, datos, pastabos ir užsakymo duomenys bus ištrinti. To negalima atšaukti."
     },
     "trips": {
       "empty": "Reisų dar nėra",

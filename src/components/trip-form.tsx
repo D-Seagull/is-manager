@@ -160,6 +160,9 @@ export function TripForm({
   const [typeMenu, setTypeMenu] = useState<{ mode: 'insert' | 'change'; idx: number } | null>(null);
   // назва редагована вручну → не перезаписуємо автоматично з адрес
   const isNameEdited = useRef(false);
+  // Bumped by "Reset" to remount the form, so inputs that keep their own
+  // state (the order import box) start empty too.
+  const [formKey, setFormKey] = useState(0);
 
   // (Re)seed state when opening.
   useEffect(() => {
@@ -214,6 +217,32 @@ export function TripForm({
     setOrderSource(null);
     setOrderWarnings([]);
     setImportKey(null);
+  };
+
+  /** "Reset" (new trips only, same as the web form): empty form after a confirm. */
+  const handleResetForm = () => {
+    Alert.alert(
+      t('truckPanel.newTrip.resetConfirm', 'Скинути форму?'),
+      t('truckPanel.newTrip.resetConfirmDesc', 'Усі введені зупинки, адреси, дати, нотатки й дані замовлення буде очищено. Це не можна скасувати.'),
+      [
+        { text: t('common.cancel', 'Скасувати'), style: 'cancel' },
+        {
+          text: t('truckPanel.newTrip.resetButton', 'Скинути'),
+          style: 'destructive',
+          onPress: () => {
+            setDriverId(defaultDriverId ?? '');
+            setTripName('');
+            setOrderNumber('');
+            setNotes('');
+            setFinance(emptyFinance());
+            setStops([emptyStop('LOADING'), emptyStop('UNLOADING')]);
+            isNameEdited.current = false;
+            resetOrder();
+            setFormKey((k) => k + 1);
+          },
+        },
+      ],
+    );
   };
 
   // автозаповнення назви з адрес поки користувач не редагував її вручну
@@ -352,7 +381,7 @@ export function TripForm({
           </Pressable>
         </View>
 
-        <InsetScrollView bottomGap={Spacing.xl} insetIOS contentContainerStyle={{ padding: Spacing.md, gap: Spacing.lg }} keyboardShouldPersistTaps="handled">
+        <InsetScrollView key={formKey} bottomGap={Spacing.xl} insetIOS contentContainerStyle={{ padding: Spacing.md, gap: Spacing.lg }} keyboardShouldPersistTaps="handled">
           {/* Driver */}
           <Field label={t('truckPanel.newTrip.driverLabel', 'Водій')} c={c}>
             <Pressable onPress={() => setDriverPickerOpen(true)} style={[styles.input, styles.row, { backgroundColor: c.card, borderColor: c.border }]}>
@@ -417,6 +446,20 @@ export function TripForm({
 
           {/* Finance — managers only; edited later from the trip header */}
           {!isEdit ? <FinanceFields c={c} value={finance} onChange={setFinance} /> : null}
+
+          {/* Reset — new trips only: clears every field and the order import */}
+          {!isEdit ? (
+            <Pressable
+              onPress={handleResetForm}
+              disabled={saving}
+              style={({ pressed }) => [styles.input, styles.row, styles.resetBtn, { backgroundColor: pressed ? c.muted : c.card, borderColor: c.border, opacity: saving ? 0.5 : 1 }]}
+            >
+              <Ionicons name="refresh" size={16} color={c.destructive} />
+              <Text style={{ color: c.destructive, fontSize: 15, fontWeight: '600' }}>
+                {t('truckPanel.newTrip.resetButton', 'Скинути')}
+              </Text>
+            </Pressable>
+          ) : null}
         </InsetScrollView>
       </KeyboardAvoidingView>
 
@@ -597,6 +640,7 @@ const styles = StyleSheet.create({
   label: { fontSize: 13, fontWeight: '600' },
   input: { borderWidth: 1, borderRadius: Radius.md, paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm + 2, fontSize: 15 },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  resetBtn: { justifyContent: 'center' },
   stopCard: { borderWidth: 1, borderRadius: 12, padding: Spacing.sm, gap: Spacing.sm },
   stopTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.sm },
   stopHeaderLabel: { flexDirection: 'row', alignItems: 'center', gap: 5, flexShrink: 1 },
