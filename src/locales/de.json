@@ -1,4 +1,13 @@
 {
+  "photoEditor": {
+    "title": "Foto bearbeiten",
+    "hint": "Foto geradeausrichten, dann Ecken zum Zuschneiden ziehen",
+    "straighten": "Ausrichten",
+    "rotate": "Drehen",
+    "skip": "Unverändert",
+    "next": "Weiter",
+    "done": "Senden"
+  },
   "alarm": {
     "title": "Wecker",
     "new": "+ Neu",

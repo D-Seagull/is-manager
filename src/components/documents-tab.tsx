@@ -28,6 +28,7 @@ import { useTripsByTruck } from '@/hooks/use-trips';
 import { openRemoteFile, readableFileName } from '@/lib/open-file';
 import { DriverDocument } from '@/lib/documents-api';
 import { compressPhotos, PICKER_QUALITY } from '@/lib/compress-photo';
+import { editPhotos } from '@/lib/photo-edit';
 import { fullName } from '@/lib/format';
 import { formatDate } from '@/lib/format-date';
 import { uploadErrorText } from '@/lib/upload-error';
@@ -90,13 +91,17 @@ export function DocumentsTab({ truckId }: { truckId: string }) {
         if (!perm.granted) return;
         const r = await ImagePicker.launchCameraAsync({ quality: PICKER_QUALITY });
         if (r.canceled) return;
-        files = await compressPhotos(r.assets);
+        const edited = await editPhotos(r.assets);
+        if (!edited) return;
+        files = await compressPhotos(edited);
       } else if (source === 'gallery') {
         const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!perm.granted) return;
         const r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsMultipleSelection: true, quality: PICKER_QUALITY });
         if (r.canceled) return;
-        files = await compressPhotos(r.assets);
+        const edited = await editPhotos(r.assets);
+        if (!edited) return;
+        files = await compressPhotos(edited);
       } else {
         const r = await DocumentPicker.getDocumentAsync({ multiple: true, copyToCacheDirectory: true, type: '*/*' });
         if (r.canceled) return;

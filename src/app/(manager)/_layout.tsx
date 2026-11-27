@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Redirect, Stack } from 'expo-router';
 
 import { PushNoticeOverlay } from '@/components/push-notice-overlay';
+import { PhotoEditorHost } from '@/components/photo-editor';
 import { TripStatusBanner } from '@/components/trip-status-banner';
 import { useBugReportsSocketSync, useOnlineUsersSocketSync } from '@/hooks/use-admin';
 import { useAppStatePresence } from '@/hooks/use-app-state-presence';
@@ -76,6 +77,7 @@ export default function ManagerLayout() {
         <Stack.Screen name="truck/[truckId]" />
       </Stack>
       <PushNoticeOverlay />
+      <PhotoEditorHost />
       <TripStatusBanner />
     </>
   );
