@@ -30,10 +30,45 @@
         "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryAddUsageDescription": "The app needs access to your photos to save pictures from chat to your gallery.",
         "NSMicrophoneUsageDescription": "The app needs microphone access to record voice messages in chat.",
-        "CFBundleAllowMixedLocalizations": true
+        "CFBundleAllowMixedLocalizations": true,
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": false,
+          "NSAllowsLocalNetworking": true
+        }
       },
       "entitlements": {
         "com.apple.developer.usernotifications.time-sensitive": true
+      },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "C617.1",
+              "0A2A.1",
+              "3B52.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "35F9.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "E174.1",
+              "85F4.1"
+            ]
+          }
+        ]
       }
     },
     "android": {
@@ -44,7 +79,7 @@
         "android.permission.READ_MEDIA_VIDEO",
         "android.permission.READ_MEDIA_VISUAL_USER_SELECTED"
       ],
-      "versionCode": 4,
+      "versionCode": 7,
       "adaptiveIcon": {
         "backgroundColor": "#0F172A",
         "foregroundImage": "./src/assets/images/adaptive-icon-foreground.png",
@@ -73,7 +108,12 @@
           }
         }
       ],
-      "expo-secure-store",
+      [
+        "expo-secure-store",
+        {
+          "faceIDPermission": false
+        }
+      ],
       "expo-localization",
       [
         "expo-audio",
@@ -93,7 +133,9 @@
             "./src/assets/sounds/is_alarm.mp3",
             "./src/assets/sounds/push_message_ios.wav",
             "./src/assets/sounds/is_alarm_ios.wav"
-          ]
+          ],
+          "mode": "production",
+          "enableBackgroundRemoteNotifications": true
         }
       ],
       "expo-sharing",

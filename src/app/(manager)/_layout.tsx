@@ -2,12 +2,14 @@ import { useEffect } from 'react';
 import { Redirect, Stack } from 'expo-router';
 
 import { PushNoticeOverlay } from '@/components/push-notice-overlay';
+import { PhotoEditorHost } from '@/components/photo-editor';
 import { TripStatusBanner } from '@/components/trip-status-banner';
 import { useBugReportsSocketSync, useOnlineUsersSocketSync } from '@/hooks/use-admin';
 import { useAppStatePresence } from '@/hooks/use-app-state-presence';
 import { useAutoOnline } from '@/hooks/use-auto-online';
 import { startOutboxRunner } from '@/lib/outbox';
 import { useChatAlerts } from '@/hooks/use-chat-alerts';
+import { useChatReadTray } from '@/hooks/use-chat-read-tray';
 import { useDmUnreadSync } from '@/hooks/use-direct-messages';
 import { useGroupUnreadSync } from '@/hooks/use-groups';
 import { useFleetSync } from '@/hooks/use-fleet-sync';
@@ -27,6 +29,8 @@ export default function ManagerLayout() {
   useDmUnreadSync();
   useGroupUnreadSync();
   useChatAlerts();
+  // Chat read on the web / another device → its banners leave the tray.
+  useChatReadTray();
   // Offline outbox: re-send queued chat messages when the connection is back.
   useEffect(() => startOutboxRunner(), []);
   usePresenceSync();
@@ -73,6 +77,7 @@ export default function ManagerLayout() {
         <Stack.Screen name="truck/[truckId]" />
       </Stack>
       <PushNoticeOverlay />
+      <PhotoEditorHost />
       <TripStatusBanner />
     </>
   );

@@ -1,4 +1,13 @@
 {
+  "photoEditor": {
+    "title": "Edit photo",
+    "hint": "Level the photo, then drag the corners to crop",
+    "straighten": "Straighten",
+    "rotate": "Rotate",
+    "skip": "As is",
+    "next": "Next",
+    "done": "Send"
+  },
   "alarm": {
     "title": "Alarms",
     "new": "+ New",
@@ -199,7 +208,9 @@
     "driver": "Driver",
     "manager": "Manager",
     "noDriver": "No driver",
-    "noManager": "No manager"
+    "noManager": "No manager",
+    "freeDrivers": "Free drivers",
+    "driversOnTrucks": "On trucks"
   },
   "login": {
     "rememberMe": "Remember me",
@@ -309,6 +320,9 @@
     "vacationEllipsis": "Vacation…",
     "updateError": "Couldn't update status.",
     "sleepPresets": {
+      "until6": "Until 6:00",
+      "until7": "Until 7:00",
+      "until8": "Until 8:00",
       "min30": "30 min",
       "hours2": "2 hours",
       "shortRest": "9 hours (short rest)",
@@ -511,7 +525,10 @@
       "notesLabel": "Notes",
       "tripNameLabel": "Trip name",
       "tripNamePlaceholder": "e.g. Lviv → Krakow",
-      "tripFallbackName": "New trip"
+      "tripFallbackName": "New trip",
+      "resetButton": "Reset",
+      "resetConfirm": "Reset the form?",
+      "resetConfirmDesc": "All entered stops, addresses, dates, notes and order data will be cleared. This can't be undone."
     },
     "trips": {
       "empty": "No trips yet",

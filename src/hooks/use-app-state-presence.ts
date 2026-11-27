@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
-import { ensureSocketAlive, getSocket } from '@/lib/socket';
+import { ensureSocketAlive, getSocket, probeSocketLiveness } from '@/lib/socket';
 
 /**
  * Тримає сокет живим при поверненні з фону та каже серверу про foreground/
@@ -28,7 +28,10 @@ export function useAppStatePresence() {
           sock.connect();
         } else {
           sock.emit('appActive', { pulse: true });
-          sock.emit('requestPresence');
+          // Short background (a quick lock) — the socket may still be a
+          // zombie. Probe it now (it also re-asks presence) instead of waiting
+          // up to a minute for the watchdog.
+          probeSocketLiveness();
         }
       } else {
         backgroundedAt = Date.now();

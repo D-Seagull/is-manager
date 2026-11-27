@@ -1,4 +1,13 @@
 {
+  "photoEditor": {
+    "title": "Редагувати фото",
+    "hint": "Вирівняйте фото, потім потягніть кути, щоб обрізати",
+    "straighten": "Вирівняти",
+    "rotate": "Повернути",
+    "skip": "Без змін",
+    "next": "Далі",
+    "done": "Надіслати"
+  },
   "alarm": {
     "title": "Будильники",
     "new": "Новий",
@@ -203,7 +212,9 @@
     "driver": "Водій",
     "manager": "Менеджер",
     "noDriver": "Без водія",
-    "noManager": "Без менеджера"
+    "noManager": "Без менеджера",
+    "freeDrivers": "Вільні водії",
+    "driversOnTrucks": "На вантажівках"
   },
   "login": {
     "rememberMe": "Запам'ятати мене",
@@ -314,6 +325,9 @@
     "vacationEllipsis": "Відпочиваю…",
     "updateError": "Не вдалось оновити статус.",
     "sleepPresets": {
+      "until6": "До 6:00",
+      "until7": "До 7:00",
+      "until8": "До 8:00",
       "min30": "30 хв",
       "hours2": "2 години",
       "shortRest": "9 годин (короткий відпочинок)",
@@ -516,7 +530,10 @@
       "notesLabel": "Нотатки",
       "tripNameLabel": "Назва рейсу",
       "tripNamePlaceholder": "Напр. Львів → Краків",
-      "tripFallbackName": "Новий рейс"
+      "tripFallbackName": "Новий рейс",
+      "resetButton": "Скинути",
+      "resetConfirm": "Скинути форму?",
+      "resetConfirmDesc": "Усі введені зупинки, адреси, дати, нотатки й дані замовлення буде очищено. Це не можна скасувати."
     },
     "trips": {
       "empty": "Рейсів ще немає",

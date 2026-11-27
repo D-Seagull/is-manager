@@ -1,4 +1,13 @@
 {
+  "photoEditor": {
+    "title": "Redaguoti nuotrauką",
+    "hint": "Ištiesinkite nuotrauką, tada traukite kampus apkirpti",
+    "straighten": "Ištiesinti",
+    "rotate": "Pasukti",
+    "skip": "Be pakeitimų",
+    "next": "Toliau",
+    "done": "Siųsti"
+  },
   "alarm": {
     "title": "Žadintuvai",
     "new": "Naujas",
@@ -203,7 +212,9 @@
     "driver": "Vairuotojas",
     "manager": "Vadovas",
     "noDriver": "Be vairuotojo",
-    "noManager": "Be vadovo"
+    "noManager": "Be vadovo",
+    "freeDrivers": "Laisvi vairuotojai",
+    "driversOnTrucks": "Su vilkikais"
   },
   "login": {
     "rememberMe": "Prisiminti mane",
@@ -314,6 +325,9 @@
     "vacationEllipsis": "Ilsiuosi…",
     "updateError": "Nepavyko atnaujinti būsenos.",
     "sleepPresets": {
+      "until6": "Iki 6:00",
+      "until7": "Iki 7:00",
+      "until8": "Iki 8:00",
       "min30": "30 min",
       "hours2": "2 valandos",
       "shortRest": "9 valandos (trumpas poilsis)",
@@ -516,7 +530,10 @@
       "notesLabel": "Pastabos",
       "tripNameLabel": "Reiso pavadinimas",
       "tripNamePlaceholder": "pvz. Lvivas → Krokuva",
-      "tripFallbackName": "Naujas reisas"
+      "tripFallbackName": "Naujas reisas",
+      "resetButton": "Išvalyti",
+      "resetConfirm": "Išvalyti formą?",
+      "resetConfirmDesc": "Visi įvesti sustojimai, adresai, datos, pastabos ir užsakymo duomenys bus ištrinti. To negalima atšaukti."
     },
     "trips": {
       "empty": "Reisų dar nėra",

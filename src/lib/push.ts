@@ -6,7 +6,11 @@ import * as Device from 'expo-device';
 import type { ExpoPushToken } from 'expo-notifications';
 import { AppState, Platform } from 'react-native';
 
+import { diagLog } from './diag-log';
+import { clearTrayChat } from './chat-notifications';
+import { chatReadTag } from './chat-ref';
 import i18n from './i18n';
+import { registerPushBackgroundTask } from './push-background';
 import { registerPushToken, unregisterPushToken } from './push-api';
 
 /**
@@ -45,9 +49,18 @@ if (!isExpoGoAndroid) {
    *    shows and sounds it as usual.
    * Background / closed: this handler doesn't run — the OS shows the push.
    */
+  AppState.addEventListener('change', (s) => diagLog(`appState → ${s}`));
   Notifications.setNotificationHandler({
     handleNotification: async (n) => {
       const onScreen = AppState.currentState === 'active';
+      const type = (n.request.content.data as { type?: unknown } | null)?.type;
+      diagLog(`push handler type=${String(type)} appState=${AppState.currentState} → ${onScreen ? 'hidden (on screen)' : 'shown'}`);
+      // Silent "chat read elsewhere" signal: nothing to show, just tidy the tray.
+      const readTag = chatReadTag(n.request.content.data);
+      if (readTag) {
+        void clearTrayChat(readTag);
+        return { shouldShowBanner: false, shouldShowList: false, shouldPlaySound: false, shouldSetBadge: false };
+      }
       const alarm =
         (n.request.content.data as { type?: unknown } | null)?.type === 'ALARM';
       return {
@@ -135,6 +148,10 @@ export async function registerForPushNotifications(): Promise<string | null> {
       },
     });
   }
+
+  // Silent "read on another device" pushes clear the tray while the app is
+  // in the background / closed.
+  await registerPushBackgroundTask();
 
   // EAS / Expo project id — required by the Expo Push Service.
   const projectId =

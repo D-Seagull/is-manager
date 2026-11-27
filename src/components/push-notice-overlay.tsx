@@ -20,6 +20,8 @@ import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { dmKeys } from '@/hooks/use-direct-messages';
 import { groupKeys } from '@/hooks/use-groups';
+import { clearTrayChat } from '@/lib/chat-notifications';
+import { chatReadTag } from '@/lib/chat-ref';
 import { HAS_ALARM_SOUND } from '@/lib/push';
 import { getSocket } from '@/lib/socket';
 import { playAlarmSound } from '@/lib/sounds';
@@ -135,6 +137,14 @@ export function PushNoticeOverlay() {
     // the modal remains.
     const recvSub = Notifications.addNotificationReceivedListener((n) => {
       const { title, body, data } = n.request.content;
+      // The silent "chat read elsewhere" push (and any push with nothing to
+      // say) is never a modal — it only tidies the tray.
+      const readTag = chatReadTag(data);
+      if (readTag) {
+        void clearTrayChat(readTag);
+        return;
+      }
+      if (!title && !body) return;
       const payload = (data as Record<string, unknown> | undefined) ?? undefined;
       // An alarm keeps its system notification: the `alarm` channel rings on
       // the ALARM stream (through silent mode, at alarm volume). Dismissing it

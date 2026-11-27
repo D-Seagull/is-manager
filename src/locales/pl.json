@@ -1,4 +1,13 @@
 {
+  "photoEditor": {
+    "title": "Edytuj zdjęcie",
+    "hint": "Wyrównaj zdjęcie, potem przeciągnij rogi, aby przyciąć",
+    "straighten": "Wyrównaj",
+    "rotate": "Obróć",
+    "skip": "Bez zmian",
+    "next": "Dalej",
+    "done": "Wyślij"
+  },
   "alarm": {
     "title": "Budziki",
     "new": "Nowy",
@@ -203,7 +212,9 @@
     "driver": "Kierowca",
     "manager": "Menedżer",
     "noDriver": "Bez kierowcy",
-    "noManager": "Bez menedżera"
+    "noManager": "Bez menedżera",
+    "freeDrivers": "Wolni kierowcy",
+    "driversOnTrucks": "Na pojazdach"
   },
   "login": {
     "rememberMe": "Zapamiętaj mnie",
@@ -314,6 +325,9 @@
     "vacationEllipsis": "Odpoczywam…",
     "updateError": "Nie udało się zaktualizować statusu.",
     "sleepPresets": {
+      "until6": "Do 6:00",
+      "until7": "Do 7:00",
+      "until8": "Do 8:00",
       "min30": "30 min",
       "hours2": "2 godziny",
       "shortRest": "9 godzin (krótki odpoczynek)",
@@ -516,7 +530,10 @@
       "notesLabel": "Notatki",
       "tripNameLabel": "Nazwa trasy",
       "tripNamePlaceholder": "np. Lwów → Kraków",
-      "tripFallbackName": "Nowa trasa"
+      "tripFallbackName": "Nowa trasa",
+      "resetButton": "Wyczyść",
+      "resetConfirm": "Wyczyścić formularz?",
+      "resetConfirmDesc": "Wszystkie wpisane punkty, adresy, daty, notatki i dane zlecenia zostaną usunięte. Tego nie można cofnąć."
     },
     "trips": {
       "empty": "Brak tras",

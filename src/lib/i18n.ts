@@ -9,6 +9,14 @@ import lt from '@/locales/lt.json';
 import pl from '@/locales/pl.json';
 import ru from '@/locales/ru.json';
 import uk from '@/locales/uk.json';
+// "Fill from order" texts live in their own files (merged under `orderImport`)
+// so they can ship while the main locale files are being edited elsewhere.
+import orderDe from '@/locales/order-import/de.json';
+import orderEn from '@/locales/order-import/en.json';
+import orderLt from '@/locales/order-import/lt.json';
+import orderPl from '@/locales/order-import/pl.json';
+import orderRu from '@/locales/order-import/ru.json';
+import orderUk from '@/locales/order-import/uk.json';
 
 import type { AppLanguage } from '@/lib/auth-api';
 
@@ -41,12 +49,12 @@ function deviceLocale(): AppLocale {
 
 void i18n.use(initReactI18next).init({
   resources: {
-    en: { translation: en },
-    uk: { translation: uk },
-    pl: { translation: pl },
-    lt: { translation: lt },
-    ru: { translation: ru },
-    de: { translation: de },
+    en: { translation: { ...en, orderImport: orderEn } },
+    uk: { translation: { ...uk, orderImport: orderUk } },
+    pl: { translation: { ...pl, orderImport: orderPl } },
+    lt: { translation: { ...lt, orderImport: orderLt } },
+    ru: { translation: { ...ru, orderImport: orderRu } },
+    de: { translation: { ...de, orderImport: orderDe } },
   },
   lng: deviceLocale(),
   fallbackLng: 'en',
