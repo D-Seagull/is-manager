@@ -19,6 +19,7 @@ import {
 import { Image as ExpoImage } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AppVersion } from '@/components/app-version';
 import { PresenceStatusSheet } from '@/components/presence-status-sheet';
 import { SectionHeader } from '@/components/section-header';
 import { StatusDot } from '@/components/status-dot';
@@ -536,6 +537,7 @@ export default function AccountScreen() {
             </Text>
           </Pressable>
         </View>
+        <AppVersion color={c.mutedForeground} />
       </InsetScrollView>
 
       <PresenceStatusSheet open={statusPickerOpen} onClose={() => setStatusPickerOpen(false)} />
