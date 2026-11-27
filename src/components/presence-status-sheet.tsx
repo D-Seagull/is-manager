@@ -15,16 +15,17 @@ import { Colors, Radius, Spacing } from '@/constants/theme';
 import { bottomBarPadding } from '@/lib/insets';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { UserStatus, updateMe } from '@/lib/auth-api';
-import { STATUS_HEX } from '@/lib/status';
+import { hoursUntilNextHour, STATUS_HEX } from '@/lib/status';
 import { useAuthStore } from '@/store/auth';
 
 // Sleep presets — EU rest-break convention (9 h short rest, 11 h regular
 // rest) plus a tighter "power nap" and an indefinite mode for end-of-day.
 // `key` resolves to the i18n label under presence.sleepPresets.*
-// Managers don't have the driver's 9h/11h rest windows — short breaks only.
-const SLEEP_PRESETS: { key: string; hours: number }[] = [
-  { key: 'min30', hours: 0.5 },
-  { key: 'hours2', hours: 2 },
+// Managers sleep until the next 6:00 / 7:00 / 8:00 (the morning they are back).
+const SLEEP_PRESETS: { key: string; untilHour: number }[] = [
+  { key: 'until6', untilHour: 6 },
+  { key: 'until7', untilHour: 7 },
+  { key: 'until8', untilHour: 8 },
 ];
 
 // Vacation presets — day-based, since rest stretches across more than
@@ -221,7 +222,7 @@ export function PresenceStatusSheet({
                 disabled={busy}
                 onPress={() => {
                   closeAll();
-                  applyStatus('SLEEP', p.hours);
+                  applyStatus('SLEEP', hoursUntilNextHour(p.untilHour));
                 }}
                 style={({ pressed }) => [
                   styles.item,

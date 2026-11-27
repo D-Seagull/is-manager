@@ -325,6 +325,9 @@
     "vacationEllipsis": "Odpoczywam…",
     "updateError": "Nie udało się zaktualizować statusu.",
     "sleepPresets": {
+      "until6": "Do 6:00",
+      "until7": "Do 7:00",
+      "until8": "Do 8:00",
       "min30": "30 min",
       "hours2": "2 godziny",
       "shortRest": "9 godzin (krótki odpoczynek)",

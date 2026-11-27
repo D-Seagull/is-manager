@@ -325,6 +325,9 @@
     "vacationEllipsis": "Ilsiuosi…",
     "updateError": "Nepavyko atnaujinti būsenos.",
     "sleepPresets": {
+      "until6": "Iki 6:00",
+      "until7": "Iki 7:00",
+      "until8": "Iki 8:00",
       "min30": "30 min",
       "hours2": "2 valandos",
       "shortRest": "9 valandos (trumpas poilsis)",

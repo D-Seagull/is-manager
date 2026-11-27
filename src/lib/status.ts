@@ -41,3 +41,15 @@ export const STATUS_HEX: Record<DisplayStatus, string> = {
 
 // Human labels live in i18n under the `status.*` namespace (keyed by the
 // DisplayStatus value), rendered with `t('status.' + status)` at call sites.
+
+/**
+ * Hours from now until the NEXT occurrence of `hour`:00 local time — today if
+ * it hasn't passed yet, otherwise tomorrow. Powers the "sleep until 6:00 / 7:00 /
+ * 8:00" presets (statusUntil = now + this many hours).
+ */
+export function hoursUntilNextHour(hour: number, now: Date = new Date()): number {
+  const target = new Date(now);
+  target.setHours(hour, 0, 0, 0);
+  if (target.getTime() <= now.getTime()) target.setDate(target.getDate() + 1);
+  return (target.getTime() - now.getTime()) / 3_600_000;
+}

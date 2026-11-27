@@ -320,6 +320,9 @@
     "vacationEllipsis": "Urlaub…",
     "updateError": "Status konnte nicht aktualisiert werden.",
     "sleepPresets": {
+      "until6": "Bis 6:00",
+      "until7": "Bis 7:00",
+      "until8": "Bis 8:00",
       "min30": "30 Min",
       "hours2": "2 Stunden",
       "shortRest": "9 Stunden (kurze Ruhe)",
