@@ -6,6 +6,7 @@ import * as Device from 'expo-device';
 import type { ExpoPushToken } from 'expo-notifications';
 import { AppState, Platform } from 'react-native';
 
+import { diagLog } from './diag-log';
 import { clearTrayChat } from './chat-notifications';
 import { chatReadTag } from './chat-ref';
 import i18n from './i18n';
@@ -48,9 +49,12 @@ if (!isExpoGoAndroid) {
    *    shows and sounds it as usual.
    * Background / closed: this handler doesn't run — the OS shows the push.
    */
+  AppState.addEventListener('change', (s) => diagLog(`appState → ${s}`));
   Notifications.setNotificationHandler({
     handleNotification: async (n) => {
       const onScreen = AppState.currentState === 'active';
+      const type = (n.request.content.data as { type?: unknown } | null)?.type;
+      diagLog(`push handler type=${String(type)} appState=${AppState.currentState} → ${onScreen ? 'hidden (on screen)' : 'shown'}`);
       // Silent "chat read elsewhere" signal: nothing to show, just tidy the tray.
       const readTag = chatReadTag(n.request.content.data);
       if (readTag) {

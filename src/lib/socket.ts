@@ -1,6 +1,7 @@
 import { io, Socket } from 'socket.io-client';
 
 import { API_URL } from './config';
+import { diagLog } from './diag-log';
 
 let socket: Socket | null = null;
 
@@ -122,9 +123,16 @@ export function getSocket(token?: string): Socket {
     socket.on('connect', () => {
       lastActivityAt = Date.now();
       console.log('[socket] ✅ connected id=', socket?.id, 'transport=', socket?.io.engine.transport.name);
+      diagLog('socket connected');
     });
-    socket.on('disconnect', (r) => console.log('[socket] ❌ disconnected reason=', r));
-    socket.on('connect_error', (e) => console.warn('[socket] ⚠️ error=', e.message));
+    socket.on('disconnect', (r) => {
+      console.log('[socket] ❌ disconnected reason=', r);
+      diagLog(`socket disconnected: ${r}`);
+    });
+    socket.on('connect_error', (e) => {
+      console.warn('[socket] ⚠️ error=', e.message);
+      diagLog(`socket error: ${e.message}`);
+    });
     // engine 'upgrade' isn't in the Manager's typed event map — cast to log it.
     socket.io.engine?.on('upgrade', (t: { name: string }) =>
       console.log('[socket] ⬆️ upgraded to', t.name),
